@@ -16,8 +16,10 @@ System dependencies
 References
 ===========
 
+- CMake
+  - http://www.cmake.org/documentation/
+- OpenGL
+  - http://nehe.gamedev.net/
 - SDL
   - http://wiki.libsdl.org/FrontPage
   - http://lazyfoo.net/tutorials/SDL/index.php
-- CMake
-  - http://www.cmake.org/documentation/
