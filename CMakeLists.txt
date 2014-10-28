@@ -9,13 +9,15 @@ set(TEST_DIR "${PROJECT_SOURCE_DIR}/test")
 find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(SDL REQUIRED)
+
+include(FindPkgConfig)
+pkg_search_module(SDL2 REQUIRED sdl2)
 
 include_directories(
   ${GLEW_INCLUDE_DIRS}
   ${GLUT_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
-  ${SDL_INCLUDE_DIR}
+  ${SDL2_INCLUDE_DIRS}
   )
 
 # TODO include source files here
@@ -41,7 +43,7 @@ target_link_libraries(
   ${GLEW_LIBRARIES}
   ${GLUT_LIBRARIES}
   ${OPENGL_LIBRARIES}
-  ${SDL_LIBRARY}
+  ${SDL2_LIBRARIES}
   )
 
 option(test "Build all tests." ON)
