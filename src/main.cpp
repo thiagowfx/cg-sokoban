@@ -1,12 +1,7 @@
-#include <iostream>
-#include "SDL.h"
-using namespace std;
+#include "gui.hpp"
 
-int main() {
-  std::cout << "Hello world!" << std::endl;
-
-  SDL_Init(SDL_INIT_HAPTIC);
-  SDL_Quit();
-
+int main(int argc, char** argv) {
+  Gui *gui = new Gui();
+  gui->gameLoop();
   return 0;
 }

@@ -8,23 +8,21 @@ set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(TEST_DIR "${PROJECT_SOURCE_DIR}/test")
 
 find_package(GLEW REQUIRED)
-find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
-
 include(FindPkgConfig)
-pkg_search_module(SDL2 REQUIRED sdl2)
+pkg_search_module(SDL2 REQUIRED SDL2)
+pkg_search_module(SDL2_IMAGE REQUIRED SDL2_image)
 
 include_directories(
   ${GLEW_INCLUDE_DIRS}
-  ${GLUT_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
   ${SDL2_INCLUDE_DIRS}
   )
 
-# TODO include source files here
 set(
   SOKOBAN_SOURCES
-  ""
+  ${SRC_DIR}/gui.cpp
+  ${SRC_DIR}/gui.hpp
   )
 
 add_library(
@@ -42,13 +40,13 @@ add_executable(
 target_link_libraries(
   sokoban
   ${GLEW_LIBRARIES}
-  ${GLUT_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${SDL2_LIBRARIES}
+  ${SDL2_IMAGE_LIBRARIES}
   )
 
-option(test "Build all tests." ON)
-if (test)
+option(TEST "Build all tests." OFF)
+if (TEST)
   enable_testing()
   set(PROJECT_TEST_NAME "${PROJECT_NAME}UnitTests")
   file(GLOB TEST_SRC_FILES ${TEST_DIR}/*Test.cpp)
