@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 set(PROJECT_NAME "sokoban")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g")
 project(${PROJECT_NAME} C CXX)
 
 set(EXT_PROJECTS_DIR "${PROJECT_SOURCE_DIR}/ext")
