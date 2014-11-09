@@ -39,13 +39,14 @@ Gui::Gui() {
         exit(1);
     }
 
+    splashScreenPrelude();
     loadMediaPrelude();
 }
 
 Gui::~Gui() {
     /* Destroy textures. */
-    SDL_DestroyTexture(splashTexture);
-    splashTexture = NULL;
+    // SDL_DestroyTexture(myTexture);
+    // myTexture = NULL;
 
     /* Destroy surfaces. */
     SDL_FreeSurface(screenSurface);
@@ -79,13 +80,13 @@ void Gui::gameLoop() {
             }
         }
 
-        // SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+        SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
         // SDL_BlitSurface( gCurrentSurface, NULL, gScreenSurface, NULL );
-        // SDL_UpdateWindowSurface(window);
+        SDL_UpdateWindowSurface(window);
 
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, splashTexture, NULL, NULL);
-        SDL_RenderPresent(renderer);
+        // SDL_RenderClear(renderer);
+        // SDL_RenderCopy(renderer, splashTexture, NULL, NULL);
+        // SDL_RenderPresent(renderer);
     }
 }
 
@@ -119,6 +120,16 @@ SDL_Texture* Gui::loadTextureHelper(std::string path) {
     return newTexture;
 }
 
-void Gui::loadMediaPrelude() {
+void Gui::splashScreenPrelude() {
     splashTexture = loadTextureHelper("assets/gopher.jpeg");
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, splashTexture, NULL, NULL);
+    SDL_RenderPresent(renderer);
+    SDL_Delay(GAME_SPLASH_SCREEN_TIMEOUT);
+    SDL_DestroyTexture(splashTexture);
+    splashTexture = NULL;
+}
+
+void Gui::loadMediaPrelude() {
+    // myTexture = loadTextureHelper("assets/...");
 }

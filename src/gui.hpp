@@ -18,6 +18,7 @@ private:
     SDL_Surface* loadSurfaceHelper(std::string);
     SDL_Texture* loadTextureHelper(std::string);
 
+    void splashScreenPrelude();
     void loadMediaPrelude();
 
 private:
@@ -29,6 +30,7 @@ private:
 private:
     const unsigned SCREEN_WIDTH = 800;
     const unsigned SCREEN_HEIGHT = 600;
+    const unsigned GAME_SPLASH_SCREEN_TIMEOUT = 2000;
     const char* GAME_TITLE = "Sokoban";
 };
 
