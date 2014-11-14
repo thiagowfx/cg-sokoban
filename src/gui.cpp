@@ -8,57 +8,65 @@ Gui::Gui() {
     }
 
     /* Set texture filtering to linear. */
-    if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) ) {
+    if(!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
         std::cout << "Warning: Linear texture filtering not enabled!" << std::endl;
     }
 
-    /* Create a window. */
-    window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    /* Create the main window. */
+    window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (window == NULL) {
         std::cout << "SDL Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         exit(1);
     }
     else {
-        screenSurface = SDL_GetWindowSurface(window);
+        windowSurface = SDL_GetWindowSurface(window);
     }
 
-    /* Create renderer for the window. */
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-    if(renderer == NULL) {
+    /* Create the renderer for the window. */
+    windowRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+    if(windowRenderer == NULL) {
         std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
         exit(1);
     }
-    else {
-        SDL_SetRenderDrawColor(renderer, 0xCC, 0xCC, 0xCC, 0xFF);
-    }
 
-    /* Initialize PNG and JPEG loading from SDL2_image. */
+    /* Enable PNG and JPEG support from SDL2_image. */
     int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
     if(!(IMG_Init(imgFlags) & imgFlags)) {
         std::cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
         exit(1);
     }
 
-    splashScreenPrelude();
+    /* Enable TTF support from SDL2_TTF. */
+    if(TTF_Init() == -1) {
+        std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        exit(1);
+    }
+
     loadMediaPrelude();
+    splashScreenPrelude();
 }
 
 Gui::~Gui() {
     /* Destroy textures. */
-    // SDL_DestroyTexture(myTexture);
-    // myTexture = NULL;
+    SDL_DestroyTexture(splashTexture);
+    splashTexture = NULL;
 
     /* Destroy surfaces. */
-    SDL_FreeSurface(screenSurface);
-    screenSurface = NULL;
+    SDL_FreeSurface(windowSurface);
+    windowSurface = NULL;
+
+    /* Destroy fonts. */
+    TTF_CloseFont(windowFont);
+    windowFont = NULL;
 
     /* Destroy renderer and window. */
-    SDL_DestroyRenderer(renderer);
+    SDL_DestroyRenderer(windowRenderer);
     SDL_DestroyWindow(window);
-    renderer = NULL;
+    windowRenderer = NULL;
     window = NULL;
 
     IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -67,7 +75,7 @@ void Gui::gameLoop() {
     SDL_Event e;
 
     while(!quit) {
-        while( SDL_PollEvent( &e ) != 0 ) {
+        while(SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
@@ -80,26 +88,28 @@ void Gui::gameLoop() {
             }
         }
 
-        SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-        // SDL_BlitSurface( gCurrentSurface, NULL, gScreenSurface, NULL );
-        SDL_UpdateWindowSurface(window);
+        // SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xBB, 0xFF, 0xBB));
+        //SDL_UpdateWindowSurface(window);
 
-        // SDL_RenderClear(renderer);
+        /* Actual rendering happens here. */
+        SDL_SetRenderDrawColor(windowRenderer, windowClearColor.r, windowClearColor.r, windowClearColor.b, windowClearColor.a);
+        SDL_RenderClear(windowRenderer);
         // SDL_RenderCopy(renderer, splashTexture, NULL, NULL);
-        // SDL_RenderPresent(renderer);
+        SDL_RenderPresent(windowRenderer);
+        /* Actual rendering ends here. */
     }
 }
 
-SDL_Surface* Gui::loadSurfaceHelper(std::string path) {
+SDL_Surface* Gui::loadSurfaceHelper(const std::string& path) {
     /* Load image at specified path. */
-    SDL_Surface* loadedSurface = SDL_LoadBMP( path.c_str() );
-    if( loadedSurface == NULL ) {
+    SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
+    if(loadedSurface == NULL) {
         std::cout << "Unable to load image " << path << "! SDL Error: " << SDL_GetError() << std::endl;
     }
     return loadedSurface;
 }
 
-SDL_Texture* Gui::loadTextureHelper(std::string path) {
+SDL_Texture* Gui::loadTextureHelper(const std::string& path) {
     /* The final texture. */
     SDL_Texture* newTexture = NULL;
 
@@ -110,7 +120,7 @@ SDL_Texture* Gui::loadTextureHelper(std::string path) {
     }
     else {
         /* Create texture from surface pixels. */
-        newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+        newTexture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);
         if(newTexture == NULL) {
             std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
         }
@@ -121,15 +131,18 @@ SDL_Texture* Gui::loadTextureHelper(std::string path) {
 }
 
 void Gui::splashScreenPrelude() {
-    splashTexture = loadTextureHelper("assets/gopher.jpeg");
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, splashTexture, NULL, NULL);
-    SDL_RenderPresent(renderer);
+    SDL_SetRenderDrawColor(windowRenderer, windowClearColor.r, windowClearColor.r, windowClearColor.b, windowClearColor.a);
+    SDL_RenderClear(windowRenderer);
+    SDL_RenderCopy(windowRenderer, splashTexture, NULL, NULL);
+    SDL_RenderPresent(windowRenderer);
     SDL_Delay(GAME_SPLASH_SCREEN_TIMEOUT);
-    SDL_DestroyTexture(splashTexture);
-    splashTexture = NULL;
 }
 
 void Gui::loadMediaPrelude() {
-    // myTexture = loadTextureHelper("assets/...");
+    splashTexture = loadTextureHelper("assets/gopher.jpg");
+    windowFont = TTF_OpenFont("assets/Roboto-Regular.ttf", 30);
+    if (windowFont == NULL) {
+        std::cout << "Failed to load Roboto-Regular font! SDL_ttf error: " << TTF_GetError() << std::endl;
+        exit(1);
+    }
 }
