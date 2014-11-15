@@ -1,4 +1,5 @@
 build/
+dest/
 CMakeLists.txt.user
 
 # Created by https://www.gitignore.io

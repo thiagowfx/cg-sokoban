@@ -3,9 +3,11 @@ set(PROJECT_NAME "sokoban")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g")
 project(${PROJECT_NAME} C CXX)
 
-set(EXT_PROJECTS_DIR "${PROJECT_SOURCE_DIR}/ext")
+set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
+set(EXT_DIR "${PROJECT_SOURCE_DIR}/ext")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(TEST_DIR "${PROJECT_SOURCE_DIR}/test")
+set(DEST_DIR "${PROJECT_SOURCE_DIR}/dest")
 
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -41,13 +43,29 @@ add_executable(
   )
 
 target_link_libraries(
-  sokoban
+  ${PROJECT_NAME}
   ${GLEW_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${SDL2_LIBRARIES}
   ${SDL2_IMAGE_LIBRARIES}
   ${SDL2_TTF_LIBRARIES}
   )
+
+install(
+  TARGETS ${PROJECT_NAME}
+  RUNTIME DESTINATION ${DEST_DIR}
+  )
+install(
+  DIRECTORY ${ASSETS_DIR}
+  DESTINATION ${DEST_DIR}
+  )
+
+foreach(asset ${ASSETS_DIR}) 
+  file(
+    COPY ${asset} 
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/assets
+    )
+endforeach(asset)
 
 option(TEST "Build all tests." OFF)
 if (TEST)
