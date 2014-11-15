@@ -11,7 +11,6 @@ public:
     Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SDL_Color& labelOutColor, TTF_Font *labelFont, int screenWidth, int screenHeight, vector<const char*> labels);
     ~Menu();
     void renderMainMenu() const;
-    void renderGameWon() const;
     bool rectCollision(SDL_Rect rect1, SDL_Rect rect2) const;
 
 private:

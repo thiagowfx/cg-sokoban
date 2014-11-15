@@ -7,8 +7,7 @@ Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SD
     labelFont(labelFont),
     screenWidth(screenWidth),
     screenHeight(screenHeight),
-    labels(labels)
-{
+    labels(labels) {
     for (unsigned i = 0; i < labels.size(); ++i) {
         SDL_Surface* inSurface = TTF_RenderText_Solid(labelFont, labels[i], labelInColor);
         SDL_Surface* outSurface = TTF_RenderText_Solid(labelFont, labels[i], labelOutColor);
@@ -56,17 +55,4 @@ void Menu::renderMainMenu() const {
     //     *context = QUIT;
     // else if(rectCollision(mouseRect, startRect) && (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)))
     //     *context = GAME;
-}
-
-void Menu::renderGameWon() const {
-    SDL_Surface* surface = TTF_RenderText_Solid(labelFont, "Congratulations, you've won the game!", labelOutColor);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
-    SDL_Rect rect = {(screenWidth - std::min(surface->w, screenWidth))/2, (screenHeight - surface->h)/2, std::min(surface->w, screenWidth), surface->h};
-
-    SDL_RenderClear(windowRenderer);
-    SDL_RenderCopy(windowRenderer, texture, NULL, &rect);
-    SDL_RenderPresent(windowRenderer);
-
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(surface);
 }

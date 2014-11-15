@@ -38,19 +38,19 @@ Gui::Gui() {
         std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
         exit(1);
     }
-
-    loadMediaPrelude();
-    splashScreenPrelude();
+    else {
+        windowFont = TTF_OpenFont("assets/Roboto-Regular.ttf", 60);
+        if (windowFont == NULL) {
+            std::cout << "Failed to load Roboto-Regular font! SDL_ttf error: " << TTF_GetError() << std::endl;
+            exit(1);
+        }
+    }
 }
 
 Gui::~Gui() {
     /* Destroy the menu. */
     delete gameMenu;
     gameMenu = NULL;
-
-    /* Destroy textures. */
-    SDL_DestroyTexture(splashTexture);
-    splashTexture = NULL;
 
     /* Destroy fonts. */
     TTF_CloseFont(windowFont);
@@ -71,6 +71,13 @@ void Gui::gameLoop() {
     bool quit = false;
     SDL_Event e;
 
+    /* Show the game splash screen. */
+    renderSplashScreen("assets/gopher.jpg", GAME_SPLASH_TIMEOUT);
+
+    /* Show the main menu. */
+    context = CONTEXT_MAIN_MENU;
+    gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT, vector<const char*>{"Level 1", "Level 2", "Level 3", "Quit"});
+
     while(!quit) {
         while(SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
@@ -86,10 +93,17 @@ void Gui::gameLoop() {
         }
 
         /* Actual rendering happens here. */
-        if (context == MAIN_MENU) {
+        if (context == CONTEXT_MAIN_MENU) {
             gameMenu->renderMainMenu();
         }
-        else if(context == BLANK) {
+        else if (context == CONTEXT_GAME) {
+            // TODO: draw the game here.
+        }
+        else if (context == CONTEXT_GAME_WON) {
+            renderSingleText("Congratulations, you've won the game!", GAME_SPLASH_TIMEOUT);
+            exit(0);
+        }
+        else if(context == CONTEXT_BLANK) {
             SDL_SetRenderDrawColor(windowRenderer, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.b, WINDOW_CLEAR_COLOR.a);
             SDL_RenderClear(windowRenderer);
             SDL_RenderPresent(windowRenderer);
@@ -98,7 +112,7 @@ void Gui::gameLoop() {
     }
 }
 
-SDL_Surface* Gui::loadSurfaceHelper(const std::string& path) {
+SDL_Surface* Gui::loadSurface(const std::string& path) const {
     /* Load image at specified path. */
     SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
     if(loadedSurface == NULL) {
@@ -107,7 +121,7 @@ SDL_Surface* Gui::loadSurfaceHelper(const std::string& path) {
     return loadedSurface;
 }
 
-SDL_Texture* Gui::loadTextureHelper(const std::string& path) {
+SDL_Texture* Gui::loadTexture(const std::string& path) const {
     /* The final texture. */
     SDL_Texture* newTexture = NULL;
 
@@ -128,20 +142,27 @@ SDL_Texture* Gui::loadTextureHelper(const std::string& path) {
     return newTexture;
 }
 
-void Gui::splashScreenPrelude() {
+void Gui::renderSplashScreen(const char* path, unsigned timeout) const {
+    SDL_Texture* splashTexture = loadTexture(path);
     SDL_SetRenderDrawColor(windowRenderer, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.b, WINDOW_CLEAR_COLOR.a);
     SDL_RenderClear(windowRenderer);
     SDL_RenderCopy(windowRenderer, splashTexture, NULL, NULL);
     SDL_RenderPresent(windowRenderer);
-    SDL_Delay(GAME_SPLASH_SCREEN_TIMEOUT);
+    SDL_Delay(timeout);
+    SDL_DestroyTexture(splashTexture);
 }
 
-void Gui::loadMediaPrelude() {
-    splashTexture = loadTextureHelper("assets/gopher.jpg");
-    windowFont = TTF_OpenFont("assets/Roboto-Regular.ttf", 45);
-    if (windowFont == NULL) {
-        std::cout << "Failed to load Roboto-Regular font! SDL_ttf error: " << TTF_GetError() << std::endl;
-        exit(1);
-    }
-    gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT, vector<const char*>{"Level 1", "Level 2", "Level 3", "Quit"});
+void Gui::renderSingleText(const char* text, unsigned timeout, SDL_Color color) const {
+    SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text, color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
+    SDL_Rect rect = {(SCREEN_WIDTH - std::min(surface->w, SCREEN_WIDTH))/2, (SCREEN_HEIGHT - surface->h)/2, std::min(surface->w, SCREEN_WIDTH), surface->h};
+
+    SDL_SetRenderDrawColor(windowRenderer, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.b, WINDOW_CLEAR_COLOR.a);
+    SDL_RenderClear(windowRenderer);
+    SDL_RenderCopy(windowRenderer, texture, NULL, &rect);
+    SDL_RenderPresent(windowRenderer);
+    SDL_Delay(timeout);
+
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
 }

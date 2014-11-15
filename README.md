@@ -24,3 +24,4 @@ References
 - SDL
   - http://wiki.libsdl.org/FrontPage
   - http://lazyfoo.net/tutorials/SDL/index.php
+  - https://en.wikibooks.org/wiki/SDL_(Simple_DirectMedia_Layer)

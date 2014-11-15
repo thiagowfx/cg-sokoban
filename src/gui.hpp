@@ -10,10 +10,10 @@
 #include "SDL_ttf.h"
 
 typedef enum Context {
-    MAIN_MENU,
-    BLANK,
-    GAME,
-    GAME_WON
+    CONTEXT_MAIN_MENU,
+    CONTEXT_GAME,
+    CONTEXT_GAME_WON,
+    CONTEXT_BLANK
 } Context;
 
 class Gui {
@@ -23,16 +23,15 @@ public:
     void gameLoop();
 
 private:
-    SDL_Surface* loadSurfaceHelper(const std::string&);
-    SDL_Texture* loadTextureHelper(const std::string&);
+    SDL_Surface* loadSurface(const std::string&) const;
+    SDL_Texture* loadTexture(const std::string&) const;
 
-    void splashScreenPrelude();
-    void loadMediaPrelude();
+    void renderSingleText(const char* text, unsigned timeout, SDL_Color color = {0, 0, 0, 255}) const;
+    void renderSplashScreen(const char* path, unsigned timeout) const;
 
 private:
     SDL_Window *window = NULL;
     SDL_Renderer *windowRenderer = NULL;
-    SDL_Texture *splashTexture = NULL;
     TTF_Font *windowFont = NULL;
     Menu *gameMenu = NULL;
     Context context;
@@ -40,11 +39,11 @@ private:
 private:
     const int SCREEN_WIDTH = 800;
     const int SCREEN_HEIGHT = 600;
-    const int GAME_SPLASH_SCREEN_TIMEOUT = 1000;
+    const int GAME_SPLASH_TIMEOUT = 500;
     const char* GAME_TITLE = "Sokoban";
-    const SDL_Color WINDOW_CLEAR_COLOR = {200, 200, 200, 255};
-    const SDL_Color MENU_LABEL_IN_COLOR = {90, 90, 90, 255};
-    const SDL_Color MENU_LABEL_OUT_COLOR = {255, 10, 10, 255};
+    const SDL_Color WINDOW_CLEAR_COLOR = SDL_Color{225, 225, 225, 255};
+    const SDL_Color MENU_LABEL_IN_COLOR = SDL_Color{110, 110, 110, 255};
+    const SDL_Color MENU_LABEL_OUT_COLOR = SDL_Color{10, 10, 10, 255};
 };
 
 #endif // _GUI_H_
