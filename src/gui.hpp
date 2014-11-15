@@ -4,9 +4,15 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include "menu.hpp"
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+
+typedef enum Context {
+    FIRSTMENU,
+    GAME
+} Context;
 
 class Gui {
 public:
@@ -27,13 +33,16 @@ private:
     SDL_Renderer *windowRenderer = NULL;
     SDL_Texture *splashTexture = NULL;
     TTF_Font *windowFont = NULL;
+    Menu gameMenu;
 
 private:
-    const unsigned SCREEN_WIDTH = 800;
-    const unsigned SCREEN_HEIGHT = 600;
-    const unsigned GAME_SPLASH_SCREEN_TIMEOUT = 1000;
+    const int SCREEN_WIDTH = 800;
+    const int SCREEN_HEIGHT = 600;
+    const int GAME_SPLASH_SCREEN_TIMEOUT = 1000;
     const char* GAME_TITLE = "Sokoban";
-    const SDL_Color windowClearColor = {255, 165, 0, 255};
+    const SDL_Color WINDOW_CLEAR_COLOR = {200, 200, 200, 255};
+    const SDL_Color MENU_LABEL_IN_COLOR = {90, 90, 90, 255};
+    const SDL_Color MENU_LABEL_OUT_COLOR = {255, 10, 10, 255};
 };
 
 #endif // _GUI_H_

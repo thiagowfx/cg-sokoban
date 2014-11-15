@@ -24,6 +24,8 @@ set(
   SOKOBAN_SOURCES
   ${SRC_DIR}/gui.cpp
   ${SRC_DIR}/gui.hpp
+  ${SRC_DIR}/menu.cpp
+  ${SRC_DIR}/menu.hpp
   )
 
 add_library(
