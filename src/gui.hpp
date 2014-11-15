@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include "game.hpp"
 #include "menu.hpp"
 #include "SDL.h"
 #include "SDL_image.h"
@@ -12,8 +13,7 @@
 typedef enum Context {
     CONTEXT_MAIN_MENU,
     CONTEXT_GAME,
-    CONTEXT_GAME_WON,
-    CONTEXT_BLANK
+    CONTEXT_GAME_WON
 } Context;
 
 class Gui {
@@ -23,9 +23,7 @@ public:
     void gameLoop();
 
 private:
-    SDL_Surface* loadSurface(const std::string&) const;
     SDL_Texture* loadTexture(const std::string&) const;
-
     void renderSingleText(const char* text, unsigned timeout, SDL_Color color = {0, 0, 0, 255}) const;
     void renderSplashScreen(const char* path, unsigned timeout) const;
 
@@ -34,7 +32,10 @@ private:
     SDL_Renderer *windowRenderer = NULL;
     TTF_Font *windowFont = NULL;
     Menu *gameMenu = NULL;
-    Context context;
+    Game *game = NULL;
+    SDL_GLContext glContext;
+    Context context = CONTEXT_MAIN_MENU;
+    bool OPENGL_LOADED = false;
 
 private:
     const int SCREEN_WIDTH = 800;
