@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 set(PROJECT_NAME "sokoban")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g -Wall")
 project(${PROJECT_NAME} C CXX)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g -Wall")
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
 set(EXT_DIR "${PROJECT_SOURCE_DIR}/ext")
@@ -12,7 +12,7 @@ set(DEST_DIR "${PROJECT_SOURCE_DIR}/dest")
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 include(FindPkgConfig)
-pkg_search_module(SDL2 REQUIRED SDL2)
+pkg_search_module(SDL2 REQUIRED sdl2)
 pkg_search_module(SDL2_IMAGE REQUIRED SDL2_image)
 pkg_search_module(SDL2_TTF REQUIRED SDL2_ttf)
 
