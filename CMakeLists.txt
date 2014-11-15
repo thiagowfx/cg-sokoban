@@ -28,6 +28,8 @@ set(
   ${SRC_DIR}/gui.hpp
   ${SRC_DIR}/menu.cpp
   ${SRC_DIR}/menu.hpp
+  ${SRC_DIR}/game.cpp
+  ${SRC_DIR}/game.hpp
   )
 
 add_library(
@@ -61,7 +63,8 @@ install(
   DESTINATION ${DEST_DIR}
   )
 
-foreach(asset ${ASSETS_DIR}) 
+file(GLOB_RECURSE ASSETS ${ASSETS_DIR}/*)
+foreach(asset ${ASSETS}) 
   file(
     COPY ${asset} 
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/assets
