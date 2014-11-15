@@ -107,6 +107,9 @@ void Gui::gameLoop() {
                             quit = true;
                             break;
                         }
+                        else {
+                            context = CONTEXT_GAME;
+                        }
                     }
                     break;
                 }
@@ -119,6 +122,9 @@ void Gui::gameLoop() {
                         if (index == 3) {
                             quit = true;
                             break;
+                        }
+                        else {
+                            context = CONTEXT_GAME;
                         }
                     }
                 }
