@@ -48,8 +48,8 @@ Gui::Gui() {
 
 Gui::~Gui() {
     /* Destroy the menu. */
-    //delete gameMenu;
-    //gameMenu = NULL;
+    delete gameMenu;
+    gameMenu = NULL;
 
     /* Destroy textures. */
     SDL_DestroyTexture(splashTexture);
@@ -99,12 +99,7 @@ void Gui::gameLoop() {
         SDL_SetRenderDrawColor(windowRenderer, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.b, WINDOW_CLEAR_COLOR.a);
         SDL_RenderClear(windowRenderer);
 
-        SDL_Surface* exSurface = TTF_RenderText_Solid(windowFont, "alo alo", MENU_LABEL_OUT_COLOR);
-        SDL_Texture* exTexture = SDL_CreateTextureFromSurface(windowRenderer, exSurface);
-        SDL_Rect exRect = {0, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT/2};
-        SDL_RenderCopy(windowRenderer, exTexture, NULL, &exRect);
-
-        gameMenu.firstMenu();
+        gameMenu->firstMenu();
 
         SDL_RenderPresent(windowRenderer);
         /* Actual rendering ends here. */
@@ -151,10 +146,10 @@ void Gui::splashScreenPrelude() {
 
 void Gui::loadMediaPrelude() {
     splashTexture = loadTextureHelper("assets/gopher.jpg");
-    windowFont = TTF_OpenFont("assets/Roboto-Regular.ttf", 30);
+    windowFont = TTF_OpenFont("assets/Roboto-Regular.ttf", 45);
     if (windowFont == NULL) {
         std::cout << "Failed to load Roboto-Regular font! SDL_ttf error: " << TTF_GetError() << std::endl;
         exit(1);
     }
-    gameMenu = Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT);
+    gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT);
 }

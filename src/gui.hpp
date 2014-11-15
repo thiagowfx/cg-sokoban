@@ -33,7 +33,7 @@ private:
     SDL_Renderer *windowRenderer = NULL;
     SDL_Texture *splashTexture = NULL;
     TTF_Font *windowFont = NULL;
-    Menu gameMenu;
+    Menu *gameMenu = NULL;
 
 private:
     const int SCREEN_WIDTH = 800;
