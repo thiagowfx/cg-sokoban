@@ -18,9 +18,6 @@ Gui::Gui() {
         std::cout << "SDL Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         exit(1);
     }
-    else {
-        windowSurface = SDL_GetWindowSurface(window);
-    }
 
     /* Create the renderer for the window. */
     windowRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
@@ -55,10 +52,6 @@ Gui::~Gui() {
     SDL_DestroyTexture(splashTexture);
     splashTexture = NULL;
 
-    /* Destroy surfaces. */
-    SDL_FreeSurface(windowSurface);
-    windowSurface = NULL;
-
     /* Destroy fonts. */
     TTF_CloseFont(windowFont);
     windowFont = NULL;
@@ -92,16 +85,15 @@ void Gui::gameLoop() {
             }
         }
 
-        //SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xBB, 0xFF, 0xBB));
-        //SDL_UpdateWindowSurface(window);
-
         /* Actual rendering happens here. */
-        SDL_SetRenderDrawColor(windowRenderer, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.b, WINDOW_CLEAR_COLOR.a);
-        SDL_RenderClear(windowRenderer);
-
-        gameMenu->firstMenu();
-
-        SDL_RenderPresent(windowRenderer);
+        if (context == MAIN_MENU) {
+            gameMenu->renderMainMenu();
+        }
+        else if(context == BLANK) {
+            SDL_SetRenderDrawColor(windowRenderer, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.b, WINDOW_CLEAR_COLOR.a);
+            SDL_RenderClear(windowRenderer);
+            SDL_RenderPresent(windowRenderer);
+        }
         /* Actual rendering ends here. */
     }
 }
@@ -151,5 +143,5 @@ void Gui::loadMediaPrelude() {
         std::cout << "Failed to load Roboto-Regular font! SDL_ttf error: " << TTF_GetError() << std::endl;
         exit(1);
     }
-    gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT);
+    gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT, vector<const char*>{"Level 1", "Level 2", "Level 3", "Quit"});
 }

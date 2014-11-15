@@ -10,8 +10,10 @@
 #include "SDL_ttf.h"
 
 typedef enum Context {
-    FIRSTMENU,
-    GAME
+    MAIN_MENU,
+    BLANK,
+    GAME,
+    GAME_WON
 } Context;
 
 class Gui {
@@ -29,11 +31,11 @@ private:
 
 private:
     SDL_Window *window = NULL;
-    SDL_Surface *windowSurface = NULL;
     SDL_Renderer *windowRenderer = NULL;
     SDL_Texture *splashTexture = NULL;
     TTF_Font *windowFont = NULL;
     Menu *gameMenu = NULL;
+    Context context;
 
 private:
     const int SCREEN_WIDTH = 800;
