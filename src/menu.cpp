@@ -1,5 +1,9 @@
 #include "menu.hpp"
 
+bool rectCollision(SDL_Rect rect1, SDL_Rect rect2) {
+    return(!(rect1.x + rect1.w <= rect2.x || rect1.x >= rect2.x + rect2.w || rect1.y + rect1.h <= rect2.y || rect1.y >= rect2.y + rect2.h));
+}
+
 Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SDL_Color& labelOutColor, TTF_Font *labelFont, int screenWidth, int screenHeight, vector<const char*> labels) :
     windowRenderer(windowRenderer),
     labelInColor(labelInColor),
@@ -28,31 +32,38 @@ Menu::~Menu() {
     }
 }
 
-bool Menu::rectCollision(SDL_Rect rect1, SDL_Rect rect2) const {
-    return(!(rect1.x + rect1.w <= rect2.x || rect1.x >= rect2.x + rect2.w || rect1.y + rect1.h <= rect2.y || rect1.y >= rect2.y + rect2.h));
-}
-
-void Menu::renderMainMenu() const {
+void Menu::renderMainMenu() {
     /* Get the mouse position. */
-    SDL_Rect mouseRect;
-    mouseRect.w = 0, mouseRect.h = 0;
-    Uint32 mouseState = SDL_GetMouseState(&mouseRect.x, &mouseRect.y);
+    SDL_Rect mouseRect{0, 0, 0, 0};
+    SDL_GetMouseState(&mouseRect.x, &mouseRect.y);
 
     /* Draw the labels on the renderer, with the correct colors. */
     SDL_RenderClear(windowRenderer);
+    bool collision = false;
     for (unsigned i = 0; i < labels.size(); ++i) {
         if (rectCollision(mouseRect, rects[i])) {
             SDL_RenderCopy(windowRenderer, inTextures[i], NULL, &rects[i]);
+            currentIndex = i;
+            collision = true;
         }
         else {
             SDL_RenderCopy(windowRenderer, outTextures[i], NULL, &rects[i]);
         }
     }
+    if (!collision) {
+        SDL_RenderCopy(windowRenderer, inTextures[currentIndex], NULL, &rects[currentIndex]);
+    }
     SDL_RenderPresent(windowRenderer);
+}
 
-    /* Test the click events. */
-    // if(rectCollision(mouseRect, quitRect) && (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)))
-    //     *context = QUIT;
-    // else if(rectCollision(mouseRect, startRect) && (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)))
-    //     *context = GAME;
+int Menu::getCurrentIndex() const {
+    return currentIndex;
+}
+
+void Menu::prevIndex() {
+    currentIndex = (currentIndex + labels.size() - 1) % labels.size();
+}
+
+void Menu::nextIndex() {
+    currentIndex = (currentIndex + 1) % labels.size();
 }

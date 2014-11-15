@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 set(PROJECT_NAME "sokoban")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g -Wall")
 project(${PROJECT_NAME} C CXX)
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
@@ -55,6 +55,7 @@ install(
   TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION ${DEST_DIR}
   )
+
 install(
   DIRECTORY ${ASSETS_DIR}
   DESTINATION ${DEST_DIR}

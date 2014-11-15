@@ -82,13 +82,28 @@ void Gui::gameLoop() {
         while(SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
+                break;
             }
             else if (e.type == SDL_KEYDOWN) {
                 switch(e.key.keysym.sym) {
+                case SDLK_ESCAPE:
                 case SDLK_q:
                     quit = true;
                     break;
+                case SDLK_DOWN:
+                    if (context == CONTEXT_MAIN_MENU)
+                        gameMenu->nextIndex();
+                    break;
+                case SDLK_UP:
+                    if (context == CONTEXT_MAIN_MENU)
+                        gameMenu->prevIndex();
+                    break;
                 }
+            }
+            else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                // TODO
+                // rectCollision(mouseRect, rects[i]) && (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)))
+                std::cout << "Click." << std::endl;
             }
         }
 
