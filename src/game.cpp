@@ -1,9 +1,9 @@
 #include "game.hpp"
 
 void sdldie(const char* msg) {
-    std::cout << msg << std::endl;
-    std::cout << "SDL_Error: " << SDL_GetError() << std::endl;
-    exit(1);
+  std::cout << msg << std::endl;
+  std::cout << "SDL_Error: " << SDL_GetError() << std::endl;
+  exit(1);
 }
 
 Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int screenHeight) :
@@ -56,47 +56,47 @@ Game::~Game() {
 }
 
 void Game::renderScene() {
-  	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glMatrixMode(GL_MODELVIEW);
-	//Paredes Parte de cima
-	drawCube(0.0, 0.0, 0.0, 0.5);
-	drawCube(0.5, 0.0, 0.0, 0.5);
-	drawCube(1.0, 0.0, 0.0, 0.5);
-	drawCube(1.5, 0.0, 0.0, 0.5);
-	drawCube(2.0, 0.0, 0.0, 0.5);
-	drawCube(2.5, 0.0, 0.0, 0.5);
+  glMatrixMode(GL_MODELVIEW);
+  //Paredes Parte de cima
+  drawCube(0.0, 0.0, 0.0, 0.5);
+  drawCube(0.5, 0.0, 0.0, 0.5);
+  drawCube(1.0, 0.0, 0.0, 0.5);
+  drawCube(1.5, 0.0, 0.0, 0.5);
+  drawCube(2.0, 0.0, 0.0, 0.5);
+  drawCube(2.5, 0.0, 0.0, 0.5);
 
-	//Paredes lateral direita
-	drawCube(0.0, 0.5, 0.0, 0.5);
-	drawCube(0.0, 1.0, 0.0, 0.5);
-	drawCube(0.0, 1.5, 0.0, 0.5);
-	drawCube(0.0, 2.0, 0.0, 0.5);
-	drawCube(0.0, 2.5, 0.0, 0.5);
-	drawCube(0.0, 3.0, 0.0, 0.5);
-	drawCube(0.0, 3.5, 0.0, 0.5);
-	drawCube(0.0, 4.0, 0.0, 0.5);
+  //Paredes lateral direita
+  drawCube(0.0, 0.5, 0.0, 0.5);
+  drawCube(0.0, 1.0, 0.0, 0.5);
+  drawCube(0.0, 1.5, 0.0, 0.5);
+  drawCube(0.0, 2.0, 0.0, 0.5);
+  drawCube(0.0, 2.5, 0.0, 0.5);
+  drawCube(0.0, 3.0, 0.0, 0.5);
+  drawCube(0.0, 3.5, 0.0, 0.5);
+  drawCube(0.0, 4.0, 0.0, 0.5);
 
-	//Paredes Parte de baixo
-	drawCube(0.0, 4.0, 0.0, 0.5);
-	drawCube(0.5, 4.0, 0.0, 0.5);
-	drawCube(1.0, 4.0, 0.0, 0.5);
-	drawCube(1.5, 4.0, 0.0, 0.5);
-	drawCube(2.0, 4.0, 0.0, 0.5);
-	drawCube(2.5, 4.0, 0.0, 0.5);
+  //Paredes Parte de baixo
+  drawCube(0.0, 4.0, 0.0, 0.5);
+  drawCube(0.5, 4.0, 0.0, 0.5);
+  drawCube(1.0, 4.0, 0.0, 0.5);
+  drawCube(1.5, 4.0, 0.0, 0.5);
+  drawCube(2.0, 4.0, 0.0, 0.5);
+  drawCube(2.5, 4.0, 0.0, 0.5);
 
-	//Paredes lateral direita
-	drawCube(2.5, 0.5, 0.0, 0.5);
-	drawCube(2.5, 1.0, 0.0, 0.5);
-	drawCube(2.5, 1.5, 0.0, 0.5);
-	drawCube(2.5, 2.0, 0.0, 0.5);
-	drawCube(2.5, 2.5, 0.0, 0.5);
-	drawCube(2.5, 3.0, 0.0, 0.5);
-	drawCube(2.5, 3.5, 0.0, 0.5);
-	drawCube(2.5, 4.0, 0.0, 0.5);
+  //Paredes lateral direita
+  drawCube(2.5, 0.5, 0.0, 0.5);
+  drawCube(2.5, 1.0, 0.0, 0.5);
+  drawCube(2.5, 1.5, 0.0, 0.5);
+  drawCube(2.5, 2.0, 0.0, 0.5);
+  drawCube(2.5, 2.5, 0.0, 0.5);
+  drawCube(2.5, 3.0, 0.0, 0.5);
+  drawCube(2.5, 3.5, 0.0, 0.5);
+  drawCube(2.5, 4.0, 0.0, 0.5);
 
-    glFlush();
-    SDL_GL_SwapWindow(window);
+  glFlush();
+  SDL_GL_SwapWindow(window);
 }
 
 void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
@@ -114,10 +114,10 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
   glBegin(GL_POLYGON);
   glColor3f(1.0, 1.0, 0.0);
 
-  glVertex3f(  halfEdge, -halfEdge, -halfEdge );   
-  glVertex3f(  halfEdge,  halfEdge, -halfEdge );      
-  glVertex3f( -halfEdge,  halfEdge, -halfEdge );      
-  glVertex3f( -halfEdge, -halfEdge, -halfEdge );   
+  glVertex3f(  halfEdge, -halfEdge, -halfEdge );
+  glVertex3f(  halfEdge,  halfEdge, -halfEdge );
+  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
  
   // White side
@@ -179,29 +179,29 @@ void Game::setOldPosition(GLdouble x, GLdouble y) {
 }
 
 void Game::setNewPosition(GLdouble xnew, GLdouble ynew) {
-    int passo_x = xnew - oldx;
-    int passo_y = ynew - oldy;
+  int passo_x = xnew - oldx;
+  int passo_y = ynew - oldy;
 
-    setOldPosition(xnew, ynew);
+  setOldPosition(xnew, ynew);
 
-    glMatrixMode(GL_MODELVIEW);
-    if(passo_x != 0) {
-      glRotatef(atan(2*passo_x), 0, 0, 1);
-    }
-    if(passo_y != 0) {
-      glRotatef(atan(2*passo_y), 0, 1, 0);
-    }
-    glFlush();
-    SDL_GL_SwapWindow(window);
+  glMatrixMode(GL_MODELVIEW);
+  if(passo_x != 0) {
+    glRotatef(atan(2*passo_x), 0, 0, 1);
+  }
+  if(passo_y != 0) {
+    glRotatef(atan(2*passo_y), 0, 1, 0);
+  }
+  glFlush();
+  SDL_GL_SwapWindow(window);
 }
 
 void Game::sokoReshape() {
   // TODO: atualizar screenWidth, screenHeight
-  	glViewport (0, 0, screenWidth, screenHeight);	//muda a Viewport para a janela toda
-	//seta a projeção
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//gluOrtho2D(1.0, 0.0, 1.0, 0.0);
-	gluPerspective(60.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ; //atualiza o aspectratio para os novos valores
-	glMatrixMode(GL_MODELVIEW);
+  glViewport (0, 0, screenWidth, screenHeight);	//muda a Viewport para a janela toda
+  //seta a projeção
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  //gluOrtho2D(1.0, 0.0, 1.0, 0.0);
+  gluPerspective(60.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ; //atualiza o aspectratio para os novos valores
+  glMatrixMode(GL_MODELVIEW);
 }

@@ -11,9 +11,9 @@ void sdldie(const char*);
 
 class Game {
 public:
-    Game(SDL_Window*, SDL_GLContext*,int screenWidth, int screenHeight);
-    ~Game();
-    void renderScene();
+  Game(SDL_Window*, SDL_GLContext*,int screenWidth, int screenHeight);
+  ~Game();
+  void renderScene();
   void setOldPosition(GLdouble x, GLdouble y);
   void setNewPosition(GLdouble xnew, GLdouble ynew);
   void sokoReshape();
@@ -22,13 +22,13 @@ private:
   void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge);
 
 private:
-    SDL_Window* window;
-    SDL_GLContext* glContext;
+  SDL_Window* window;
+  SDL_GLContext* glContext;
 
-    GLdouble oldx;
-    GLdouble oldy;
-    int screenWidth;
-    int screenHeight;
+  GLdouble oldx;
+  GLdouble oldy;
+  int screenWidth;
+  int screenHeight;
 };
 
 #endif // _GAME_H_
