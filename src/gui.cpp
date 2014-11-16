@@ -153,7 +153,7 @@ void Gui::gameLoop() {
     }
     else if (context == CONTEXT_GAME) {
       if(!OPENGL_LOADED) {
-      game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
+        game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
         OPENGL_LOADED = true;
       }
       game->renderScene();

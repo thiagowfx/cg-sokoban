@@ -12,18 +12,18 @@ Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SD
   screenWidth(screenWidth),
   screenHeight(screenHeight),
   labels(labels) {
-  for (unsigned i = 0; i < labels.size(); ++i) {
-    SDL_Surface* inSurface = TTF_RenderText_Solid(labelFont, labels[i], labelInColor);
-    SDL_Surface* outSurface = TTF_RenderText_Solid(labelFont, labels[i], labelOutColor);
+    for (unsigned i = 0; i < labels.size(); ++i) {
+      SDL_Surface* inSurface = TTF_RenderText_Solid(labelFont, labels[i], labelInColor);
+      SDL_Surface* outSurface = TTF_RenderText_Solid(labelFont, labels[i], labelOutColor);
 
-    inTextures.push_back(SDL_CreateTextureFromSurface(windowRenderer, inSurface));
-    outTextures.push_back(SDL_CreateTextureFromSurface(windowRenderer, outSurface));
-    rects.push_back(SDL_Rect{(screenWidth - inSurface->w)/2, int((screenHeight - 1.5 * int(labels.size()) * inSurface->h)/2 + i * 1.5 * inSurface->h),inSurface->w, inSurface->h});
+      inTextures.push_back(SDL_CreateTextureFromSurface(windowRenderer, inSurface));
+      outTextures.push_back(SDL_CreateTextureFromSurface(windowRenderer, outSurface));
+      rects.push_back(SDL_Rect{(screenWidth - inSurface->w)/2, int((screenHeight - 1.5 * int(labels.size()) * inSurface->h)/2 + i * 1.5 * inSurface->h),inSurface->w, inSurface->h});
 
-    SDL_FreeSurface(inSurface);
-    SDL_FreeSurface(outSurface);
+      SDL_FreeSurface(inSurface);
+      SDL_FreeSurface(outSurface);
+    }
   }
-}
 
 Menu::~Menu() {
   for (unsigned i = 0; i < labels.size(); ++i) {

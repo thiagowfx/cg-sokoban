@@ -11,44 +11,44 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
   glContext(glContext),
   screenWidth(screenWidth),
   screenHeight(screenHeight) {
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 
-  /* Create the OpenGL context. */
-  *glContext = SDL_GL_CreateContext(window);
-  if(*glContext == NULL) {
-    sdldie("OpenGL context could not be created");
-  }
+    /* Create the OpenGL context. */
+    *glContext = SDL_GL_CreateContext(window);
+    if(*glContext == NULL) {
+      sdldie("OpenGL context could not be created");
+    }
 
-  /* Use VSync. */
-  if(SDL_GL_SetSwapInterval(1) < 0) {
-    sdldie("Warning: Unable to set VSync");
-  }
+    /* Use VSync. */
+    if(SDL_GL_SetSwapInterval(1) < 0) {
+      sdldie("Warning: Unable to set VSync");
+    }
 
-  /* OpenGL initialization. */
-    
-  /* Z-Depth. */
-  glEnable(GL_DEPTH_TEST);
+    /* OpenGL initialization. */
 
-  //Limpa a tela com a cor do parâmetro (boa prática de OpenGL)
-  glClearColor(0.5, 0.5, 0.5, 1.0);
+    /* Z-Depth. */
+    glEnable(GL_DEPTH_TEST);
 
-  //Seta a matriz de projeção na identidade
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+    //Limpa a tela com a cor do parâmetro (boa prática de OpenGL)
+    glClearColor(0.5, 0.5, 0.5, 1.0);
 
-  //Seta a pocição da câmera (posição da câmera, para onde ela está olhando e o vetor up)
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  gluLookAt(4.0, 4.0, 2.0, 0, 0, 0, 0, -0.1, 1); //camera na posição (2,-2,0), olhando para origem e up = (0,-0.1,1)
+    //Seta a matriz de projeção na identidade
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
 
-  sokoReshape();
+    //Seta a pocição da câmera (posição da câmera, para onde ela está olhando e o vetor up)
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(4.0, 4.0, 2.0, 0, 0, 0, 0, -0.1, 1); //camera na posição (2,-2,0), olhando para origem e up = (0,-0.1,1)
+
+    sokoReshape();
   }
 
 Game::~Game() {
@@ -119,7 +119,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
   glVertex3f( -halfEdge,  halfEdge, -halfEdge );
   glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
- 
+
   // White side
   glBegin(GL_POLYGON);
   glColor3f(1.0, 1.0, 1.0);
@@ -129,7 +129,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
   glVertex3f( -halfEdge,  halfEdge, halfEdge );
   glVertex3f( -halfEdge, -halfEdge, halfEdge );
   glEnd();
- 
+
   // Purple side
   glBegin(GL_POLYGON);
   glColor3f(1.0, 0.0, 1.0);
@@ -139,7 +139,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
   glVertex3f( halfEdge,  halfEdge,  halfEdge );
   glVertex3f( halfEdge, -halfEdge,  halfEdge );
   glEnd();
- 
+
   // Green side
   glBegin(GL_POLYGON);
   glColor3f(0.0, 1.0, 0.0);
@@ -149,7 +149,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
   glVertex3f( -halfEdge,  halfEdge, -halfEdge );
   glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
- 
+
   // Blue side
   glBegin(GL_POLYGON);
   glColor3f(0.0, 0.0, 1.0);
@@ -159,7 +159,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
   glVertex3f( -halfEdge,  halfEdge, -halfEdge );
   glVertex3f( -halfEdge,  halfEdge,  halfEdge ); 
   glEnd();
- 
+
   // Red side
   glBegin(GL_POLYGON);
   glColor3f(1.0, 0.0, 0.0);
