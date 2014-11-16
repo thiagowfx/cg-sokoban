@@ -43,8 +43,8 @@ private:
   const int GAME_SPLASH_TIMEOUT = 500;
   const char* GAME_TITLE = "Sokoban";
   const SDL_Color WINDOW_CLEAR_COLOR = SDL_Color{225, 225, 225, 255};
-  const SDL_Color MENU_LABEL_IN_COLOR = SDL_Color{110, 110, 110, 255};
-  const SDL_Color MENU_LABEL_OUT_COLOR = SDL_Color{10, 10, 10, 255};
+  const SDL_Color MENU_LABEL_IN_COLOR = SDL_Color{160, 120, 60, 255};
+  const SDL_Color MENU_LABEL_OUT_COLOR = SDL_Color{0, 0, 0, 255};
 };
 
 #endif // _GUI_H_

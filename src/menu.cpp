@@ -23,6 +23,7 @@ Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SD
       SDL_FreeSurface(inSurface);
       SDL_FreeSurface(outSurface);
     }
+    backgroundTexture = loadTexture("assets/menu_background.png");
   }
 
 Menu::~Menu() {
@@ -39,6 +40,7 @@ void Menu::renderMainMenu() {
 
   /* Draw the labels on the renderer, with the correct colors. */
   SDL_RenderClear(windowRenderer);
+  SDL_RenderCopy(windowRenderer, backgroundTexture, NULL, NULL);
   bool collision = false;
   for (unsigned i = 0; i < labels.size(); ++i) {
     if (rectCollision(mouseRect, rects[i])) {
@@ -66,4 +68,22 @@ void Menu::prevIndex() {
 
 void Menu::nextIndex() {
   currentIndex = (currentIndex + 1) % labels.size();
+}
+
+SDL_Texture* Menu::loadTexture(const char* path) const {
+  SDL_Texture* newTexture = NULL;
+  SDL_Surface* loadedSurface = IMG_Load(path);
+  if(loadedSurface == NULL) {
+    std::cout << "Unable to load image" << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
+    exit(1);
+  }
+  else {
+    newTexture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);
+    if(newTexture == NULL) {
+      std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
+      exit(1);
+    }
+    SDL_FreeSurface(loadedSurface);
+  }
+  return newTexture;
 }
