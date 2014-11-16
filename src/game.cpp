@@ -1,11 +1,5 @@
 #include "game.hpp"
 
-void sdldie(const char* msg) {
-  std::cout << msg << std::endl;
-  std::cout << "SDL_Error: " << SDL_GetError() << std::endl;
-  exit(1);
-}
-
 Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int screenHeight) :
   window(window),
   glContext(glContext),

@@ -30,6 +30,8 @@ set(
   ${SRC_DIR}/menu.hpp
   ${SRC_DIR}/game.cpp
   ${SRC_DIR}/game.hpp
+  ${SRC_DIR}/helpers.cpp
+  ${SRC_DIR}/helpers.hpp
   )
 
 add_library(

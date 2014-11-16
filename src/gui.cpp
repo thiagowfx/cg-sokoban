@@ -47,6 +47,10 @@ Gui::~Gui() {
   delete game;
   game = NULL;
 
+  /* Destroy textures. */
+  SDL_DestroyTexture(backgroundTexture);
+  backgroundTexture = NULL;
+
   /* Destroy the menu. */
   delete gameMenu;
   gameMenu = NULL;
@@ -71,10 +75,11 @@ void Gui::gameLoop() {
   SDL_Event e;
 
   /* Show the game splash screen. */
-  renderSplashScreen("assets/gopher.jpg", GAME_SPLASH_TIMEOUT);
+  renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT);
 
   /* Show the main menu. */
-  gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT, vector<const char*>{"Level 1", "Level 2", "Level 3", "Quit"});
+  backgroundTexture = loadTexture(windowRenderer, MENU_BACKGROUND_TEXTURE_PATH);
+  gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT, vector<const char*>{"Level 1", "Level 2", "Level 3", "Quit"}, backgroundTexture);
 
   while(!quit) {
     while(SDL_PollEvent(&e) != 0) {
@@ -165,26 +170,8 @@ void Gui::gameLoop() {
   }
 }
 
-SDL_Texture* Gui::loadTexture(const std::string& path) const {
-  SDL_Texture* newTexture = NULL;
-  SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-  if(loadedSurface == NULL) {
-    std::cout << "Unable to load image" << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
-    exit(1);
-  }
-  else {
-    newTexture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);
-    if(newTexture == NULL) {
-      std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
-      exit(1);
-    }
-    SDL_FreeSurface(loadedSurface);
-  }
-  return newTexture;
-}
-
 void Gui::renderSplashScreen(const char* path, unsigned timeout) const {
-  SDL_Texture* splashTexture = loadTexture(path);
+  SDL_Texture* splashTexture = loadTexture(windowRenderer, path);
   SDL_SetRenderDrawColor(windowRenderer, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.r, WINDOW_CLEAR_COLOR.b, WINDOW_CLEAR_COLOR.a);
   SDL_RenderClear(windowRenderer);
   SDL_RenderCopy(windowRenderer, splashTexture, NULL, NULL);

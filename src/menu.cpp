@@ -1,17 +1,14 @@
 #include "menu.hpp"
 
-bool rectCollision(SDL_Rect rect1, SDL_Rect rect2) {
-  return(!(rect1.x + rect1.w <= rect2.x || rect1.x >= rect2.x + rect2.w || rect1.y + rect1.h <= rect2.y || rect1.y >= rect2.y + rect2.h));
-}
-
-Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SDL_Color& labelOutColor, TTF_Font *labelFont, int screenWidth, int screenHeight, vector<const char*> labels) :
+Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SDL_Color& labelOutColor, TTF_Font *labelFont, int screenWidth, int screenHeight, vector<const char*> labels, SDL_Texture* backgroundTexture) :
   windowRenderer(windowRenderer),
   labelInColor(labelInColor),
   labelOutColor(labelOutColor),
   labelFont(labelFont),
   screenWidth(screenWidth),
   screenHeight(screenHeight),
-  labels(labels) {
+  labels(labels),
+  backgroundTexture(backgroundTexture) {
     for (unsigned i = 0; i < labels.size(); ++i) {
       SDL_Surface* inSurface = TTF_RenderText_Solid(labelFont, labels[i], labelInColor);
       SDL_Surface* outSurface = TTF_RenderText_Solid(labelFont, labels[i], labelOutColor);
@@ -23,7 +20,6 @@ Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SD
       SDL_FreeSurface(inSurface);
       SDL_FreeSurface(outSurface);
     }
-    backgroundTexture = loadTexture("assets/menu_background.png");
   }
 
 Menu::~Menu() {
@@ -40,7 +36,9 @@ void Menu::renderMainMenu() {
 
   /* Draw the labels on the renderer, with the correct colors. */
   SDL_RenderClear(windowRenderer);
-  SDL_RenderCopy(windowRenderer, backgroundTexture, NULL, NULL);
+  if (backgroundTexture != NULL) {
+    SDL_RenderCopy(windowRenderer, backgroundTexture, NULL, NULL);
+  }
   bool collision = false;
   for (unsigned i = 0; i < labels.size(); ++i) {
     if (rectCollision(mouseRect, rects[i])) {
@@ -70,20 +68,3 @@ void Menu::nextIndex() {
   currentIndex = (currentIndex + 1) % labels.size();
 }
 
-SDL_Texture* Menu::loadTexture(const char* path) const {
-  SDL_Texture* newTexture = NULL;
-  SDL_Surface* loadedSurface = IMG_Load(path);
-  if(loadedSurface == NULL) {
-    std::cout << "Unable to load image" << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
-    exit(1);
-  }
-  else {
-    newTexture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);
-    if(newTexture == NULL) {
-      std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
-      exit(1);
-    }
-    SDL_FreeSurface(loadedSurface);
-  }
-  return newTexture;
-}

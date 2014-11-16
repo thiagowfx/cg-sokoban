@@ -4,10 +4,9 @@
 #include <cmath>
 #include <iostream>
 #include <GL/glu.h>
+#include "helpers.hpp"
 #include "SDL.h"
 #include "SDL_opengl.h"
-
-void sdldie(const char*);
 
 class Game {
   public:
