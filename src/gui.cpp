@@ -114,8 +114,21 @@ void Gui::gameLoop() {
                     break;
                 }
             }
-            else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+	    else if (e.type == SDL_MOUSEMOTION) {
+	      if (context == CONTEXT_GAME) {
+		int xnew;
+	        int ynew;
+	        Uint32 mouseState = SDL_GetMouseState(&xnew, &ynew);
+		if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+		  game->setNewPosition(xnew, ynew);
+		}
+	      }
+	    }
+            else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
+	        int x;
+	        int y;
+	        Uint32 mouseState = SDL_GetMouseState(&x, &y);
+                if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
                     SDL_Log("Mouse Button 1 (left) pressed.");
                     if (context == CONTEXT_MAIN_MENU) {
                         int index = gameMenu->getCurrentIndex();
@@ -127,6 +140,9 @@ void Gui::gameLoop() {
                             context = CONTEXT_GAME;
                         }
                     }
+		    else if(context == CONTEXT_GAME) {
+		      game->setOldPosition(x, y);		      
+		    }
                 }
             }
         }
@@ -137,7 +153,7 @@ void Gui::gameLoop() {
         }
         else if (context == CONTEXT_GAME) {
             if(!OPENGL_LOADED) {
-                game = new Game(window, &glContext);
+	      game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
                 OPENGL_LOADED = true;
             }
             game->renderScene();
