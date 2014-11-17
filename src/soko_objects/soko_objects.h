@@ -1,8 +1,0 @@
-#include "soko_object.h"
-#include "soko_character.h"
-#include "soko_empty.h"
-#include "soko_heavy_box.h"
-#include "soko_light_box.h"
-#include "soko_object.h"
-#include "soko_target.h"
-#include "soko_wall.h"

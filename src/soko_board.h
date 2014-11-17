@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 #include "direction.h"
-#include "soko_objects/soko_object.h"
+#include "soko_object.h"
 
 namespace Sokoban {
   /**
@@ -22,6 +22,15 @@ namespace Sokoban {
       Returns the number of boxes that are still out of a target.
       */
       int getUnsolvedBoxesNumber();
+
+      /**
+      Returns a string representation of the object
+      */
+      string toString();
+      /**
+      Prints the object on std out
+      */
+      void print();
     private:
       int unsolvedBoxesCounter;
       std::vector< std::vector<SokoObject> > dynamicBoard;

@@ -15,8 +15,19 @@ namespace Sokoban {
       };
 
       /**
+      Creates an empty SokoObject
+      */
+      SokoObject() {};
+
+      /**
+      Creates a SokoObject with the especific type
+      */
+      SokoObject(Type _type) : type(_type) {};
+      /**
       This method should be overloaded for every SokoObject
       */
-      virtual Type getType() = 0;
+      Type getType();
+  private:
+    Type type;
   };
 }
