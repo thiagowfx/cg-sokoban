@@ -2,8 +2,8 @@
 #define _MENU_H_
 
 #include <vector>
-#include "SDL_ttf.h"
 #include "helpers.hpp"
+#include "SDL_ttf.h"
 using std::vector;
 
 class Menu {

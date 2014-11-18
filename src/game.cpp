@@ -5,6 +5,7 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
   glContext(glContext),
   screenWidth(screenWidth),
   screenHeight(screenHeight) {
+    /* Set OpenGL attributes. */
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -20,24 +21,23 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
       sdldie("OpenGL context could not be created");
     }
 
-    /* Use VSync. */
+    /* Enable VSync. */
     if(SDL_GL_SetSwapInterval(1) < 0) {
       sdldie("Warning: Unable to set VSync");
     }
 
-    /* OpenGL initialization. */
+    /* General OpenGL initialization. */
 
     /* Z-Depth. */
     glEnable(GL_DEPTH_TEST);
 
-    //Limpa a tela com a cor do parâmetro (boa prática de OpenGL)
-    glClearColor(0.5, 0.5, 0.5, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
 
-    //Seta a matriz de projeção na identidade
+    /* Projection matrix := identity. */
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    //Seta a pocição da câmera (posição da câmera, para onde ela está olhando e o vetor up)
+    //Seta a posição da câmera (posição da câmera, para onde ela está olhando e o vetor up)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(4.0, 4.0, 2.0, 0, 0, 0, 0, -0.1, 1); //camera na posição (2,-2,0), olhando para origem e up = (0,-0.1,1)
@@ -99,7 +99,6 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
      É importante passar sempre o valor correto para os argumentos se não resultados estranhos são obtidos*/
   GLdouble halfEdge = edge/2;
   glEnable(GL_TEXTURE_2D);
-
 
 
   glPushMatrix();
@@ -175,7 +174,6 @@ void Game::setOldPosition(GLdouble x, GLdouble y) {
 void Game::setNewPosition(GLdouble xnew, GLdouble ynew) {
   int passo_x = xnew - oldx;
   int passo_y = ynew - oldy;
-
   setOldPosition(xnew, ynew);
 
   glMatrixMode(GL_MODELVIEW);

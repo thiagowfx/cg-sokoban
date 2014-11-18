@@ -4,8 +4,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include "helpers.hpp"
 #include "game.hpp"
+#include "helpers.hpp"
 #include "menu.hpp"
 #include "SDL.h"
 #include "SDL_image.h"
@@ -45,6 +45,7 @@ private:
   const char* GAME_TITLE = "Sokoban";
   const char* MENU_BACKGROUND_TEXTURE_PATH = "assets/menu_background.png";
   const char* SPLASH_TEXTURE_PATH = "assets/gopher.jpg";
+  const char* GAME_FONT_PATH = "assets/Roboto-Regular.ttf";
   const SDL_Color WINDOW_CLEAR_COLOR = SDL_Color{225, 225, 225, 255};
   const SDL_Color MENU_LABEL_IN_COLOR = SDL_Color{160, 120, 60, 255};
   const SDL_Color MENU_LABEL_OUT_COLOR = SDL_Color{0, 0, 0, 255};

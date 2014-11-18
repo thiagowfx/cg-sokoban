@@ -34,9 +34,9 @@ Gui::Gui() {
     sdldie("SDL_ttf could not initialize");
   }
   else {
-    windowFont = TTF_OpenFont("assets/Roboto-Regular.ttf", 60);
+    windowFont = TTF_OpenFont(GAME_FONT_PATH, 60);
     if (windowFont == NULL) {
-      sdldie("Failed to load the Roboto-Regular font");
+      sdldie("Failed to load the font");
     }
   }
 }
@@ -114,6 +114,7 @@ void Gui::gameLoop() {
             }
             else {
               context = CONTEXT_GAME;
+              // TODO: load level(index)
             }
           }
           break;
@@ -121,18 +122,19 @@ void Gui::gameLoop() {
       }
     else if (e.type == SDL_MOUSEMOTION) {
       if (context == CONTEXT_GAME) {
-    int xnew;
-      int ynew;
-      Uint32 mouseState = SDL_GetMouseState(&xnew, &ynew);
-    if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-      game->setNewPosition(xnew, ynew);
-    }
+        int xnew;
+        int ynew;
+        Uint32 mouseState = SDL_GetMouseState(&xnew, &ynew);
+        if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+          SDL_Log("Mouse Button 1 (left) is being pressed and moved.");
+          game->setNewPosition(xnew, ynew);
+        }
       }
     }
       else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
-      int x;
-      int y;
-      Uint32 mouseState = SDL_GetMouseState(&x, &y);
+        int x;
+        int y;
+        Uint32 mouseState = SDL_GetMouseState(&x, &y);
         if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
           SDL_Log("Mouse Button 1 (left) pressed.");
           if (context == CONTEXT_MAIN_MENU) {
@@ -145,9 +147,9 @@ void Gui::gameLoop() {
               context = CONTEXT_GAME;
             }
           }
-      else if(context == CONTEXT_GAME) {
-        game->setOldPosition(x, y);
-      }
+          else if(context == CONTEXT_GAME) {
+            game->setOldPosition(x, y);
+          }
         }
       }
     }

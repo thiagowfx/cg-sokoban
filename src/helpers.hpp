@@ -6,7 +6,7 @@
 #include "SDL_image.h"
 
 void sdldie(const char*);
-bool rectCollision(SDL_Rect rect1, SDL_Rect rect2);
+bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2);
 SDL_Texture* loadTexture(SDL_Renderer*, const char* path);
 
 #endif // _HELPERS_H_
