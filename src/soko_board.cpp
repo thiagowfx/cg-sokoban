@@ -2,9 +2,8 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include "stdafx.h"
-#include "soko_board.h"
-#include "soko_objects\soko_objects.h"
+#include "soko_board.hpp"
+#include "position.hpp"
 
 using namespace std;
 
@@ -14,10 +13,9 @@ SokoBoard::SokoBoard(std::string filename) {
   ifstream mapFile ("map1.sok");
   istringstream streamLine;
 
-  if (mapFile.is_open())
-  {
-    while ( getline (mapFile,line) )
-    {
+  if (mapFile.is_open()) {
+    int x_now(0), y_now(0);
+    while ( getline (mapFile,line) ) {
       vector<SokoObject> staticObjLine;
       vector<SokoObject> dynamicObjLine;
       while(! streamLine.eof()) {
@@ -32,6 +30,8 @@ SokoBoard::SokoBoard(std::string filename) {
         } else {
           staticObj = SokoObject(SokoObject::EMPTY);
           dynamicObj = SokoObject(type);
+          if(type == SokoObject::CHARACTER)
+            characterPosition = Position(x_now, y_now);
         }
         staticObjLine.push_back(staticObj);
         dynamicObjLine.push_back(dynamicObj);
@@ -41,7 +41,6 @@ SokoBoard::SokoBoard(std::string filename) {
     }
     mapFile.close();
   }
-
   else cout << "Unable to open file"; 
 
 }
@@ -61,6 +60,12 @@ string SokoBoard::toString() {
       ss << " " << (int) obj.getType();
     ss << endl;
   }
+
+  return ss.str();
+}
+
+void SokoBoard::move(Direction direction) {
+
 }
 
 }  //Sokoban

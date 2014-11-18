@@ -1,3 +1,6 @@
+#ifndef SOKOBAN_DIRECTION
+#define SOKOBAN_DIRECTION
+
 namespace Sokoban {
 
   enum Direction {
@@ -7,3 +10,4 @@ namespace Sokoban {
     LEFT = 3
   };
 }
+#endif

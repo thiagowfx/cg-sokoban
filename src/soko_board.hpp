@@ -1,6 +1,10 @@
+#ifndef SOKOBAN_SOKO_BOARD
+#define SOKOBAN_SOKO_BOARD
+
 #include <vector>
 #include <string>
-#include "direction.h"
+#include "direction.hpp"
+#include "position.hpp"
 #include "soko_object.h"
 
 namespace Sokoban {
@@ -17,7 +21,6 @@ namespace Sokoban {
       Move the character to direction indicated by @direction.
       */
       void move(Direction direction);
-
       /**
       Returns the number of boxes that are still out of a target.
       */
@@ -26,7 +29,7 @@ namespace Sokoban {
       /**
       Returns a string representation of the object
       */
-      string toString();
+      std::string toString();
       /**
       Prints the object on std out
       */
@@ -35,5 +38,8 @@ namespace Sokoban {
       int unsolvedBoxesCounter;
       std::vector< std::vector<SokoObject> > dynamicBoard;
       std::vector< std::vector<SokoObject> > staticBoard;
+      Position characterPosition;
   };
 }  //Sokoban
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef SOKOBAN_SOKO_OBJECT
+#define SOKOBAN_SOKO_OBJECT
 
 namespace Sokoban {
   /**
@@ -22,12 +24,14 @@ namespace Sokoban {
       /**
       Creates a SokoObject with the especific type
       */
-      SokoObject(Type _type) : type(_type) {};
+      SokoObject(Type _type) : type(_type) { };
       /**
       This method should be overloaded for every SokoObject
       */
-      Type getType();
+      Type getType() const { return type; };
   private:
     Type type;
   };
 }
+
+#endif
