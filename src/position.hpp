@@ -11,7 +11,7 @@ namespace Sokoban {
     public:
       Position() : x(0), y(0) { } ;
       Position(Direction direction) {
-        switch(direction){
+        switch(direction) {
         case Direction::UP:
           x = 0;
           y = 1;
@@ -33,8 +33,7 @@ namespace Sokoban {
 
       Position(int _x, int _y) : x(_x), y(_y) { };
       Position operator+(Position other) { return Position( x + other.x, y + other.y); }
-  private:
-    int x, y;
+      int x, y;
 
   };
 }  //Sokoban

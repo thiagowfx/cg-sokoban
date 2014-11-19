@@ -65,7 +65,16 @@ string SokoBoard::toString() {
 }
 
 void SokoBoard::move(Direction direction) {
-
+  Position nextPosition = characterPosition + Position(direction);
+  if(staticBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::EMPTY) {
+    if(dynamicBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::EMPTY) {
+      dynamicBoard[nextPosition.x][nextPosition.y] = SokoObject(SokoObject::CHARACTER);
+      dynamicBoard[characterPosition.x][characterPosition.y] = SokoObject(SokoObject::EMPTY);
+      characterPosition = nextPosition;
+    } else if(dynamicBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::LIGHT_BOX) {
+      // testar se o próximo está livre =]
+    }
+  }
 }
 
 }  //Sokoban

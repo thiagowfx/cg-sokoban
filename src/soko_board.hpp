@@ -5,7 +5,7 @@
 #include <string>
 #include "direction.hpp"
 #include "position.hpp"
-#include "soko_object.h"
+#include "soko_object.hpp"
 
 namespace Sokoban {
   /**
