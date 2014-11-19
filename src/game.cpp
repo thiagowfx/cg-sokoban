@@ -22,16 +22,16 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
     }
 
     /* Enable VSync. */
-    if(SDL_GL_SetSwapInterval(1) < 0) {
-      sdldie("Warning: Unable to set VSync");
-    }
+    //if(SDL_GL_SetSwapInterval(1) < 0) {
+      //sdldie("Warning: Unable to set VSync");
+    //}
 
     /* General OpenGL initialization. */
 
     /* Z-Depth. */
     glEnable(GL_DEPTH_TEST);
 
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(0.5, 0.5, 0.5, 1.0);
 
     /* Projection matrix := identity. */
     glMatrixMode(GL_PROJECTION);
