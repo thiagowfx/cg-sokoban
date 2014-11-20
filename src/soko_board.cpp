@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 #include "soko_board.hpp"
-#include "position.hpp"
+#include "soko_position.hpp"
 
 using namespace std;
 
@@ -68,11 +68,18 @@ void SokoBoard::move(Direction direction) {
   Position nextPosition = characterPosition + Position(direction);
   if(staticBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::EMPTY) {
     if(dynamicBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::EMPTY) {
-      dynamicBoard[nextPosition.x][nextPosition.y] = SokoObject(SokoObject::CHARACTER);
+      dynamicBoard[nextPosition.x][nextPosition.y] = SokoObject(direction);
       dynamicBoard[characterPosition.x][characterPosition.y] = SokoObject(SokoObject::EMPTY);
       characterPosition = nextPosition;
     } else if(dynamicBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::LIGHT_BOX) {
-      // testar se o próximo está livre =]
+      Position boxNextPosition = nextPosition + Position(direction);
+      if(dynamicBoard[boxNextPosition.x][boxNextPosition.y].getType() == SokoObject::EMPTY &&
+        staticBoard[boxNextPosition.x][boxNextPosition.y].getType() == SokoObject::EMPTY) {
+          dynamicBoard[boxNextPosition.x][boxNextPosition.y] = SokoObject(SokoObject::LIGHT_BOX);
+          dynamicBoard[nextPosition.x][nextPosition.y] = SokoObject(direction);
+          dynamicBoard[characterPosition.x][characterPosition.y] = SokoObject(SokoObject::EMPTY);
+          characterPosition = nextPosition;
+      }
     }
   }
 }

@@ -25,11 +25,19 @@ namespace Sokoban {
       Creates a SokoObject with the especific type
       */
       SokoObject(Type _type) : type(_type) { };
+
       /**
-      This method should be overloaded for every SokoObject
+      Creates a Character object
       */
+      SokoObject(Direction _facing) : type(CHARACTER), facing(_facing) { };
+
+      /**
+      Represents the direction the object is facing
+      */
+      Direction facing;
+
       Type getType() const { return type; };
-  private:
+  protected:
     Type type;
   };
 }

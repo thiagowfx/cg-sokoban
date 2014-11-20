@@ -3,8 +3,8 @@
 
 #include <vector>
 #include <string>
-#include "direction.hpp"
-#include "position.hpp"
+#include "soko_direction.hpp"
+#include "soko_position.hpp"
 #include "soko_object.hpp"
 
 namespace Sokoban {

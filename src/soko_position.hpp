@@ -2,7 +2,7 @@
 #define SOKOBAN_POSITION
 
 
-#include "direction.hpp"
+#include "soko_direction.hpp"
 namespace Sokoban {
   /**
   This class represents a position on a sokoban board
