@@ -4,10 +4,10 @@ project(${PROJECT_NAME} C CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g -Wall")
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
+set(DEST_DIR "${PROJECT_SOURCE_DIR}/dest")
 set(EXT_DIR "${PROJECT_SOURCE_DIR}/ext")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(TEST_DIR "${PROJECT_SOURCE_DIR}/test")
-set(DEST_DIR "${PROJECT_SOURCE_DIR}/dest")
 
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -24,14 +24,15 @@ include_directories(
 
 set(
   SOKOBAN_SOURCES
-  ${SRC_DIR}/gui.cpp
-  ${SRC_DIR}/gui.hpp
-  ${SRC_DIR}/menu.cpp
-  ${SRC_DIR}/menu.hpp
   ${SRC_DIR}/game.cpp
-  ${SRC_DIR}/game.hpp
+  ${SRC_DIR}/gui.cpp
   ${SRC_DIR}/helpers.cpp
-  ${SRC_DIR}/helpers.hpp
+  ${SRC_DIR}/menu.cpp
+  ${SRC_DIR}/soko_board.cpp
+  ${SRC_DIR}/soko_character.hpp
+  ${SRC_DIR}/soko_direction.hpp
+  ${SRC_DIR}/soko_object.hpp
+  ${SRC_DIR}/soko_position.hpp
   )
 
 add_library(

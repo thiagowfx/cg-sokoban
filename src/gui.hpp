@@ -11,12 +11,6 @@
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 
-typedef enum Context {
-  CONTEXT_MAIN_MENU,
-  CONTEXT_GAME,
-  CONTEXT_GAME_WON
-} Context;
-
 class Gui {
 public:
   Gui();
@@ -42,7 +36,8 @@ private:
   const int SCREEN_WIDTH = 800;
   const int SCREEN_HEIGHT = 600;
   const int GAME_SPLASH_TIMEOUT = 500;
-  const char* GAME_TITLE = "Sokoban";
+  const vector<const char*> GAME_MENU_LABELS = vector<const char*>{"Stage 1", "Stage 2", "Stage 3", "Quit"};
+  const char* GAME_TITLE = "sokoban";
   const char* MENU_BACKGROUND_TEXTURE_PATH = "assets/menu_background.png";
   const char* SPLASH_TEXTURE_PATH = "assets/gopher.jpg";
   const char* GAME_FONT_PATH = "assets/Roboto-Regular.ttf";

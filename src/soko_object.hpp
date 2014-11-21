@@ -14,7 +14,7 @@ namespace Sokoban {
         HEAVY_BOX = 3,
         WALL = 4,
         TARGET = 5
-      };
+      } Type;
 
       /**
       Creates an empty SokoObject
