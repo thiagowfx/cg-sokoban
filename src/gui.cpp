@@ -107,8 +107,8 @@ void Gui::gameLoop() {
           break;
         case SDLK_RETURN:
           if (context == CONTEXT_MAIN_MENU) {
-            int index = gameMenu->getCurrentIndex();
-            if (index == 3) {
+            unsigned index = gameMenu->getCurrentIndex();
+            if (index == GAME_MENU_LABELS.size() - 1) {
               quit = true;
               break;
             }
@@ -122,8 +122,7 @@ void Gui::gameLoop() {
       }
     else if (e.type == SDL_MOUSEMOTION) {
       if (context == CONTEXT_GAME) {
-        int xnew;
-        int ynew;
+        int xnew, ynew;
         Uint32 mouseState = SDL_GetMouseState(&xnew, &ynew);
         if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
           SDL_Log("Mouse Button 1 (left) is being pressed and moved.");
@@ -132,19 +131,19 @@ void Gui::gameLoop() {
       }
     }
       else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
-        int x;
-        int y;
+        int x, y;
         Uint32 mouseState = SDL_GetMouseState(&x, &y);
         if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
           SDL_Log("Mouse Button 1 (left) pressed.");
           if (context == CONTEXT_MAIN_MENU) {
             int index = gameMenu->getCurrentIndex();
-            if (index == 3) {
+            if (index == GAME_MENU_LABELS.size() - 1) {
               quit = true;
               break;
             }
             else {
               context = CONTEXT_GAME;
+              // TODO: load level(index)
             }
           }
           else if(context == CONTEXT_GAME) {
@@ -166,7 +165,8 @@ void Gui::gameLoop() {
       game->renderScene();
     }
     else if (context == CONTEXT_GAME_WON) {
-      exit(0);
+      quit = true;
+      break;
     }
     /* Actual rendering ends here. */
   }
