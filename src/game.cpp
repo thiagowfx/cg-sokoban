@@ -106,53 +106,33 @@ void Game::renderScene() {
   /*Objects drawing*/
   glMatrixMode(GL_MODELVIEW);
 
+  SokoBoard board("assets/stages/stage1.sok");
+  double const size = 0.5;
 
-  /*Reads phase file and draws the scene*/
-  ifstream phase;
-  string line;
-  phase.open("assets/stages/stage1.sok");
-  if( phase.is_open()){
-    int row = 0;
-    while ( getline(phase, line) ){
-      int column = 0;
-      istringstream streamLine(line);
-      while (! streamLine.eof()){
-        int number;
-        streamLine >> number;
-        double const size = 0.5;
-        if (number == 0){
-          drawCube(row*size, column*size, 0, size);         //drawing empty floor
-        }
-        else if(number == 1){
-          //add character texture and draws character here
-          drawCube(row*size, column*size, 0, size);         //drawing character's floor
-        }
-        else if(number == 2){
-          drawCube(row*size, column*size, 0, size);         //drawing light box's floor
-          //add light box texture here
-          //drawCube(row*size, column*size, 0.5, size);       //drawing light box
-        }
-        else if(number == 3){
-          drawCube(row*size, column*size, 0, size);         //drawing heavy box's floor
-          //add heavy box texture here
-          //drawCube(row*size, column*size, 0.5, size);       //drawing heavy box
-        }
-        else if (number == 4){
-          drawCube(row*size, column*size, 0, size);         //drawing the walls' floor
-          //add wall texture here
-          drawCube(row*size, column*size, 0.5, size);       //drawing the walls
-        }
-        else if (number == 5){
-          //add target texture here
-          drawCube(row*size, column*size, 0, size);         //drawing the walls' floor
-        }
-        column ++;
+  for (unsigned row = 0; row < board.staticBoard.size(); ++row) {
+    for (unsigned column = 0; column < board.staticBoard[0].size(); ++column) {
+      SokoObject::Type t = board.staticBoard[row][column].getType();
+      if (t == SokoObject::EMPTY) {
+        drawCube(row * size, column * size, 0, size);
       }
-    ++ row; 
+      else if (t == SokoObject::CHARACTER) {
+        drawCube(row * size, column * size, 0, size);
+      }
+      else if (t== SokoObject::LIGHT_BOX) {
+        drawCube(row * size, column * size, 0, size);
+      }
+      else if (t == SokoObject::HEAVY_BOX) {
+        drawCube(row * size, column * size, 0, size);
+      }
+      else if (t == SokoObject::WALL) {
+        drawCube(row * size, column * size, 0, size);
+      }
+      else {
+         drawCube(row * size, column * size, 0, size);
+      }
     }
-    phase.close();
   }
-  else cout << "Unable to open file" << endl;
+
 
   glFlush();
   SDL_GL_SwapWindow(window);

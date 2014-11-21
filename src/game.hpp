@@ -8,9 +8,11 @@
 #include <sstream>
 #include <GL/glu.h>
 #include <iostream>
+#include "soko_board.hpp"
 #include "helpers.hpp"
 #include "SDL.h"
 #include "SDL_opengl.h"
+using namespace Sokoban;
 
 class Game {
   public:
