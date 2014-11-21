@@ -106,41 +106,38 @@ void Game::renderScene() {
 
   /*Objects drawing*/
   glMatrixMode(GL_MODELVIEW);
-
-  double const size = 0.5;
+  const double size = 0.5;
 
   for (unsigned row = 0; row < board->staticBoard.size(); ++row) {
     for (unsigned column = 0; column < board->staticBoard[0].size(); ++column) {
       SokoObject::Type t = board->staticBoard[row][column].getType();
       if (t == SokoObject::EMPTY) {
-        drawCube(row * size, column * size, 0, size);
+        drawCube(row, column, 0, size);
       }
       else if (t == SokoObject::CHARACTER) {
-        drawCube(row * size, column * size, 0, size);
+        drawCube(row, column, 0, size);
       }
       else if (t== SokoObject::LIGHT_BOX) {
-        drawCube(row * size, column * size, 0, size);
+        drawCube(row, column, 0, size);
       }
       else if (t == SokoObject::HEAVY_BOX) {
-        drawCube(row * size, column * size, 0, size);
+        drawCube(row, column, 0, size);
       }
       else if (t == SokoObject::WALL) {
-        drawCube(row * size, column * size, 0, size);
+        drawCube(row, column, 0, size);
       }
       else {
-         drawCube(row * size, column * size, 0, size);
+         drawCube(row, column, 0, size);
       }
     }
   }
-
-
   glFlush();
   SDL_GL_SwapWindow(window);
 }
 
 void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
 {
-  /* This function draws a cube of size (edge x edge x edge) at position (x, y, z)*/
+  /* This function draws a cube of size (edge x edge x edge) centered at position (x, y, z)*/
   GLdouble halfEdge = edge/2;
   glEnable(GL_TEXTURE_2D);
 
@@ -152,7 +149,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100);                      //Shininess is 100
 
   glPushMatrix();
-  glTranslatef(x, y, z);
+  glTranslatef(x*edge, y*edge, z);
 
   glBegin(GL_POLYGON);
     glNormal3f(0, 0, -1);  glVertex3f(  halfEdge, -halfEdge, -halfEdge );
@@ -161,7 +158,6 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
     glNormal3f(0, 0, -1);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
-  // White side
   glBegin(GL_POLYGON);
     glNormal3f(0, 0, 1);  glVertex3f(  halfEdge, -halfEdge, halfEdge );
     glNormal3f(0, 0, 1);  glVertex3f(  halfEdge,  halfEdge, halfEdge );
@@ -197,6 +193,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
     glNormal3f(0, -1, 0);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
+  glFlush();
   glPopMatrix();
 }
 
@@ -213,6 +210,7 @@ void Game::setNewPosition(GLdouble xnew, GLdouble ynew) {
   glMatrixMode(GL_MODELVIEW);
     glRotatef(atan(2*passo_x), 0, 0, 1);
     glRotatef(atan(2*passo_y), 0, 1, 0);
+
   SDL_GL_SwapWindow(window);
 }
 
@@ -223,7 +221,7 @@ void Game::sokoReshape() {
   //sets projection
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(60.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ;
+  gluPerspective(40.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ;
   glMatrixMode(GL_MODELVIEW);
 }
 
