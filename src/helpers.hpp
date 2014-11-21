@@ -20,8 +20,6 @@ namespace Sokoban {
   } Direction;
 }
 
-void LOG_DIE(const char*);
-void LOG_INFO(const char*);
 void LOG_SDL_DIE(const char*);
 bool isMovementKey(const SDL_Keycode& key);
 bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2);

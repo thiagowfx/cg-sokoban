@@ -1,14 +1,5 @@
 #include "helpers.hpp"
 
-void LOG_DIE(const char* msg) {
-  std::cout << "DIE: " << msg << std::endl;
-  exit(EXIT_FAILURE);
-}
-
-void LOG_INFO(const char* msg) {
-  std::cout << "INFO: " << msg << std::endl;
-}
-
 void LOG_SDL_DIE(const char* msg) {
   std::cout << msg << std::endl;
   std::cout << "DIE: SDL_Error: " << SDL_GetError() << std::endl;

@@ -84,25 +84,30 @@ void Gui::gameLoop() {
   while(!quit) {
     while(SDL_PollEvent(&e) != 0) {
       if (e.type == SDL_QUIT) {
+        SDL_Log("SDL_QUIT event");
         quit = true;
         break;
       }
+      else if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED && context == CONTEXT_GAME) {
+        unsigned width = e.window.data1;
+        unsigned height = e.window.data2;
+        SDL_Log("SDL_WINDOWEVENT: SDL_WINDOWEVENT_RESIZED: %d x %d", width, height);
+        game->setWindowSize(width, height);
+      }
       else if (e.type == SDL_KEYDOWN) {
+        SDL_Log("SDL_KEYDOWN event: %s", SDL_GetKeyName(e.key.keysym.sym));
         if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym)) {
           if (game->isLevelFinished()) {
-            /* Finished last level .*/
             if (currentLevel == (GAME_MENU_LABELS.size() - 1)) {
-              LOG_INFO("Finished last level. Switching to CONTEXT_GAME_WON.");
+              SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_WON now.", currentLevel);
               context = CONTEXT_GAME_WON;
             }
-            /* Finished another level. */
             else {
-              LOG_INFO("Finished this level. Going to next one.");
+              SDL_Log("Finished level %d", currentLevel);
               game->loadLevel(++currentLevel);
             }
           }
         }
-
         switch(e.key.keysym.sym) {
         case SDLK_ESCAPE:
         case SDLK_q:
@@ -113,25 +118,40 @@ void Gui::gameLoop() {
           if (context == CONTEXT_MAIN_MENU) {
             gameMenu->nextIndex();
           }
-          // TODO: moveDownAction
+          else if (context == CONTEXT_GAME){
+            game->moveDownAction();
+          }
           break;
         case SDLK_w:
         case SDLK_UP:
           if (context == CONTEXT_MAIN_MENU) {
             gameMenu->prevIndex();
           }
-          // TODO: moveUpAction
+          else if (context == CONTEXT_GAME){
+            game->moveUpAction();
+          }
           break;
         case SDLK_a:
         case SDLK_LEFT:
-          // TODO: moveLeftAction
+          if (context == CONTEXT_GAME){
+            game->moveLeftAction();
+          }
           break;
         case SDLK_d:
         case SDLK_RIGHT:
-          // TODO: moveRightAction
+          if (context == CONTEXT_GAME){
+            game->moveRightAction();
+          }
+          break;
+        case SDLK_r:
+          if (context == CONTEXT_GAME) {
+            game->restartAction();
+          }
           break;
         case SDLK_u:
-          // TODO: undoAction
+          if (context == CONTEXT_GAME) {
+            game->undoAction();
+          }
           break;
         case SDLK_n:
           // TODO: remove this later on.
@@ -150,28 +170,25 @@ void Gui::gameLoop() {
                 game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
                 OPENGL_LOADED = true;
               }
-              currentLevel = index + 1;
-              game->loadLevel(currentLevel);
+              game->loadLevel(currentLevel = index + 1);
             }
           }
           break;
         }
       }
-    else if (e.type == SDL_MOUSEMOTION) {
-      if (context == CONTEXT_GAME) {
-        int xnew, ynew;
-        Uint32 mouseState = SDL_GetMouseState(&xnew, &ynew);
-        if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-          SDL_Log("Mouse Button 1 (left) is being pressed and moved.");
-          game->setNewPosition(xnew, ynew);
+      else if (e.type == SDL_MOUSEMOTION) {
+        if (context == CONTEXT_GAME) {
+          int x, y; Uint32 mouseState = SDL_GetMouseState(&x, &y);
+          if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+            SDL_Log("Mouse Button 1 (left) is being pressed and moved: %d, %d", x, y);
+            game->setNewPosition(x, y);
+          }
         }
       }
-    }
       else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
-        int x, y;
-        Uint32 mouseState = SDL_GetMouseState(&x, &y);
+        int x, y; Uint32 mouseState = SDL_GetMouseState(&x, &y);
         if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-          SDL_Log("Mouse Button 1 (left) pressed.");
+          SDL_Log("Mouse Button 1 (left) pressed: %d, %d", x, y);
           if (context == CONTEXT_MAIN_MENU) {
             unsigned index = gameMenu->getCurrentIndex();
             if (index == GAME_MENU_LABELS.size() - 1) {
@@ -203,7 +220,7 @@ void Gui::gameLoop() {
       game->renderScene();
     }
     else if (context == CONTEXT_GAME_WON) {
-      LOG_INFO("Congratulations, you've won the game!");
+      SDL_Log("Congratulations, you've won the game!");
       game->renderGameFinished();
       SDL_Delay(2 * GAME_SPLASH_TIMEOUT);
       quit = true;

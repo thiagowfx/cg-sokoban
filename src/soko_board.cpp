@@ -53,7 +53,8 @@ SokoBoard::SokoBoard(std::string filename) {
     mapFile.close();
   }
   else {
-    LOG_DIE(std::string(std::string("Unable to open file ") + filename).c_str());
+    SDL_Log("Unable to open file %s", filename.c_str());
+    exit(EXIT_FAILURE);
   }
 }
 

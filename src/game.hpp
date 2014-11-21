@@ -23,11 +23,20 @@ class Game {
     void setNewPosition(GLdouble xnew, GLdouble ynew);
     void sokoReshape();
 
+    void setWindowSize(unsigned width, unsigned height);
     void loadLevel(const unsigned level);
     bool isLevelFinished() const;
     void renderGameFinished();
 
+    void moveDownAction();
+    void moveUpAction();
+    void moveLeftAction();
+    void moveRightAction();
+    void undoAction();
+    void restartAction();
+
   private:
+    /* Draws a cube of size edge centered at position (x, y, z). */
     void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge);
 
   private:
@@ -37,8 +46,8 @@ class Game {
     int screenWidth;
     int screenHeight;
 
-    GLdouble oldx;
-    GLdouble oldy;
+    GLdouble xold;
+    GLdouble yold;
 };
 
 #endif // _GAME_H_
