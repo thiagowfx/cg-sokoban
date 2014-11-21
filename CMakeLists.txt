@@ -20,6 +20,7 @@ include_directories(
   ${GLEW_INCLUDE_DIRS}
   ${OPENGL_INCLUDE_DIR}
   ${SDL2_INCLUDE_DIRS}
+  ${SRC_DIR}
   )
 
 set(
@@ -80,7 +81,6 @@ if (TEST)
   file(GLOB TEST_SRC_FILES ${TEST_DIR}/*Test.cpp)
   add_subdirectory(${EXT_DIR}/gtest)
   include_directories(${GTEST_INCLUDE_DIRS})
-  include_directories(${SRC_DIR})
   add_executable(
     ${PROJECT_TEST_NAME}
     ${TEST_SRC_FILES}
