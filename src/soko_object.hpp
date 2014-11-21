@@ -1,10 +1,10 @@
-#ifndef SOKOBAN_SOKO_OBJECT
-#define SOKOBAN_SOKO_OBJECT
+#ifndef _SOKO_OBJECT_H_
+#define _SOKO_OBJECT_H_
+
+#include "helpers.hpp"
 
 namespace Sokoban {
-  /**
-  This class represents an object that is on a sokoban board
-  */
+  /** This class represents an object that is on a sokoban board. */
   class SokoObject {
     public:
       typedef enum Type {
@@ -16,30 +16,19 @@ namespace Sokoban {
         TARGET = 5
       } Type;
 
-      /**
-      Creates an empty SokoObject
-      */
-      SokoObject() {};
-
-      /**
-      Creates a SokoObject with the especific type
-      */
-      SokoObject(Type _type) : type(_type) { };
-
-      /**
-      Creates a Character object
-      */
-      SokoObject(Direction _facing) : type(CHARACTER), facing(_facing) { };
-
-      /**
-      Represents the direction the object is facing
-      */
-      Direction facing;
-
-      Type getType() const { return type; };
-  protected:
+    protected:
     Type type;
+
+    public:
+      SokoObject();
+      SokoObject(const Type& type);
+      /** Creates a Character object. */
+      SokoObject(Direction facing);
+
+      /** Represents the direction the object is facing. */
+      Direction facing;
+      Type getType() const;
   };
 }
 
-#endif
+#endif // _SOKO_OBJECT_H_

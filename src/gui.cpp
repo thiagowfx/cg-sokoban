@@ -82,7 +82,7 @@ void Gui::gameLoop() {
   gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT, GAME_MENU_LABELS, backgroundTexture);
 
   while(!quit) {
-    while(SDL_PollEvent(&e) != 0) {
+    while(SDL_PollEvent(&e) != 0) { // TODO
       if (e.type == SDL_QUIT) {
         quit = true;
         break;

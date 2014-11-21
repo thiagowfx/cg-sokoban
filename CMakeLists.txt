@@ -30,9 +30,8 @@ set(
   ${SRC_DIR}/menu.cpp
   ${SRC_DIR}/soko_board.cpp
   ${SRC_DIR}/soko_character.hpp
-  ${SRC_DIR}/soko_direction.hpp
-  ${SRC_DIR}/soko_object.hpp
-  ${SRC_DIR}/soko_position.hpp
+  ${SRC_DIR}/soko_object.cpp
+  ${SRC_DIR}/soko_position.cpp
   )
 
 add_library(
@@ -66,7 +65,7 @@ install(
   DESTINATION ${DEST_DIR}
   )
 
-file(GLOB_RECURSE ASSETS ${ASSETS_DIR}/*)
+file(GLOB ASSETS ${ASSETS_DIR}/*)
 foreach(asset ${ASSETS}) 
   file(
     COPY ${asset} 
@@ -79,8 +78,9 @@ if (TEST)
   enable_testing()
   set(PROJECT_TEST_NAME "${PROJECT_NAME}UnitTests")
   file(GLOB TEST_SRC_FILES ${TEST_DIR}/*Test.cpp)
-  add_subdirectory(${EXT_PROJECTS_DIR}/gtest)
+  add_subdirectory(${EXT_DIR}/gtest)
   include_directories(${GTEST_INCLUDE_DIRS})
+  include_directories(${SRC_DIR})
   add_executable(
     ${PROJECT_TEST_NAME}
     ${TEST_SRC_FILES}
@@ -91,6 +91,11 @@ if (TEST)
     ${PROJECT_TEST_NAME}
     ${GTEST_LIBS_DIR}/libgtest.a
     ${GTEST_LIBS_DIR}/libgtest_main.a
+    ${GLEW_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+    ${SDL2_LIBRARIES}
+    ${SDL2_IMAGE_LIBRARIES}
+    ${SDL2_TTF_LIBRARIES}
     pthread
     )
   GTEST_ADD_TESTS(${PROJECT_TEST_NAME} "" ${TEST_SRC_FILES})

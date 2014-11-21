@@ -1,9 +1,15 @@
 #include "helpers.hpp"
 
+void die(const char* msg) {
+  std::cout << "Game Error:" << std::endl;
+  std::cout << msg << std::endl;
+  exit(EXIT_FAILURE);
+}
+
 void sdldie(const char* msg) {
   std::cout << msg << std::endl;
   std::cout << "SDL_Error: " << SDL_GetError() << std::endl;
-  exit(1);
+  exit(EXIT_FAILURE);
 }
 
 bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2) {
@@ -15,13 +21,13 @@ SDL_Texture* loadTexture(SDL_Renderer* windowRenderer, const char* path) {
   SDL_Surface* loadedSurface = IMG_Load(path);
   if(loadedSurface == NULL) {
     std::cout << "Unable to load image" << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   else {
     newTexture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);
     if(newTexture == NULL) {
       std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
-      exit(1);
+      exit(EXIT_FAILURE);
     }
     SDL_FreeSurface(loadedSurface);
   }

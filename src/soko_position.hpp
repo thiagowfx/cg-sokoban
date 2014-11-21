@@ -1,41 +1,19 @@
-#ifndef SOKOBAN_POSITION
-#define SOKOBAN_POSITION
+#ifndef _SOKO_POSITION_H_
+#define _SOKO_POSITION_H_
 
+#include "helpers.hpp"
 
-#include "soko_direction.hpp"
 namespace Sokoban {
-  /**
-  This class represents a position on a sokoban board
-  */
-  class Position {
+  /** This class represents a position on a sokoban board. */
+  class SokoPosition {
     public:
-      Position() : x(0), y(0) { } ;
-      Position(Direction direction) {
-        switch(direction) {
-        case Direction::UP:
-          x = 0;
-          y = 1;
-          break;
-        case Direction::LEFT:
-          x = -1;
-          y = 0;
-          break;
-        case Direction::DOWN:
-          x = 0;
-          y = -1;
-          break;
-        case Direction::RIGHT:
-          x = 1;
-          y = 0;
-          break;
-        }
-      }
+      SokoPosition();
+      SokoPosition(int x, int y);
+      SokoPosition(const Direction& direction);
+      SokoPosition operator+(const SokoPosition& other);
 
-      Position(int _x, int _y) : x(_x), y(_y) { };
-      Position operator+(Position other) { return Position( x + other.x, y + other.y); }
       int x, y;
-
   };
-}  //Sokoban
+}
 
-#endif
+#endif // _SOKO_POSITION_H_

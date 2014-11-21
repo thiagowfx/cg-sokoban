@@ -1,45 +1,40 @@
-#ifndef SOKOBAN_SOKO_BOARD
-#define SOKOBAN_SOKO_BOARD
+#ifndef _SOKO_BOARD_H_
+#define _SOKO_BOARD_H_
 
-#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
-#include "soko_direction.hpp"
+#include <vector>
+#include "helpers.hpp"
+#include "soko_position.hpp"
 #include "soko_position.hpp"
 #include "soko_object.hpp"
+using namespace std;
 
 namespace Sokoban {
-  /**
-  This class represents an object that is on a sokoban board
-  */
+  /** This class represents a Sokoban board. */
   class SokoBoard {
     public:
-      /**
-      Builds the boards from a file named filename;
-      */
-      SokoBoard(std::string filename);
-      /**
-      Move the character to direction indicated by @direction.
-      */
-      void move(Direction direction);
-      /**
-      Returns the number of boxes that are still out of a target.
-      */
-      int getUnsolvedBoxesNumber();
+      SokoBoard(const char* filename);
 
-      /**
-      Returns a string representation of the object
-      */
-      std::string toString();
-      /**
-      Prints the object on std out
-      */
-      void print();
-    private:
-      int unsolvedBoxesCounter;
+      /* Move the character to direction indicated by @direction. */
+      void move(Direction direction); // TODO
+
+      friend ostream& operator<<(ostream&, const SokoBoard&);
+      std::string toString() const;
+      unsigned getNumberOfBoxes() const;
+      unsigned getNumberofTargets() const;
+      unsigned getNumberOfUnresolvedBoxes() const;
+
+  public:
       std::vector< std::vector<SokoObject> > dynamicBoard;
       std::vector< std::vector<SokoObject> > staticBoard;
-      Position characterPosition;
-  };
-}  //Sokoban
 
-#endif
+    private:
+      unsigned unresolvedBoxes, boxes = 0, targets = 0;
+      SokoPosition characterPosition;
+  };
+}
+
+#endif // _SOKO_BOARD_H_
