@@ -2,6 +2,10 @@
 #define _GAME_H_
 
 #include <cmath>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 #include <GL/glu.h>
 #include <iostream>
 #include "helpers.hpp"
