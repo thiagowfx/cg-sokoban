@@ -3,6 +3,9 @@
 
 #include <cmath>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 #include <GL/glu.h>
 #include "SDL.h"
 #include "SDL_opengl.h"
