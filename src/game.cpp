@@ -100,16 +100,15 @@ void Game::renderScene() {
   /*Objects drawing*/
   glMatrixMode(GL_MODELVIEW);
 
-
   /*Reads phase file and draws the scene*/
   using namespace std;
   ifstream phase;
   string line;
   phase.open("map1.txt");
   if( phase.is_open()){
-    int row = 0;
+    int row = -3;
     while ( getline(phase, line) ){
-      int column = 0;
+      int column = -3;
       istringstream streamLine(line);
       while (! streamLine.eof()){
         int number;
@@ -139,11 +138,11 @@ void Game::renderScene() {
         }
         else if (number == 5){
           //add target texture here
-          drawCube(row*size, column*size, 0, size);         //drawing the walls' floor
+          //drawCube(row*size, column*size, 0, size);         //drawing the target
         }
         column ++;
       }
-    ++ row; 
+    row ++; 
     }
     phase.close();
   }
@@ -155,7 +154,7 @@ void Game::renderScene() {
 
 void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
 {
-  /* This function draws a cube of size (edge x edge x edge) at position (x, y, z)*/
+  /* This function draws a cube of size (edge x edge x edge) centered at position (x, y, z)*/
   GLdouble halfEdge = edge/2;
   glEnable(GL_TEXTURE_2D);
 
@@ -178,7 +177,6 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
     glNormal3f(0, 0, -1);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
-  // White side
   glBegin(GL_POLYGON);
     glNormal3f(0, 0, 1);  glVertex3f(  halfEdge, -halfEdge, halfEdge );
     glNormal3f(0, 0, 1);  glVertex3f(  halfEdge,  halfEdge, halfEdge );
@@ -214,6 +212,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
     glNormal3f(0, -1, 0);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
+  glFlush();
   glPopMatrix();
 }
 
@@ -231,6 +230,7 @@ void Game::setNewPosition(GLdouble xnew, GLdouble ynew) {
   glMatrixMode(GL_MODELVIEW);
     glRotatef(atan(2*passo_x), 0, 0, 1);
     glRotatef(atan(2*passo_y), 0, 1, 0);
+
   SDL_GL_SwapWindow(window);
 }
 
@@ -241,6 +241,6 @@ void Game::sokoReshape() {
   //sets projection
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(60.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ;
+  gluPerspective(40.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ;
   glMatrixMode(GL_MODELVIEW);
 }
