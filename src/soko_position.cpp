@@ -10,29 +10,19 @@ SokoPosition::SokoPosition(int x, int y) :
   x(x),
   y(y) {}
 
-SokoPosition::SokoPosition(const Direction& direction) {
+SokoPosition SokoPosition::operator+(const Direction& direction) const {
   switch(direction) {
   case Direction::UP:
-    x = 0;
-    y = 1;
-    break;
+    return SokoPosition(x, y + 1);
   case Direction::LEFT:
-    x = -1;
-    y = 0;
-    break;
+    return SokoPosition(x - 1, y);
   case Direction::DOWN:
-    x = 0;
-    y = -1;
-    break;
+    return SokoPosition(x, y - 1);
   case Direction::RIGHT:
-    x = 1;
-    y = 0;
-    break;
+    return SokoPosition(x + 1, y);
+  default:
+    return SokoPosition(x,y);
   }
-}
-
-SokoPosition SokoPosition::operator+(const SokoPosition& other) {
-  return SokoPosition(x + other.x, y + other.y);
 }
 
 }

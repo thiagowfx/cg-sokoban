@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "soko_board.hpp"
+#include "soko_position.hpp"
 #include <iostream>
 using namespace Sokoban;
 using namespace std;
@@ -24,4 +25,26 @@ TEST_F(SokoBoardTest, isValidBoardTest) {
   EXPECT_EQ(characters, 1);
 }
 
+TEST(PositionTest, PositionTest) {
+  SokoPosition s;
+  SokoPosition sp(1, 1);
 
+  EXPECT_EQ(1, sp.x);
+  EXPECT_EQ(1, sp.y);
+
+  s = sp + UP;
+  EXPECT_EQ(s.x, sp.x); 
+  EXPECT_EQ(s.y, sp.y + 1);
+
+  s = sp + DOWN;
+  EXPECT_EQ(s.x, sp.x); 
+  EXPECT_EQ(s.y, sp.y - 1);
+
+  s = sp + RIGHT;
+  EXPECT_EQ(s.x, sp.x + 1); 
+  EXPECT_EQ(s.y, sp.y);
+
+  s = sp + LEFT;
+  EXPECT_EQ(s.x, sp.x - 1); 
+  EXPECT_EQ(s.y, sp.y);
+}

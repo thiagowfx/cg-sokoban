@@ -9,8 +9,7 @@ namespace Sokoban {
     public:
       SokoPosition();
       SokoPosition(int x, int y);
-      SokoPosition(const Direction& direction);
-      SokoPosition operator+(const SokoPosition& other);
+      SokoPosition operator+(const Direction&) const;
 
       int x, y;
   };

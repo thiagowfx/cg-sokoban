@@ -58,7 +58,7 @@ SokoBoard::SokoBoard(const char* filename) {
 }
 
 void SokoBoard::move(Direction direction) {
-  SokoPosition nextPosition = characterPosition + SokoPosition(direction);
+  SokoPosition nextPosition = characterPosition + direction;
 
   if(staticBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::EMPTY) {
 
@@ -70,7 +70,7 @@ void SokoBoard::move(Direction direction) {
     }
 
     else if(dynamicBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::LIGHT_BOX) {
-      SokoPosition boxNextPosition = nextPosition + SokoPosition(direction);
+      SokoPosition boxNextPosition = nextPosition + direction;
       if(dynamicBoard[boxNextPosition.x][boxNextPosition.y].getType() == SokoObject::EMPTY &&
         staticBoard[boxNextPosition.x][boxNextPosition.y].getType() == SokoObject::EMPTY) {
           dynamicBoard[boxNextPosition.x][boxNextPosition.y] = SokoObject(SokoObject::LIGHT_BOX);
