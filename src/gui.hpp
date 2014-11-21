@@ -10,6 +10,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+using namespace Sokoban;
 
 class Gui {
 public:
@@ -28,6 +29,7 @@ private:
   TTF_Font *windowFont = NULL;
   Menu *gameMenu = NULL;
   Game *game = NULL;
+  unsigned currentLevel;
   SDL_GLContext glContext;
   Context context = CONTEXT_MAIN_MENU;
   bool OPENGL_LOADED = false;

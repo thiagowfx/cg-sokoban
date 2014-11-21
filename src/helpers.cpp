@@ -1,15 +1,23 @@
 #include "helpers.hpp"
 
-void die(const char* msg) {
-  std::cout << "Game Error:" << std::endl;
-  std::cout << msg << std::endl;
+void LOG_DIE(const char* msg) {
+  std::cout << "DIE: " << msg << std::endl;
   exit(EXIT_FAILURE);
 }
 
-void sdldie(const char* msg) {
+void LOG_INFO(const char* msg) {
+  std::cout << "INFO: " << msg << std::endl;
+}
+
+void LOG_SDL_DIE(const char* msg) {
   std::cout << msg << std::endl;
-  std::cout << "SDL_Error: " << SDL_GetError() << std::endl;
+  std::cout << "DIE: SDL_Error: " << SDL_GetError() << std::endl;
   exit(EXIT_FAILURE);
+}
+
+bool isMovementKey(const SDL_Keycode& key) {
+  return key == SDLK_DOWN || key == SDLK_UP || key == SDLK_LEFT || key == SDLK_RIGHT ||
+      key == SDLK_s || key == SDLK_w || key == SDLK_a || key == SDLK_d;
 }
 
 bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2) {

@@ -23,12 +23,17 @@ class Game {
     void setNewPosition(GLdouble xnew, GLdouble ynew);
     void sokoReshape();
 
+    void loadLevel(const unsigned level);
+    bool isLevelFinished() const;
+    void renderGameFinished();
+
   private:
     void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge);
 
   private:
     SDL_Window* window;
     SDL_GLContext* glContext;
+    SokoBoard *board = NULL;
     int screenWidth;
     int screenHeight;
 

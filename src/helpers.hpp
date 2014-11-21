@@ -20,8 +20,10 @@ namespace Sokoban {
   } Direction;
 }
 
-void die(const char*);
-void sdldie(const char*);
+void LOG_DIE(const char*);
+void LOG_INFO(const char*);
+void LOG_SDL_DIE(const char*);
+bool isMovementKey(const SDL_Keycode& key);
 bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2);
 SDL_Texture* loadTexture(SDL_Renderer*, const char* path);
 

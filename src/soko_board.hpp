@@ -16,7 +16,7 @@ namespace Sokoban {
   /** This class represents a Sokoban board. */
   class SokoBoard {
     public:
-      SokoBoard(const char* filename);
+      SokoBoard(std::string filename);
 
       /* Move the character to direction indicated by @direction. */
       void move(Direction direction); // TODO
@@ -26,6 +26,7 @@ namespace Sokoban {
       unsigned getNumberOfBoxes() const;
       unsigned getNumberofTargets() const;
       unsigned getNumberOfUnresolvedBoxes() const;
+      bool isFinished() const;
 
   public:
       std::vector< std::vector<SokoObject> > dynamicBoard;

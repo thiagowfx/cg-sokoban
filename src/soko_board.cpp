@@ -1,9 +1,9 @@
 #include "soko_board.hpp"
 
 namespace Sokoban {
-SokoBoard::SokoBoard(const char* filename) {
+SokoBoard::SokoBoard(std::string filename) {
   string line;
-  ifstream mapFile(filename);
+  ifstream mapFile(filename.c_str());
 
   if (mapFile.is_open()) {
     int x_now(0), y_now(0);
@@ -53,7 +53,7 @@ SokoBoard::SokoBoard(const char* filename) {
     mapFile.close();
   }
   else {
-    die("Unable to open file");
+    LOG_DIE(std::string(std::string("Unable to open file ") + filename).c_str());
   }
 }
 
@@ -117,6 +117,10 @@ unsigned SokoBoard::getNumberofTargets() const {
 
 unsigned SokoBoard::getNumberOfUnresolvedBoxes() const {
   return unresolvedBoxes;
+}
+
+bool SokoBoard::isFinished() const {
+  return unresolvedBoxes == 0;
 }
 
 }

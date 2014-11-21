@@ -19,7 +19,7 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
     /* Create the OpenGL context. */
     *glContext = SDL_GL_CreateContext(window);
     if(*glContext == NULL) {
-      sdldie("OpenGL context could not be created");
+      LOG_SDL_DIE("OpenGL context could not be created");
     }
 
     /* Enable VSync. */
@@ -59,7 +59,8 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
   }
 
 Game::~Game() {
-
+  delete board;
+  board = NULL;
 }
 
 void Game::renderScene() {
@@ -106,12 +107,11 @@ void Game::renderScene() {
   /*Objects drawing*/
   glMatrixMode(GL_MODELVIEW);
 
-  SokoBoard board("assets/stages/stage1.sok");
   double const size = 0.5;
 
-  for (unsigned row = 0; row < board.staticBoard.size(); ++row) {
-    for (unsigned column = 0; column < board.staticBoard[0].size(); ++column) {
-      SokoObject::Type t = board.staticBoard[row][column].getType();
+  for (unsigned row = 0; row < board->staticBoard.size(); ++row) {
+    for (unsigned column = 0; column < board->staticBoard[0].size(); ++column) {
+      SokoObject::Type t = board->staticBoard[row][column].getType();
       if (t == SokoObject::EMPTY) {
         drawCube(row * size, column * size, 0, size);
       }
@@ -225,4 +225,25 @@ void Game::sokoReshape() {
   glLoadIdentity();
   gluPerspective(60.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ;
   glMatrixMode(GL_MODELVIEW);
+}
+
+void Game::loadLevel(const unsigned level) {
+  if (board != NULL) {
+    delete board;
+    board = NULL;
+  }
+  stringstream ss;
+  ss << "assets/stages/stage" << level << ".sok";
+  board = new SokoBoard(ss.str());
+}
+
+bool Game::isLevelFinished() const {
+  return board->isFinished();
+}
+
+void Game::renderGameFinished() {
+  glClearColor(0.0, 0.0, 0.75, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glFlush();
+  SDL_GL_SwapWindow(window);
 }

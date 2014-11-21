@@ -3,7 +3,7 @@
 Gui::Gui() {
   /* Initialize SDL. */
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    sdldie("SDL could not be initialized");
+    LOG_SDL_DIE("SDL could not be initialized");
   }
 
   /* Set texture filtering to linear. */
@@ -14,29 +14,29 @@ Gui::Gui() {
   /* Create the main window. */
   window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);// | SDL_WINDOW_FULLSCREEN_DESKTOP);
   if (window == NULL) {
-    sdldie("SDL Window could not be created");
+    LOG_SDL_DIE("SDL Window could not be created");
   }
 
   /* Create the renderer for the window. */
   windowRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
   if(windowRenderer == NULL) {
-    sdldie("Renderer could not be created");
+    LOG_SDL_DIE("Renderer could not be created");
   }
 
   /* Enable PNG and JPEG support from SDL2_image. */
   int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
   if(!(IMG_Init(imgFlags) & imgFlags)) {
-    sdldie("SDL_image could not initialize");
+    LOG_SDL_DIE("SDL_image could not initialize");
   }
 
   /* Enable TTF support from SDL2_TTF. */
   if(TTF_Init() == -1) {
-    sdldie("SDL_ttf could not initialize");
+    LOG_SDL_DIE("SDL_ttf could not initialize");
   }
   else {
     windowFont = TTF_OpenFont(GAME_FONT_PATH, 60);
     if (windowFont == NULL) {
-      sdldie("Failed to load the font");
+      LOG_SDL_DIE("Failed to load the font");
     }
   }
 }
@@ -82,12 +82,27 @@ void Gui::gameLoop() {
   gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT, GAME_MENU_LABELS, backgroundTexture);
 
   while(!quit) {
-    while(SDL_PollEvent(&e) != 0) { // TODO
+    while(SDL_PollEvent(&e) != 0) {
       if (e.type == SDL_QUIT) {
         quit = true;
         break;
       }
       else if (e.type == SDL_KEYDOWN) {
+        if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym)) {
+          if (game->isLevelFinished()) {
+            /* Finished last level .*/
+            if (currentLevel == (GAME_MENU_LABELS.size() - 1)) {
+              LOG_INFO("Finished last level. Switching to CONTEXT_GAME_WON.");
+              context = CONTEXT_GAME_WON;
+            }
+            /* Finished another level. */
+            else {
+              LOG_INFO("Finished this level. Going to next one.");
+              game->loadLevel(++currentLevel);
+            }
+          }
+        }
+
         switch(e.key.keysym.sym) {
         case SDLK_ESCAPE:
         case SDLK_q:
@@ -98,12 +113,29 @@ void Gui::gameLoop() {
           if (context == CONTEXT_MAIN_MENU) {
             gameMenu->nextIndex();
           }
+          // TODO: moveDownAction
           break;
         case SDLK_w:
         case SDLK_UP:
           if (context == CONTEXT_MAIN_MENU) {
             gameMenu->prevIndex();
           }
+          // TODO: moveUpAction
+          break;
+        case SDLK_a:
+        case SDLK_LEFT:
+          // TODO: moveLeftAction
+          break;
+        case SDLK_d:
+        case SDLK_RIGHT:
+          // TODO: moveRightAction
+          break;
+        case SDLK_u:
+          // TODO: undoAction
+          break;
+        case SDLK_n:
+          // TODO: remove this later on.
+          game->loadLevel(++currentLevel);
           break;
         case SDLK_RETURN:
           if (context == CONTEXT_MAIN_MENU) {
@@ -114,7 +146,12 @@ void Gui::gameLoop() {
             }
             else {
               context = CONTEXT_GAME;
-              // TODO: load level(index)
+              if(!OPENGL_LOADED) {
+                game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
+                OPENGL_LOADED = true;
+              }
+              currentLevel = index + 1;
+              game->loadLevel(currentLevel);
             }
           }
           break;
@@ -136,14 +173,19 @@ void Gui::gameLoop() {
         if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
           SDL_Log("Mouse Button 1 (left) pressed.");
           if (context == CONTEXT_MAIN_MENU) {
-            int index = gameMenu->getCurrentIndex();
+            unsigned index = gameMenu->getCurrentIndex();
             if (index == GAME_MENU_LABELS.size() - 1) {
               quit = true;
               break;
             }
             else {
               context = CONTEXT_GAME;
-              // TODO: load level(index)
+              if(!OPENGL_LOADED) {
+                game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
+                OPENGL_LOADED = true;
+              }
+              currentLevel = index + 1;
+              game->loadLevel(currentLevel);
             }
           }
           else if(context == CONTEXT_GAME) {
@@ -158,13 +200,12 @@ void Gui::gameLoop() {
       gameMenu->renderMainMenu();
     }
     else if (context == CONTEXT_GAME) {
-      if(!OPENGL_LOADED) {
-        game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
-        OPENGL_LOADED = true;
-      }
       game->renderScene();
     }
     else if (context == CONTEXT_GAME_WON) {
+      LOG_INFO("Congratulations, you've won the game!");
+      game->renderGameFinished();
+      SDL_Delay(2 * GAME_SPLASH_TIMEOUT);
       quit = true;
       break;
     }
