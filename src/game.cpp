@@ -27,26 +27,31 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
     }
 
     /* Use VSync. */
-    if(SDL_GL_SetSwapInterval(1) < 0) {
-      sdldie("Warning: Unable to set VSync");
-    }
+    //if(SDL_GL_SetSwapInterval(1) < 0) {
+    //  sdldie("Warning: Unable to set VSync");
+    //}
 
     /* OpenGL initialization. */
 
     /* Z-Depth. */
     glEnable(GL_DEPTH_TEST);
 
-    //Limpa a tela com a cor do parâmetro (boa prática de OpenGL)
+    /*Lighting initializations*/
+    glEnable(GL_NORMALIZE);         //Normalizes the normal vectors of every vertex (ie. size = 1)
+    glShadeModel(GL_SMOOTH);        //Shadind model is smooth
+    glEnable(GL_LIGHTING);          //Enables lighting
+
+    /*Cleans the background and sets it to the RGB parameters*/
     glClearColor(0.5, 0.5, 0.5, 1.0);
 
-    //Seta a matriz de projeção na identidade
+    /*Sets the Projection Matrix at the Identity*/
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    //Seta a pocição da câmera (posição da câmera, para onde ela está olhando e o vetor up)
+    /*Defines the camera's properties: where it is, where it's looking at, the up vector*/
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(4.0, 4.0, 2.0, 0, 0, 0, 0, -0.1, 1); //camera na posição (2,-2,0), olhando para origem e up = (0,-0.1,1)
+    gluLookAt(4.0, 4.0, 2.0, 0, 0, 0, 0, -0.1, 1); //camera's initial position at (4,4,2), looking at (0,0,0) and up = (0,-0.1,1)
 
     sokoReshape();
   }
@@ -58,7 +63,37 @@ Game::~Game() {
 void Game::renderScene() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  /*Ambient's lighting - eg. Light all around despite the light sources*/
+  GLfloat ambientIntesity[4] = {1.5, 1.5, 1.5, 1.0};          //Ambient's light is white
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientIntesity);
+
+  /*Light source number 0*/
+  GLfloat light0Intensity[4] = {0, 0, 1.0, 1.0};               //Light0 is blue
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light0Intensity);           //For diffuse reflection
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light0Intensity);          //For specular reflection
+  GLfloat light0Position[4] = {0, 0, 1, 0};                    //Light0's position at z-axis infinity
+  glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
+  glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0);             //Attenuation
+  glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0); 
+  glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.1);
+  glEnable(GL_LIGHT0);
+
+    /*Light source number 1*/
+  GLfloat light1Intensity[4] = {1.0, 0, 0, 1.0};               //Light1 is red
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, light1Intensity);           //For diffuse reflection
+  glLightfv(GL_LIGHT1, GL_SPECULAR, light1Intensity);          //For specular reflection
+  GLfloat light1Position[4] = {1, 0, 0, 0};                    //Light1's position at x-axis infinity
+  glLightfv(GL_LIGHT1, GL_POSITION, light1Position);
+  glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0);             //Attenuation
+  glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0); 
+  glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.1);
+  glEnable(GL_LIGHT1);
+
+
+  /*Objects drawing*/
   glMatrixMode(GL_MODELVIEW);
+
+  /*The way of drawing is going to change in the future. Thus, the following portuguese comments are going to dissapear*/
   //Paredes Parte de cima
   drawCube(0.0, 0.0, 0.0, 0.5);
   drawCube(0.5, 0.0, 0.0, 0.5);
@@ -101,8 +136,7 @@ void Game::renderScene() {
 
 void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
 {
-  /* Essa função desenha um cubo de tamanho edge x edge x edge na posição (x, y, z)
-     É importante passar sempre o valor correto para os argumentos se não resultados estranhos são obtidos*/
+  /* This function draws a cube of size (edge x edge x edge) at position (x, y, z)*/
   GLdouble halfEdge = edge/2;
   glEnable(GL_TEXTURE_2D);
 
@@ -114,60 +148,60 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge)
   glBegin(GL_POLYGON);
   glColor3f(1.0, 1.0, 0.0);
 
-  glVertex3f(  halfEdge, -halfEdge, -halfEdge );
-  glVertex3f(  halfEdge,  halfEdge, -halfEdge );
-  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+  glNormal3f(0, 0, -1);  glVertex3f(  halfEdge, -halfEdge, -halfEdge );
+  glNormal3f(0, 0, -1);  glVertex3f(  halfEdge,  halfEdge, -halfEdge );
+  glNormal3f(0, 0, -1);  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+  glNormal3f(0, 0, -1);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
   // White side
   glBegin(GL_POLYGON);
   glColor3f(1.0, 1.0, 1.0);
 
-  glVertex3f(  halfEdge, -halfEdge, halfEdge );
-  glVertex3f(  halfEdge,  halfEdge, halfEdge );
-  glVertex3f( -halfEdge,  halfEdge, halfEdge );
-  glVertex3f( -halfEdge, -halfEdge, halfEdge );
+  glNormal3f(0, 0, 1);  glVertex3f(  halfEdge, -halfEdge, halfEdge );
+  glNormal3f(0, 0, 1);  glVertex3f(  halfEdge,  halfEdge, halfEdge );
+  glNormal3f(0, 0, 1);  glVertex3f( -halfEdge,  halfEdge, halfEdge );
+  glNormal3f(0, 0, 1);  glVertex3f( -halfEdge, -halfEdge, halfEdge );
   glEnd();
 
   // Purple side
   glBegin(GL_POLYGON);
   glColor3f(1.0, 0.0, 1.0);
 
-  glVertex3f( halfEdge, -halfEdge, -halfEdge );
-  glVertex3f( halfEdge,  halfEdge, -halfEdge );
-  glVertex3f( halfEdge,  halfEdge,  halfEdge );
-  glVertex3f( halfEdge, -halfEdge,  halfEdge );
+  glNormal3f(1, 0, 0);  glVertex3f( halfEdge, -halfEdge, -halfEdge );
+  glNormal3f(1, 0, 0);  glVertex3f( halfEdge,  halfEdge, -halfEdge );
+  glNormal3f(1, 0, 0);  glVertex3f( halfEdge,  halfEdge,  halfEdge );
+  glNormal3f(1, 0, 0);  glVertex3f( halfEdge, -halfEdge,  halfEdge );
   glEnd();
 
   // Green side
   glBegin(GL_POLYGON);
   glColor3f(0.0, 1.0, 0.0);
 
-  glVertex3f( -halfEdge, -halfEdge,  halfEdge );
-  glVertex3f( -halfEdge,  halfEdge,  halfEdge );
-  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+  glNormal3f(-1, 0, 0);  glVertex3f( -halfEdge, -halfEdge,  halfEdge );
+  glNormal3f(-1, 0, 0);  glVertex3f( -halfEdge,  halfEdge,  halfEdge );
+  glNormal3f(-1, 0, 0);  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+  glNormal3f(-1, 0, 0);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
   // Blue side
   glBegin(GL_POLYGON);
   glColor3f(0.0, 0.0, 1.0);
 
-  glVertex3f(  halfEdge,  halfEdge,  halfEdge );
-  glVertex3f(  halfEdge,  halfEdge, -halfEdge );
-  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-  glVertex3f( -halfEdge,  halfEdge,  halfEdge ); 
+  glNormal3f(0, 1, 0);  glVertex3f(  halfEdge,  halfEdge,  halfEdge );
+  glNormal3f(0, 1, 0);  glVertex3f(  halfEdge,  halfEdge, -halfEdge );
+  glNormal3f(0, 1, 0);  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+  glNormal3f(0, 1, 0);  glVertex3f( -halfEdge,  halfEdge,  halfEdge ); 
   glEnd();
 
   // Red side
   glBegin(GL_POLYGON);
   glColor3f(1.0, 0.0, 0.0);
 
-  glVertex3f(  halfEdge, -halfEdge, -halfEdge );
-  glVertex3f(  halfEdge, -halfEdge,  halfEdge );
-  glVertex3f( -halfEdge, -halfEdge,  halfEdge );
-  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+  glNormal3f(0, -1, 0);  glVertex3f(  halfEdge, -halfEdge, -halfEdge );
+  glNormal3f(0, -1, 0);  glVertex3f(  halfEdge, -halfEdge,  halfEdge );
+  glNormal3f(0, -1, 0);  glVertex3f( -halfEdge, -halfEdge,  halfEdge );
+  glNormal3f(0, -1, 0);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
   glPopMatrix();
@@ -185,23 +219,18 @@ void Game::setNewPosition(GLdouble xnew, GLdouble ynew) {
   setOldPosition(xnew, ynew);
 
   glMatrixMode(GL_MODELVIEW);
-  if(passo_x != 0) {
     glRotatef(atan(2*passo_x), 0, 0, 1);
-  }
-  if(passo_y != 0) {
     glRotatef(atan(2*passo_y), 0, 1, 0);
-  }
-  glFlush();
   SDL_GL_SwapWindow(window);
 }
 
 void Game::sokoReshape() {
   // TODO: atualizar screenWidth, screenHeight
-  glViewport (0, 0, screenWidth, screenHeight);	//muda a Viewport para a janela toda
-  //seta a projeção
+  glViewport (0, 0, screenWidth, screenHeight);	//Changes the viewport to the whole window
+  
+  //sets projection
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  //gluOrtho2D(1.0, 0.0, 1.0, 0.0);
-  gluPerspective(60.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ; //atualiza o aspectratio para os novos valores
+  gluPerspective(60.0, (GLdouble)screenWidth/(GLdouble)screenHeight, 1.0, 10.0) ;
   glMatrixMode(GL_MODELVIEW);
 }
