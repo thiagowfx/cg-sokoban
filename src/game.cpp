@@ -142,50 +142,130 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0);
 
-  glEnable(GL_TEXTURE_2D);
+  /*Creating the textures*/
+//the following path array is probably going to be a parameter of this - drawCube - method
+//that will allow us to determinate the PNG images that are going to be turned into the Cube's faces textures
+  std::string path[] = {"bottom.png", "top.png", "face1.png", "face2.png", "face3.png", "face4.png"};
+
+  unsigned char* image;
+  int width, height;
+  glEnable(GL_TEXTURE_2D);        
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+  GLuint textureIDs[6];
+  glGenTextures(6, textureIDs);
+
+  glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
+  image = SOIL_load_image(path[0], &width, &height,0, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+  glBindTexture(GL_TEXTURE_2D, textureIDs[1]);
+  image = SOIL_load_image(path[1], &width, &height,0, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+  glBindTexture(GL_TEXTURE_2D, textureIDs[2]);
+  image = SOIL_load_image(path[2], &width, &height,0, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+  glBindTexture(GL_TEXTURE_2D, textureIDs[3]);
+  image = SOIL_load_image(path[3], &width, &height,0, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+  glBindTexture(GL_TEXTURE_2D, textureIDs[4]);
+  image = SOIL_load_image(path[4], &width, &height,0, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+  glBindTexture(GL_TEXTURE_2D, textureIDs[5]);
+  image = SOIL_load_image(path[5], &width, &height,0, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+
+  /*drawing the cube*/
   glPushMatrix();
   glTranslatef(x * edge, y * edge, z);
 
   glBegin(GL_POLYGON);
-  glNormal3f(0.0, 0.0, -1.0);  glVertex3f(  halfEdge, -halfEdge, -halfEdge );
-  glNormal3f(0.0, 0.0, -1.0);  glVertex3f(  halfEdge,  halfEdge, -halfEdge );
-  glNormal3f(0.0, 0.0, -1.0);  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-  glNormal3f(0.0, 0.0, -1.0);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+    glBindTexture(GL_TEXTURE_2D, textureIDs[0]);   //Enables the texture for the bottom
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
   glBegin(GL_POLYGON);
-  glNormal3f(0.0, 0.0, 1.0);  glVertex3f(  halfEdge, -halfEdge, halfEdge );
-  glNormal3f(0.0, 0.0, 1.0);  glVertex3f(  halfEdge,  halfEdge, halfEdge );
-  glNormal3f(0.0, 0.0, 1.0);  glVertex3f( -halfEdge,  halfEdge, halfEdge );
-  glNormal3f(0.0, 0.0, 1.0);  glVertex3f( -halfEdge, -halfEdge, halfEdge );
+    glBindTexture(GL_TEXTURE_2D, textureIDs[1]);   //Enables the texture for the top
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, halfEdge );
+    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge, halfEdge );
+    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge, halfEdge );
+    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, halfEdge );
   glEnd();
 
   glBegin(GL_POLYGON);
-  glNormal3f(1.0, 0.0, 0.0);  glVertex3f( halfEdge, -halfEdge, -halfEdge );
-  glNormal3f(1.0, 0.0, 0.0);  glVertex3f( halfEdge,  halfEdge, -halfEdge );
-  glNormal3f(1.0, 0.0, 0.0);  glVertex3f( halfEdge,  halfEdge,  halfEdge );
-  glNormal3f(1.0, 0.0, 0.0);  glVertex3f( halfEdge, -halfEdge,  halfEdge );
+    glBindTexture(GL_TEXTURE_2D, textureIDs[2]);  
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(0,0); glVertex3f( halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,0); glVertex3f( halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,1); glVertex3f( halfEdge,  halfEdge,  halfEdge );
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(0,1); glVertex3f( halfEdge, -halfEdge,  halfEdge );
   glEnd();
 
   glBegin(GL_POLYGON);
-  glNormal3f(-1.0, 0.0, 0.0);  glVertex3f( -halfEdge, -halfEdge,  halfEdge );
-  glNormal3f(-1.0, 0.0, 0.0);  glVertex3f( -halfEdge,  halfEdge,  halfEdge );
-  glNormal3f(-1.0, 0.0, 0.0);  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-  glNormal3f(-1.0, 0.0, 0.0);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+    glBindTexture(GL_TEXTURE_2D, textureIDs[3]);  
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge, -halfEdge,  halfEdge );
+    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(1,1); glVertex3f( -halfEdge,  halfEdge,  halfEdge );
+    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(1,0); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
   glBegin(GL_POLYGON);
-  glNormal3f(0.0, 1.0, 0.0);  glVertex3f(  halfEdge,  halfEdge,  halfEdge );
-  glNormal3f(0.0, 1.0, 0.0);  glVertex3f(  halfEdge,  halfEdge, -halfEdge );
-  glNormal3f(0.0, 1.0, 0.0);  glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-  glNormal3f(0.0, 1.0, 0.0);  glVertex3f( -halfEdge,  halfEdge,  halfEdge ); 
+    glBindTexture(GL_TEXTURE_2D, textureIDs[4]);  
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge,  halfEdge );
+    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(1,0); glVertex3f(  halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(0,0); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge,  halfEdge ); 
   glEnd();
 
   glBegin(GL_POLYGON);
-  glNormal3f(0.0, -1.0, 0.0);  glVertex3f(  halfEdge, -halfEdge, -halfEdge );
-  glNormal3f(0.0, -1.0, 0.0);  glVertex3f(  halfEdge, -halfEdge,  halfEdge );
-  glNormal3f(0.0, -1.0, 0.0);  glVertex3f( -halfEdge, -halfEdge,  halfEdge );
-  glNormal3f(0.0, -1.0, 0.0);  glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+    glBindTexture(GL_TEXTURE_2D, textureIDs[5]);   
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(1,1); glVertex3f(  halfEdge, -halfEdge,  halfEdge );
+    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge, -halfEdge,  halfEdge );
+    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
   glPopMatrix();
