@@ -391,7 +391,3 @@ void Game::moveRightAction() {
 void Game::undoAction() {
 
 }
-
-void Game::restartAction() {
-
-}

@@ -24,7 +24,10 @@ if(NOT PNG_FOUND)
   message(SEND_ERROR "libpng not found on your system")
 endif()
 
-include(FindPkgConfig)
+find_package(PkgConfig)
+if(NOT PKG_CONFIG_FOUND)
+  message(SEND_ERROR "pkg-config not found on your system")
+endif()
 pkg_search_module(SDL2 REQUIRED sdl2)
 pkg_search_module(SDL2_IMAGE REQUIRED SDL2_image)
 pkg_search_module(SDL2_TTF REQUIRED SDL2_ttf)
@@ -68,6 +71,7 @@ target_link_libraries(
   ${SDL2_LIBRARIES}
   ${SDL2_IMAGE_LIBRARIES}
   ${SDL2_TTF_LIBRARIES}
+  -lSOIL
   )
 
 install(
@@ -111,6 +115,7 @@ if (TEST)
     ${SDL2_LIBRARIES}
     ${SDL2_IMAGE_LIBRARIES}
     ${SDL2_TTF_LIBRARIES}
+    -lSOIL
     pthread
     )
   GTEST_ADD_TESTS(${PROJECT_TEST_NAME} "" ${TEST_SRC_FILES})

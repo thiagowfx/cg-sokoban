@@ -92,6 +92,7 @@ void Gui::gameLoop() {
         unsigned width = e.window.data1;
         unsigned height = e.window.data2;
         SDL_Log("SDL_WINDOWEVENT: SDL_WINDOWEVENT_RESIZED: %d x %d", width, height);
+        SDL_SetWindowSize(window, width, height);
         game->setWindowSize(width, height);
       }
       else if (e.type == SDL_KEYDOWN) {
@@ -145,7 +146,8 @@ void Gui::gameLoop() {
           break;
         case SDLK_r:
           if (context == CONTEXT_GAME) {
-            game->restartAction();
+            SDL_Log("Level restarted");
+            game->loadLevel(currentLevel);
           }
           break;
         case SDLK_u:
