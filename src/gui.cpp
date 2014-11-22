@@ -92,6 +92,7 @@ void Gui::gameLoop() {
         unsigned width = e.window.data1;
         unsigned height = e.window.data2;
         SDL_Log("SDL_WINDOWEVENT: SDL_WINDOWEVENT_RESIZED: %d x %d", width, height);
+        SDL_SetWindowSize(window, width, height);
         game->setWindowSize(width, height);
       }
       else if (e.type == SDL_KEYDOWN) {
