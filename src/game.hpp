@@ -45,7 +45,7 @@ class Game {
     SokoBoard *board = NULL;
     GLdouble xold, yold;
 
-    const char* GAME_WON_IMAGE="assets/theend.png";
+    const char* GAME_WON_IMAGE="assets/the_end.png";
 };
 
 #endif // _GAME_H_
