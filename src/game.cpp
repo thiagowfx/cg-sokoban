@@ -106,26 +106,28 @@ void Game::renderScene() {
   glMatrixMode(GL_MODELVIEW);
   const double size = 0.5;
 
+  const char* targetPath[] = {"bottom.png", "top.png", "face1.png", "face2.png", "face3.png", "face4.png"};
+
   for (unsigned row = 0; row < board->staticBoard.size(); ++row) {
     for (unsigned column = 0; column < board->staticBoard[0].size(); ++column) {
       SokoObject::Type t = board->staticBoard[row][column].getType();
       if (t == SokoObject::EMPTY) {
-        drawCube(row, column, 0, size);
+        drawCube(row, column, 0, size, targetPath);
       }
       else if (t == SokoObject::CHARACTER) {
-        drawCube(row, column, 0, size);
+        drawCube(row, column, 0, size, targetPath);
       }
       else if (t== SokoObject::LIGHT_BOX) {
-        drawCube(row, column, 0, size);
+        drawCube(row, column, 0, size, targetPath);
       }
       else if (t == SokoObject::HEAVY_BOX) {
-        drawCube(row, column, 0, size);
+        drawCube(row, column, 0, size, targetPath);
       }
       else if (t == SokoObject::WALL) {
-        drawCube(row, column, 0, size);
+        drawCube(row, column, 0, size, targetPath);
       }
       else {
-        drawCube(row, column, 0, size);
+        drawCube(row, column, 0, size, targetPath);
       }
     }
   }
@@ -134,18 +136,13 @@ void Game::renderScene() {
   SDL_GL_SwapWindow(window);
 }
 
-void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
+void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, const char** path) {
   GLdouble halfEdge = edge / 2.0;
-  GLfloat color[4] = {0.0, 0.3, 1.0, 1.0};
+  GLfloat color[4] = {0, 0.3, 1, 1.0};
   GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0);
-
-  /*Creating the textures*/
-//the following path array is probably going to be a parameter of this - drawCube - method
-//that will allow us to determinate the PNG images that are going to be turned into the Cube's faces textures
-  std::string path[] = {"bottom.png", "top.png", "face1.png", "face2.png", "face3.png", "face4.png"};
 
   unsigned char* image;
   int width, height;
@@ -157,33 +154,39 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
   image = SOIL_load_image(path[0], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
+  SOIL_free_image_data(image);
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[1]);
   image = SOIL_load_image(path[1], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
+  SOIL_free_image_data(image);
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[2]);
   image = SOIL_load_image(path[2], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
+  SOIL_free_image_data(image);
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[3]);
   image = SOIL_load_image(path[3], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
+  SOIL_free_image_data(image);
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[4]);
   image = SOIL_load_image(path[4], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
+  SOIL_free_image_data(image);
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[5]);
   image = SOIL_load_image(path[5], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
+  SOIL_free_image_data(image);
 
 
   /*drawing the cube*/
@@ -192,7 +195,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
 
   glBegin(GL_POLYGON);
     glBindTexture(GL_TEXTURE_2D, textureIDs[0]);   //Enables the texture for the bottom
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -205,7 +208,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
 
   glBegin(GL_POLYGON);
     glBindTexture(GL_TEXTURE_2D, textureIDs[1]);   //Enables the texture for the top
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -218,20 +221,20 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
 
   glBegin(GL_POLYGON);
     glBindTexture(GL_TEXTURE_2D, textureIDs[2]);  
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(0,0); glVertex3f( halfEdge, -halfEdge, -halfEdge );
     glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,0); glVertex3f( halfEdge,  halfEdge, -halfEdge );
-    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,1); glVertex3f( halfEdge,  halfEdge,  halfEdge );
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,1); glVertex3f ( halfEdge,  halfEdge,  halfEdge );
     glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(0,1); glVertex3f( halfEdge, -halfEdge,  halfEdge );
   glEnd();
 
   glBegin(GL_POLYGON);
     glBindTexture(GL_TEXTURE_2D, textureIDs[3]);  
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -244,7 +247,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
 
   glBegin(GL_POLYGON);
     glBindTexture(GL_TEXTURE_2D, textureIDs[4]);  
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -257,7 +260,7 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
 
   glBegin(GL_POLYGON);
     glBindTexture(GL_TEXTURE_2D, textureIDs[5]);   
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

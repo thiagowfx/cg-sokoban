@@ -10,7 +10,7 @@
 #include <iostream>
 #include "soko_board.hpp"
 #include "helpers.hpp"
-#include "<SOIL/SOIL.h>"
+#include <SOIL/SOIL.h>
 #include "SDL.h"
 #include "SDL_opengl.h"
 using namespace Sokoban;
@@ -33,7 +33,7 @@ class Game {
     void undoAction();
 
     /* Draws a cube of size edge centered at position (x, y, z). */
-    void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge);
+    void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, const char** path);
     void sokoReshape();
     void renderScene();
     void renderGameFinished();
