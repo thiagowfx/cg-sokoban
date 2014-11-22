@@ -190,8 +190,6 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge) {
 
   glPopMatrix();
   glDisable(GL_TEXTURE_2D);
-  
-  glFlush();
 }
 
 void Game::setOldPosition(GLdouble x, GLdouble y) {
@@ -240,12 +238,56 @@ void Game::loadLevel(const unsigned level) {
 }
 
 bool Game::isLevelFinished() const {
-  return board->isFinished();
+  return true;
+  // return board->isFinished();
 }
 
 void Game::renderGameFinished() {
-  glClearColor(0.0, 0.0, 0.75, 1.0);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  glClearColor(1.0, 1.0, 1.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glEnable(GL_TEXTURE_2D); 
+
+  int width, height;
+  bool hasAlpha;
+  GLubyte* textureData;
+
+  bool success = loadPngImage(GAME_WON_IMAGE, width, height, hasAlpha, &textureData);
+  if (!success) {
+    SDL_Log("Unable to load png file");
+    exit(EXIT_FAILURE);
+  }
+  else {
+    SDL_Log("PNG Image loaded: %d x %d. Transparency? %d", width, height, hasAlpha);
+  }
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  glTexImage2D(GL_TEXTURE_2D, 0, hasAlpha ? 4 : 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glShadeModel(GL_FLAT);
+
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);
+  glVertex3f(-1.0, -1.0, 0.0);
+  glTexCoord2f(1.0, 0.0);
+  glVertex3f(1.0, -1.0, 0.0);
+  glTexCoord2f(1.0, 1.0);
+  glVertex3f(1.0, 1.0, 0.0);
+  glTexCoord2f(0.0, 1.0);
+  glVertex3f(-1.0, 1.0, 0.0);
+  glEnd();
+
+  glDisable(GL_TEXTURE_2D);
+
   glFlush();
   SDL_GL_SwapWindow(window);
 }

@@ -10,7 +10,20 @@ set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(TEST_DIR "${PROJECT_SOURCE_DIR}/test")
 
 find_package(GLEW REQUIRED)
+if(NOT GLEW_FOUND)
+  message(SEND_ERROR "GLEW not found on your system")
+endif()
+
 find_package(OpenGL REQUIRED)
+if(NOT OPENGL_FOUND)
+  message(SEND_ERROR "OpenGL not found on your system")
+endif()
+
+find_package(PNG REQUIRED)
+if(NOT PNG_FOUND)
+  message(SEND_ERROR "libpng not found on your system")
+endif()
+
 include(FindPkgConfig)
 pkg_search_module(SDL2 REQUIRED sdl2)
 pkg_search_module(SDL2_IMAGE REQUIRED SDL2_image)
@@ -51,6 +64,7 @@ target_link_libraries(
   ${PROJECT_NAME}
   ${GLEW_LIBRARIES}
   ${OPENGL_LIBRARIES}
+  ${PNG_LIBRARIES}
   ${SDL2_LIBRARIES}
   ${SDL2_IMAGE_LIBRARIES}
   ${SDL2_TTF_LIBRARIES}
@@ -93,6 +107,7 @@ if (TEST)
     ${GTEST_LIBS_DIR}/libgtest_main.a
     ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARIES}
+    ${PNG_LIBRARIES}
     ${SDL2_LIBRARIES}
     ${SDL2_IMAGE_LIBRARIES}
     ${SDL2_TTF_LIBRARIES}

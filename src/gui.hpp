@@ -37,7 +37,7 @@ private:
 private:
   const int SCREEN_WIDTH = 800;
   const int SCREEN_HEIGHT = 600;
-  const int GAME_SPLASH_TIMEOUT = 500;
+  const int GAME_SPLASH_TIMEOUT = 1000;
   const vector<const char*> GAME_MENU_LABELS = vector<const char*>{"Stage 1", "Stage 2", "Stage 3", "Quit"}; // Quit must be the last option.
   const char* GAME_TITLE = "sokoban";
   const char* MENU_BACKGROUND_TEXTURE_PATH = "assets/menu_background.png";

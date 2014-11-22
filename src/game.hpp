@@ -18,15 +18,12 @@ class Game {
   public:
     Game(SDL_Window*, SDL_GLContext*, int screenWidth, int screenHeight);
     ~Game();
-    void renderScene();
+
+    void loadLevel(const unsigned level);
+    void setWindowSize(unsigned width, unsigned height);
     void setOldPosition(GLdouble x, GLdouble y);
     void setNewPosition(GLdouble xnew, GLdouble ynew);
-    void sokoReshape();
-
-    void setWindowSize(unsigned width, unsigned height);
-    void loadLevel(const unsigned level);
     bool isLevelFinished() const;
-    void renderGameFinished();
 
     void moveDownAction();
     void moveUpAction();
@@ -35,19 +32,20 @@ class Game {
     void undoAction();
     void restartAction();
 
-  private:
     /* Draws a cube of size edge centered at position (x, y, z). */
     void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge);
+    void sokoReshape();
+    void renderScene();
+    void renderGameFinished();
 
   private:
     SDL_Window* window;
     SDL_GLContext* glContext;
+    int screenWidth, screenHeight;
     SokoBoard *board = NULL;
-    int screenWidth;
-    int screenHeight;
+    GLdouble xold, yold;
 
-    GLdouble xold;
-    GLdouble yold;
+    const char* GAME_WON_IMAGE="assets/theend.png";
 };
 
 #endif // _GAME_H_
