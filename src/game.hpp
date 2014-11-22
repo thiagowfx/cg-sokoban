@@ -10,7 +10,7 @@
 #include <iostream>
 #include "soko_board.hpp"
 #include "helpers.hpp"
-#include "SOIL.h"
+#include "<SOIL/SOIL.h>"
 #include "SDL.h"
 #include "SDL_opengl.h"
 using namespace Sokoban;
