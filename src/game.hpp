@@ -30,7 +30,6 @@ class Game {
     void moveLeftAction();
     void moveRightAction();
     void undoAction();
-    void restartAction();
 
     /* Draws a cube of size edge centered at position (x, y, z). */
     void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge);

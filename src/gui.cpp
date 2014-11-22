@@ -145,7 +145,8 @@ void Gui::gameLoop() {
           break;
         case SDLK_r:
           if (context == CONTEXT_GAME) {
-            game->restartAction();
+            SDL_Log("Level restarted");
+            game->loadLevel(currentLevel);
           }
           break;
         case SDLK_u:
