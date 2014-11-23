@@ -12,6 +12,7 @@ System dependencies
 - SDL2
 - OpenGL 2.2+
 - libpng (usually already installed)
+- SOIL
 
 
 References
