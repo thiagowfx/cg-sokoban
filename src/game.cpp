@@ -76,6 +76,32 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
     glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.0); 
     glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.1);
 
+    /*Generating Textures*/
+    const char* targetPath[] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+
+    unsigned char* image;
+    int width, height;
+    glEnable(GL_TEXTURE_2D);        
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+    glGenTextures(6, textureTargetIDs);
+    for (int i=1; i<=5; i++){
+      glBindTexture(GL_TEXTURE_2D, textureTargetIDs[i]);
+      image = SOIL_load_image(targetPath[i], &width, &height,0, SOIL_LOAD_RGBA);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+      gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+      SOIL_free_image_data(image);
+    }
+
+    /*glGenTextures(6, textureCharacterIDs);
+    for (int i=1; i<=5; i++){
+      glBindTexture(GL_TEXTURE_2D, textureIDs[i]);
+      image = SOIL_load_image(targetPath[i], &width, &height,0, SOIL_LOAD_RGBA);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+      gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+      SOIL_free_image_data(image);
+    }*/
+
     /* Clean the background and sets it to the RGB parameters. */
     glClearColor(0.5, 0.5, 0.5, 1.0);
 
@@ -106,28 +132,27 @@ void Game::renderScene() {
   glMatrixMode(GL_MODELVIEW);
   const double size = 0.5;
 
-  const char* targetPath[] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
 
   for (unsigned row = 0; row < board->staticBoard.size(); ++row) {
     for (unsigned column = 0; column < board->staticBoard[0].size(); ++column) {
       SokoObject::Type t = board->staticBoard[row][column].getType();
       if (t == SokoObject::EMPTY) {
-        drawCube(row, column, 0, size, targetPath);
+        drawCube(row, column, 0, size, textureTargetIDs);
       }
       else if (t == SokoObject::CHARACTER) {
-        drawCube(row, column, 0, size, targetPath);
+        drawCube(row, column, 0, size, textureTargetIDs);
       }
       else if (t== SokoObject::LIGHT_BOX) {
-        drawCube(row, column, 0, size, targetPath);
+        drawCube(row, column, 0, size, textureTargetIDs);
       }
       else if (t == SokoObject::HEAVY_BOX) {
-        drawCube(row, column, 0, size, targetPath);
+        drawCube(row, column, 0, size, textureTargetIDs);
       }
       else if (t == SokoObject::WALL) {
-        drawCube(row, column, 0, size, targetPath);
+        drawCube(row, column, 0, size, textureTargetIDs);
       }
       else {
-        drawCube(row, column, 0, size, targetPath);
+        drawCube(row, column, 0, size, textureTargetIDs);
       }
     }
   }
@@ -136,7 +161,7 @@ void Game::renderScene() {
   SDL_GL_SwapWindow(window);
 }
 
-void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, const char** path) {
+void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs) {
   GLdouble halfEdge = edge / 2.0;
   GLfloat color[4] = {0, 0.3, 1, 1.0};
   GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
@@ -144,50 +169,9 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, const cha
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0);
 
-  unsigned char* image;
-  int width, height;
+
   glEnable(GL_TEXTURE_2D);        
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-  GLuint textureIDs[6];
-  glGenTextures(6, textureIDs);
-
-  glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
-  image = SOIL_load_image(path[0], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-  SOIL_free_image_data(image);
-
-  glBindTexture(GL_TEXTURE_2D, textureIDs[1]);
-  image = SOIL_load_image(path[1], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-  SOIL_free_image_data(image);
-
-  glBindTexture(GL_TEXTURE_2D, textureIDs[2]);
-  image = SOIL_load_image(path[2], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-  SOIL_free_image_data(image);
-
-  glBindTexture(GL_TEXTURE_2D, textureIDs[3]);
-  image = SOIL_load_image(path[3], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-  SOIL_free_image_data(image);
-
-  glBindTexture(GL_TEXTURE_2D, textureIDs[4]);
-  image = SOIL_load_image(path[4], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-  SOIL_free_image_data(image);
-
-  glBindTexture(GL_TEXTURE_2D, textureIDs[5]);
-  image = SOIL_load_image(path[5], &width, &height,0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-  SOIL_free_image_data(image);
-
 
   /*drawing the cube*/
   glPushMatrix();

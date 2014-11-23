@@ -33,7 +33,7 @@ class Game {
     void undoAction();
 
     /* Draws a cube of size edge centered at position (x, y, z). */
-    void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, const char** path);
+    void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs);
     void sokoReshape();
     void renderScene();
     void renderGameFinished();
@@ -46,6 +46,9 @@ class Game {
     GLdouble xold, yold;
 
     const char* GAME_WON_IMAGE="assets/the_end.png";
+
+    GLuint textureTargetIDs[6];
+    GLuint textureCharacterIDs[6];
 };
 
 #endif // _GAME_H_
