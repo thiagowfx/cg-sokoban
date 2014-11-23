@@ -106,7 +106,7 @@ void Game::renderScene() {
   glMatrixMode(GL_MODELVIEW);
   const double size = 0.5;
 
-  const char* targetPath[] = {"bottom.png", "top.png", "face1.png", "face2.png", "face3.png", "face4.png"};
+  const char* targetPath[] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
 
   for (unsigned row = 0; row < board->staticBoard.size(); ++row) {
     for (unsigned column = 0; column < board->staticBoard[0].size(); ++column) {
