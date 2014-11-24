@@ -1,6 +1,7 @@
 #include "soko_board.hpp"
 
 namespace Sokoban {
+
 SokoBoard::SokoBoard(std::string filename) {
   string line;
   ifstream mapFile(filename.c_str());
@@ -8,13 +9,13 @@ SokoBoard::SokoBoard(std::string filename) {
   if (mapFile.is_open()) {
     int x_now(0), y_now(0);
 
-    /* Read line-by-line. */
+    // Read line-by-line
     while (getline(mapFile,line)) {
       vector<SokoObject> staticObjLine;
       vector<SokoObject> dynamicObjLine;
       istringstream streamLine(line);
 
-      /* Read a line. */
+      // Read a line
       while(!streamLine.eof()) {
         SokoObject staticObj;
         SokoObject dynamicObj;
@@ -23,7 +24,7 @@ SokoBoard::SokoBoard(std::string filename) {
         streamLine >> i_type;
         SokoObject::Type type = SokoObject::Type(i_type);
 
-        /* Update counters. */
+        // Update counters
         if (type == SokoObject::LIGHT_BOX || type == SokoObject::HEAVY_BOX) {
           ++boxes;
         }
@@ -31,7 +32,7 @@ SokoBoard::SokoBoard(std::string filename) {
           ++targets;
         }
 
-        /* Build both boards. */
+        // Build both boards
         if(type == SokoObject::EMPTY || type == SokoObject::TARGET || type == SokoObject::WALL) {
           staticObj = SokoObject(type);
           dynamicObj = SokoObject(SokoObject::EMPTY);
@@ -44,39 +45,54 @@ SokoBoard::SokoBoard(std::string filename) {
         }
         staticObjLine.push_back(staticObj);
         dynamicObjLine.push_back(dynamicObj);
+        x_now++;
       }
 
       staticBoard.push_back(staticObjLine);
-      dynamicBoard.push_back(dynamicObjLine);        
+      dynamicBoard.push_back(dynamicObjLine);
+      x_now = 0;
+      y_now++;
     }
     unresolvedBoxes = boxes;
     mapFile.close();
   }
   else {
-    SDL_Log("Unable to open file %s", filename.c_str());
-    exit(EXIT_FAILURE);
+    cout << "Unable to open file " << filename.c_str() << endl;
   }
 }
 
+/**
+TEMP:  
+  stack < ??? > undoTree;
+  Precisa guardar o que foi movido, e pra onde. 
+  O personagem sempre vai ser guardado.
+  Pior caso: guardar um personagem *e* uma caixa.
+
+  Criar:
+  void undo();
+
+  ifs e elses, lembrar:
+  - undo
+  - unresolvedBoxesNumber (caso tenha movido para dentro ou para fora de um target
+  - manipular todos os movimentos possiveis (caixa-caixa, caixa-parede, caixa-vazio, vazio, etc)
+  - se mover alguma caixa, tomar cuidado para texturas: leve e pesada.
+*/
 void SokoBoard::move(Direction direction) {
   SokoPosition nextPosition = characterPosition + direction;
-
-  if(staticBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::EMPTY) {
-
-    /* Character movement only. */
-    if(dynamicBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::EMPTY) {
-      dynamicBoard[nextPosition.x][nextPosition.y] = SokoObject(direction);
-      dynamicBoard[characterPosition.x][characterPosition.y] = SokoObject(SokoObject::EMPTY);
+  if(staticBoard[nextPosition.y][nextPosition.x].getType() == SokoObject::EMPTY) {
+    // Character movement only
+    if(dynamicBoard[nextPosition.y][nextPosition.x].getType() == SokoObject::EMPTY) {
+      dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
+      dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
       characterPosition = nextPosition;
-    }
-
-    else if(dynamicBoard[nextPosition.x][nextPosition.y].getType() == SokoObject::LIGHT_BOX) {
+    } else if(dynamicBoard[nextPosition.x][nextPosition.y].getType() 
+      == SokoObject::LIGHT_BOX) { // Box also moving
       SokoPosition boxNextPosition = nextPosition + direction;
-      if(dynamicBoard[boxNextPosition.x][boxNextPosition.y].getType() == SokoObject::EMPTY &&
-        staticBoard[boxNextPosition.x][boxNextPosition.y].getType() == SokoObject::EMPTY) {
-          dynamicBoard[boxNextPosition.x][boxNextPosition.y] = SokoObject(SokoObject::LIGHT_BOX);
-          dynamicBoard[nextPosition.x][nextPosition.y] = SokoObject(direction);
-          dynamicBoard[characterPosition.x][characterPosition.y] = SokoObject(SokoObject::EMPTY);
+      if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
+        staticBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY) {
+          dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::LIGHT_BOX);
+          dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
+          dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
           characterPosition = nextPosition;
       }
     }
@@ -92,14 +108,12 @@ string SokoBoard::toString() const {
       ss << " " << obj.getType();
     ss << endl;
   }
-
   ss<< "Static Board: " << endl;
   for(auto line : staticBoard) {
     for(auto obj : line)
       ss << " " << obj.getType();
     ss << endl;
   }
-
   return ss.str();
 }
 
@@ -122,6 +136,14 @@ unsigned SokoBoard::getNumberOfUnresolvedBoxes() const {
 
 bool SokoBoard::isFinished() const {
   return unresolvedBoxes == 0;
+}
+
+SokoObject SokoBoard::getDynamic(int x, int y) {
+  return dynamicBoard[y][x];
+}
+
+SokoObject SokoBoard::getStatic(int x, int y) {
+  return staticBoard[y][x];
 }
 
 }

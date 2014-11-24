@@ -6,35 +6,84 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "helpers.hpp"
 #include "soko_position.hpp"
 #include "soko_position.hpp"
 #include "soko_object.hpp"
 using namespace std;
 
 namespace Sokoban {
-  /** This class represents a Sokoban board. */
+  /** 
+  This class represents a Sokoban board.  
+  */
   class SokoBoard {
     public:
+      /**
+      Constructs a new SokoBoard from @filename.
+      */
       SokoBoard(std::string filename);
 
-      /* Move the character to direction indicated by @direction. */
+      /**
+      Move the character to direction indicated by @direction.
+      */      
       void move(Direction direction); // TODO
 
+      /**
+      Prints a representation of this class to a ostream.
+      */
       friend ostream& operator<<(ostream&, const SokoBoard&);
+
+      /**
+      Return the string representation of this class
+      */
       std::string toString() const;
+
+      /**
+      Get the number of boxes of this board.
+      */
       unsigned getNumberOfBoxes() const;
+
+      /**
+      Get the number of targets of this board.
+      */
       unsigned getNumberofTargets() const;
+
+      /**
+      Get the number of boxes not yet moved to a target in this board.
+      */
       unsigned getNumberOfUnresolvedBoxes() const;
+
+      /**
+      Returns true if this board is finished, with all boxes moved to targets.
+      */
       bool isFinished() const;
 
-  public:
-      std::vector< std::vector<SokoObject> > dynamicBoard;
-      std::vector< std::vector<SokoObject> > staticBoard;
+      /**
+      Returns the element in position x, y of the dynamic board
+      */
+      SokoObject getDynamic(int x, int y);
+
+      /**
+      Returns the element in position x, y of the static board
+      */
+      SokoObject getStatic(int x, int y);
 
     private:
-      unsigned unresolvedBoxes, boxes = 0, targets = 0;
+      unsigned unresolvedBoxes, boxes, targets;
+
+      /**
+      The character position.
+      */
       SokoPosition characterPosition;
+
+       /**
+      Stores dynamic SokoObjects of a board, such as boxes and the character.
+      */
+      std::vector< std::vector<SokoObject> > dynamicBoard;
+
+      /**
+      Stores static SokoObjects of a board, such as walls and targets. 
+      */
+      std::vector< std::vector<SokoObject> > staticBoard;
   };
 }
 

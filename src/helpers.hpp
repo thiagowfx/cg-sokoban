@@ -13,15 +13,6 @@ typedef enum Context {
   CONTEXT_GAME_WON = 2
 } Context;
 
-namespace Sokoban {
-  typedef enum Direction {
-    UP = 0,
-    RIGHT = 1,
-    DOWN = 2,
-    LEFT = 3
-  } Direction;
-}
-
 void LOG_SDL_DIE(const char*);
 bool isMovementKey(const SDL_Keycode& key);
 bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2);
