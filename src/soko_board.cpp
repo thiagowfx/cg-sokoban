@@ -10,7 +10,7 @@ SokoBoard::SokoBoard(std::string filename) :
   if (mapFile.is_open()) {
     int x_now(0), y_now(0);
 
-    // Read line-by-line
+    // Read line by line
     while (getline(mapFile,line)) {
       vector<SokoObject> staticObjLine;
       vector<SokoObject> dynamicObjLine;
