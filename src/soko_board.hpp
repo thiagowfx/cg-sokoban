@@ -43,6 +43,16 @@ namespace Sokoban {
       unsigned getNumberOfBoxes() const;
 
       /**
+      Get the number of light boxes of this board.
+      */
+      unsigned getNumberOfLightBoxes() const;
+
+      /**
+      Get the number of heavy boxes of this board.
+      */
+      unsigned getNumberOfHeavyBoxes() const;
+
+      /**
       Get the number of targets of this board.
       */
       unsigned getNumberofTargets() const;
@@ -51,6 +61,16 @@ namespace Sokoban {
       Get the number of boxes not yet moved to a target in this board.
       */
       unsigned getNumberOfUnresolvedBoxes() const;
+
+      /**
+      Get the number of light boxes not yet moved to a target in this board.
+      */
+      unsigned getNumberOfUnresolvedLightBoxes() const;
+
+      /**
+      Get the number of heavy boxes not yet moved to a target in this board.
+      */
+      unsigned getNumberOfUnresolvedHeavyBoxes() const;
 
       /**
       Returns true if this board is finished, with all boxes moved to targets.

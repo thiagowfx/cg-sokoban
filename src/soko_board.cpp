@@ -10,7 +10,7 @@ SokoBoard::SokoBoard(std::string filename) :
   if (mapFile.is_open()) {
     int x_now(0), y_now(0);
 
-    // Read line by line
+    // Read line-by-line
     while (getline(mapFile,line)) {
       vector<SokoObject> staticObjLine;
       vector<SokoObject> dynamicObjLine;
@@ -149,7 +149,15 @@ ostream& operator<<(ostream& os, const SokoBoard& s) {
 }
 
 unsigned SokoBoard::getNumberOfBoxes() const {
-  return boxes;
+  return lightBoxes + heavyBoxes;
+}
+
+unsigned SokoBoard::getNumberOfLightBoxes() const {
+  return lightBoxes;
+}
+
+unsigned SokoBoard::getNumberOfHeavyBoxes() const {
+  return heavyBoxes;
 }
 
 unsigned SokoBoard::getNumberofTargets() const {
@@ -157,11 +165,19 @@ unsigned SokoBoard::getNumberofTargets() const {
 }
 
 unsigned SokoBoard::getNumberOfUnresolvedBoxes() const {
-  return unresolvedBoxes;
+  return unresolvedLightBoxes + unresolvedHeavyBoxes;
+}
+
+unsigned SokoBoard::getNumberOfUnresolvedLightBoxes() const {
+  return unresolvedLightBoxes;
+}
+
+unsigned SokoBoard::getNumberOfUnresolvedHeavyBoxes() const {
+  return unresolvedHeavyBoxes;
 }
 
 bool SokoBoard::isFinished() const {
-  return unresolvedBoxes == 0;
+  return getNumberOfUnresolvedBoxes()  == 0;
 }
 
 SokoObject SokoBoard::getDynamic(int x, int y) {
