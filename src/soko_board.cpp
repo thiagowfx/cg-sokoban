@@ -81,6 +81,7 @@ TEMP:
   - se mover alguma caixa, tomar cuidado para texturas: leve e pesada.
 */
 void SokoBoard::move(Direction direction) {
+  bool boxMoved = false;
   SokoPosition nextPosition = characterPosition + direction;
   if(nextPosition.y >= staticBoard.size()) //checking if it is leaving the board y
     return;  // TODO: maybe do something
@@ -102,10 +103,11 @@ void SokoBoard::move(Direction direction) {
           return;  // TODO: maybe do something
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
         staticBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY) {
-          dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::LIGHT_BOX);
-          dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
-          dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
-          characterPosition = nextPosition;
+        dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::LIGHT_BOX);
+        dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
+        dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
+        characterPosition = nextPosition;
+        boxMoved = true;
       }
     } else if(dynamicBoard[nextPosition.y][nextPosition.x].getType() 
       == SokoObject::HEAVY_BOX && unresolvedLightBoxes == 0) {
@@ -117,10 +119,11 @@ void SokoBoard::move(Direction direction) {
         return;  // TODO: maybe do something
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
         staticBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY) {
-          dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::HEAVY_BOX);
-          dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
-          dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
-          characterPosition = nextPosition;
+        dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::HEAVY_BOX);
+        dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
+        dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
+        characterPosition = nextPosition;
+        boxMoved = true;
       }
     }
   }
@@ -146,6 +149,25 @@ string SokoBoard::toString() const {
 ostream& operator<<(ostream& os, const SokoBoard& s) {
   os << s.toString();
   return os;
+}
+
+void SokoBoard::checkResolvedBoxes() {
+  unresolvedLightBoxes = lightBoxes;
+  unresolvedHeavyBoxes = heavyBoxes;
+  /* Every test here is necessary (and done only when necessary).
+   If you don't trust me, waste your time and please, increase the counter.
+   Time wasted with these tests: 0.12 hours.
+   */
+  for(int y = 0; y < staticBoard.size(); y++) {
+    for(int x = 0; x < staticBoard[y].size(); x++) {
+      if(staticBoard[y][x].getType() == SokoObject::TARGET && 
+        dynamicBoard[y][x].getType() == SokoObject::LIGHT_BOX)
+        unresolvedLightBoxes--;
+      else if(staticBoard[y][x].getType() == SokoObject::TARGET && 
+        dynamicBoard[y][x].getType() == SokoObject::HEAVY_BOX)
+        unresolvedHeavyBoxes--;
+    }
+  }
 }
 
 unsigned SokoBoard::getNumberOfBoxes() const {

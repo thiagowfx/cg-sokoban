@@ -105,6 +105,11 @@ namespace Sokoban {
       Stores static SokoObjects of a board, such as walls and targets. 
       */
       std::vector< std::vector<SokoObject> > staticBoard;
+
+      /**
+      Calculates how many boxes are resolved
+      */
+      void checkResolvedBoxes();
   };
 }
 
