@@ -2,7 +2,8 @@
 
 namespace Sokoban {
 
-SokoBoard::SokoBoard(std::string filename) {
+SokoBoard::SokoBoard(std::string filename) : 
+    lightBoxes(0), heavyBoxes(0), targets(0) {
   string line;
   ifstream mapFile(filename.c_str());
 
@@ -25,12 +26,13 @@ SokoBoard::SokoBoard(std::string filename) {
         SokoObject::Type type = SokoObject::Type(i_type);
 
         // Update counters
-        if (type == SokoObject::LIGHT_BOX || type == SokoObject::HEAVY_BOX) {
-          ++boxes;
-        }
-        else if (type == SokoObject::TARGET) {
-          ++targets;
-        }
+        if (type == SokoObject::LIGHT_BOX)
+          lightBoxes++;
+        if (type == SokoObject::HEAVY_BOX)
+          heavyBoxes++;
+
+        else if (type == SokoObject::TARGET)
+          targets++;
 
         // Build both boards
         if(type == SokoObject::EMPTY || type == SokoObject::TARGET || type == SokoObject::WALL) {
@@ -53,7 +55,8 @@ SokoBoard::SokoBoard(std::string filename) {
       x_now = 0;
       y_now++;
     }
-    unresolvedBoxes = boxes;
+    unresolvedLightBoxes = lightBoxes;
+    unresolvedHeavyBoxes = heavyBoxes;
     mapFile.close();
   }
   else {
@@ -79,18 +82,42 @@ TEMP:
 */
 void SokoBoard::move(Direction direction) {
   SokoPosition nextPosition = characterPosition + direction;
+  if(nextPosition.y >= staticBoard.size()) //checking if it is leaving the board y
+    return;  // TODO: maybe do something
+  if(nextPosition.x >= staticBoard[nextPosition.y].size()) //checking if it is leaving the board x
+    return;  // TODO: maybe do something
   if(staticBoard[nextPosition.y][nextPosition.x].getType() == SokoObject::EMPTY) {
     // Character movement only
     if(dynamicBoard[nextPosition.y][nextPosition.x].getType() == SokoObject::EMPTY) {
       dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
       dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
       characterPosition = nextPosition;
-    } else if(dynamicBoard[nextPosition.x][nextPosition.y].getType() 
-      == SokoObject::LIGHT_BOX) { // Box also moving
+    } else if(dynamicBoard[nextPosition.y][nextPosition.x].getType() 
+      == SokoObject::LIGHT_BOX) { 
+      // Light box also moving
       SokoPosition boxNextPosition = nextPosition + direction;
+        if(boxNextPosition.y >= staticBoard.size()) //checking if box is leaving board's y
+          return;  // TODO: maybe do something
+        if(boxNextPosition.x >= staticBoard[nextPosition.y].size()) //checking if box is leaving board's x
+          return;  // TODO: maybe do something
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
         staticBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY) {
           dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::LIGHT_BOX);
+          dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
+          dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
+          characterPosition = nextPosition;
+      }
+    } else if(dynamicBoard[nextPosition.y][nextPosition.x].getType() 
+      == SokoObject::HEAVY_BOX && unresolvedLightBoxes == 0) {
+      // Heavy box also moving
+      SokoPosition boxNextPosition = nextPosition + direction;
+      if(boxNextPosition.y >= staticBoard.size()) //checking if box is leaving board's y
+        return;  // TODO: maybe do something
+      if(boxNextPosition.x >= staticBoard[nextPosition.y].size()) //checking if box is leaving board's x
+        return;  // TODO: maybe do something
+      if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
+        staticBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY) {
+          dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::HEAVY_BOX);
           dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
           dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
           characterPosition = nextPosition;
@@ -101,7 +128,6 @@ void SokoBoard::move(Direction direction) {
 
 string SokoBoard::toString() const {
   stringstream ss;
-
   ss<< "Dynamic Board: " << endl;
   for(auto line : dynamicBoard) {
     for(auto obj : line)

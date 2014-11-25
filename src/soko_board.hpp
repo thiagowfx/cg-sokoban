@@ -68,7 +68,8 @@ namespace Sokoban {
       SokoObject getStatic(int x, int y);
 
     private:
-      unsigned unresolvedBoxes, boxes, targets;
+      unsigned unresolvedLightBoxes, unresolvedHeavyBoxes, 
+        lightBoxes, heavyBoxes, targets;
 
       /**
       The character position.
