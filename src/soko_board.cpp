@@ -81,7 +81,8 @@ TEMP:
   - se mover alguma caixa, tomar cuidado para texturas: leve e pesada.
 */
 void SokoBoard::move(Direction direction) {
-  bool boxMoved = false;
+  bool boxMoved = false, characterMoved = false;
+
   SokoPosition nextPosition = characterPosition + direction;
   if(nextPosition.y >= staticBoard.size()) //checking if it is leaving the board y
     return;  // TODO: maybe do something
@@ -93,6 +94,7 @@ void SokoBoard::move(Direction direction) {
       dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(direction);
       dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
       characterPosition = nextPosition;
+      characterMoved = true;
     } else if(dynamicBoard[nextPosition.y][nextPosition.x].getType() 
       == SokoObject::LIGHT_BOX) { 
       // Light box also moving
@@ -108,6 +110,7 @@ void SokoBoard::move(Direction direction) {
         dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
         characterPosition = nextPosition;
         boxMoved = true;
+        characterMoved = true;
       }
     } else if(dynamicBoard[nextPosition.y][nextPosition.x].getType() 
       == SokoObject::HEAVY_BOX && unresolvedLightBoxes == 0) {
@@ -124,9 +127,14 @@ void SokoBoard::move(Direction direction) {
         dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
         characterPosition = nextPosition;
         boxMoved = true;
+        characterMoved = true;
       }
     }
   }
+  if(boxMoved)
+    checkResolvedBoxes();
+  if(characterMoved)
+    moves.push(Movement(direction, boxMoved));
 }
 
 string SokoBoard::toString() const {
