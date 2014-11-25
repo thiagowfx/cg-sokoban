@@ -7,7 +7,11 @@ int main(int argc, char** argv) {
   return EXIT_SUCCESS;
 }
 
-void testGameLogic() {
+
+/**
+This function starts the game in ASCII mode. Useful for testing, but not so funny =/
+*/
+void startASCIIMode() {
   SokoBoard board("map1.soko");
   bool go = true;
   char command;
@@ -18,7 +22,7 @@ void testGameLogic() {
     cin >> command;
     switch(command) {
     case 'w':
-      board.move(Direction::DOWN);
+      board.move(Direction::DOWN);  // Yes, up and down are inverted. Your life is a lie.
       break;
     case 's':
       board.move(Direction::UP);
