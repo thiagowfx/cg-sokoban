@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="splash.svg">
   <defs
      id="defs4">
     <pattern
@@ -101,14 +101,20 @@
        x="38.385796"
        y="24.865871"
        transform="translate(0,308.2677)"
-       style="fill:url(#sand_bitmap);fill-opacity:1;filter:url(#filter5704);opacity:0.95" />
+       style="fill:url(#sand_bitmap);fill-opacity:1;filter:url(#filter5704);opacity:0.95"
+       inkscape:export-filename="/home/thiago/Dropbox/ufrj/2014.2 - Computação Gráfica/cg-sokoban/assets/textures/text3007.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        x="531.97498"
        y="827.87488"
        id="text2985"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/thiago/Dropbox/ufrj/2014.2 - Computação Gráfica/cg-sokoban/assets/textures/text3007.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan2987"
          x="531.97498"
@@ -130,7 +136,10 @@
        x="531.68762"
        y="454.02109"
        id="text3001"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/thiago/Dropbox/ufrj/2014.2 - Computação Gráfica/cg-sokoban/assets/textures/text3007.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan3003"
          x="531.68762"
@@ -147,7 +156,9 @@
        x="530.87146"
        y="666.42297"
        id="text3007"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan3009"
          x="530.87146"
