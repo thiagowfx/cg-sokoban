@@ -47,8 +47,24 @@ class Game {
 
     const char* GAME_WON_IMAGE="assets/the_end.png";
 
+    const char* targetPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
     GLuint textureTargetIDs[6];
+
+    const char* characterPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
     GLuint textureCharacterIDs[6];
+
+    const char* lightBoxPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    GLuint textureLightBoxIDs[6];
+
+    const char* heavyBoxPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    GLuint textureHeavyBoxIDs[6];
+
+    const char* wallPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    GLuint textureWallIDs[6];
+
+    const char* floorPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    GLuint textureFloorIDs[6];
+
 };
 
 #endif // _GAME_H_
