@@ -45,7 +45,7 @@ class Game {
     SokoBoard *board = NULL;
     GLdouble xold, yold;
 
-    const char* GAME_WON_IMAGE="assets/the_end.png";
+    const char* GAME_END_IMAGE="assets/textures/end_game.png";
 
     GLuint textureTargetIDs[6];
     GLuint textureCharacterIDs[6];

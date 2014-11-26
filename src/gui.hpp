@@ -37,11 +37,11 @@ private:
 private:
   const int SCREEN_WIDTH = 800;
   const int SCREEN_HEIGHT = 600;
-  const int GAME_SPLASH_TIMEOUT = 1000;
+  const int GAME_SPLASH_TIMEOUT = 1200;
   const vector<const char*> GAME_MENU_LABELS = vector<const char*>{"Stage 1", "Stage 2", "Stage 3", "Quit"}; // Quit must be the last option.
   const char* GAME_TITLE = "sokoban";
-  const char* MENU_BACKGROUND_TEXTURE_PATH = "assets/menu_background.png";
-  const char* SPLASH_TEXTURE_PATH = "assets/gopher.jpg";
+  const char* MENU_BACKGROUND_TEXTURE_PATH = "assets/textures/menu_background.png";
+  const char* SPLASH_TEXTURE_PATH = "assets/textures/splash.png";
   const char* GAME_FONT_PATH = "assets/Roboto-Regular.ttf";
   const SDL_Color WINDOW_CLEAR_COLOR = SDL_Color{225, 225, 225, 255};
   const SDL_Color MENU_LABEL_IN_COLOR = SDL_Color{160, 120, 60, 255};

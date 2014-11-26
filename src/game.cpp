@@ -325,7 +325,7 @@ void Game::renderGameFinished() {
   bool hasAlpha;
   GLubyte* textureData;
 
-  bool success = loadPngImage(GAME_WON_IMAGE, width, height, hasAlpha, &textureData);
+  bool success = loadPngImage(GAME_END_IMAGE, width, height, hasAlpha, &textureData);
   if (!success) {
     SDL_Log("Unable to load png file");
     exit(EXIT_FAILURE);
@@ -343,14 +343,10 @@ void Game::renderGameFinished() {
   glShadeModel(GL_FLAT);
 
   glBegin(GL_QUADS);
-  glTexCoord2f(0.0, 0.0);
-  glVertex3f(-1.0, -1.0, 0.0);
-  glTexCoord2f(1.0, 0.0);
-  glVertex3f(1.0, -1.0, 0.0);
-  glTexCoord2f(1.0, 1.0);
-  glVertex3f(1.0, 1.0, 0.0);
-  glTexCoord2f(0.0, 1.0);
-  glVertex3f(-1.0, 1.0, 0.0);
+  glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, 0.0);
+  glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, 0.0);
+  glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0.0);
+  glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, 0.0);
   glEnd();
 
   glDisable(GL_TEXTURE_2D);
