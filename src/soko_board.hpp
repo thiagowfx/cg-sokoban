@@ -4,10 +4,9 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <stack>
 #include <string>
 #include <vector>
-#include <stack>
-#include "soko_position.hpp"
 #include "soko_position.hpp"
 #include "soko_object.hpp"
 using namespace std;
@@ -52,6 +51,12 @@ namespace Sokoban {
       /// Get the number of heavy boxes not yet moved to a target in this board.
       unsigned getNumberOfUnresolvedHeavyBoxes() const;
 
+      /// Return the number of rows of the static board.
+      unsigned getNumberOfRows() const;
+
+      /// Return the number of columns of the static board.
+      unsigned getNumberOfColumns() const;
+
       /// Returns true if this board is finished, with all boxes moved to targets.
       bool isFinished() const;
 
@@ -60,6 +65,9 @@ namespace Sokoban {
 
       /// Returns the element in position x, y of the static board
       SokoObject getStatic(int x, int y);
+
+      /// Undo the last movement.
+      void undo();
 
     private:
       unsigned unresolvedLightBoxes, unresolvedHeavyBoxes, 
@@ -75,6 +83,7 @@ namespace Sokoban {
           /// True if a box was moved with this movement
           bool boxMoved;
       };
+
       /// The stack with all the movements that happened
       std::stack<Movement> moves;
 
@@ -90,8 +99,8 @@ namespace Sokoban {
       /// Stores static SokoObjects of a board, such as walls and targets.
       std::vector< std::vector<SokoObject> > staticBoard;
 
-      /// Calculates how many boxes are resolved
-      void checkResolvedBoxes();
+      /// Update how many boxes are (un)resolved.
+      void updateUnresolvedBoxes();
   };
 }
 

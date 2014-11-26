@@ -1,8 +1,7 @@
-#ifndef SOKOBAN_DIRECTION
-#define SOKOBAN_DIRECTION
+#ifndef _SOKO_DIRECTION_H_
+#define _SOKO_DIRECTION_H_
 
 namespace Sokoban {
-
   enum Direction {
     UP = 0,
     RIGHT = 1,
@@ -10,4 +9,4 @@ namespace Sokoban {
     LEFT = 3
   };
 }
-#endif
+#endif // _SOKO_DIRECTION_H_

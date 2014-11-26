@@ -169,9 +169,9 @@ void Game::renderScene() {
   const double size = 0.5;
 
 
-  for (unsigned row = 0; row < board->staticBoard.size(); row++) {
-    for (unsigned column = 0; column < board->staticBoard[0].size(); column++) {
-      SokoObject::Type t = board->staticBoard[row][column].getType();
+  for (unsigned row = 0; row < board->getNumberOfRows(); row++) {
+    for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
+      SokoObject::Type t = board->getStatic(column, row).getType();
       if (t == SokoObject::EMPTY) {
         drawCube(row, column, 0, size, textureTargetIDs);
       }
@@ -320,8 +320,7 @@ void Game::loadLevel(const unsigned level) {
 }
 
 bool Game::isLevelFinished() const {
-  return true;
-  // return board->isFinished();
+  return board->isFinished();
 }
 
 void Game::renderGameFinished() {
@@ -371,21 +370,26 @@ void Game::renderGameFinished() {
 }
 
 void Game::moveDownAction() {
-
+  board->move(Direction::DOWN);
+  SDL_Log(board->toString().c_str());
 }
 
 void Game::moveUpAction() {
-
+  board->move(Direction::UP);
+  SDL_Log(board->toString().c_str());
 }
 
 void Game::moveLeftAction() {
-
+  board->move(Direction::LEFT);
+  SDL_Log(board->toString().c_str());
 }
 
 void Game::moveRightAction() {
-
+  board->move(Direction::RIGHT);
+  SDL_Log(board->toString().c_str());
 }
 
 void Game::undoAction() {
-
+  board->undo();
+  SDL_Log(board->toString().c_str());
 }

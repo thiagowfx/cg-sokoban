@@ -100,7 +100,7 @@ void Gui::gameLoop() {
         if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym)) {
           if (game->isLevelFinished()) {
             if (currentLevel == (GAME_MENU_LABELS.size() - 1)) {
-              SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_WON now.", currentLevel);
+              SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_WON.", currentLevel);
               context = CONTEXT_GAME_WON;
             }
             else {

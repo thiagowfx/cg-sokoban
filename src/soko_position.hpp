@@ -17,24 +17,19 @@ namespace Sokoban {
   */
   class SokoPosition {
     public:
-      /**
-      Constructs a new SokoPosition.
-      */
+      /// Constructs a new SokoPosition.
       SokoPosition();
 
-      /**
-      Constructs a new SokoPosition on (x,y).
-      */
+      /// Constructs a new SokoPosition on (x,y).
       SokoPosition(int x, int y);
 
-      /**
-      Return a new SokoPosition, moved on the specified direction.
-      */
+      /// Return a new SokoPosition, moved on the specified direction.
       SokoPosition operator+(const Direction&) const;
 
-      /**
-      The coordinates (x,y) of this position.
-      */
+      /// Return a new SokoPosition, moved on the specified direction.
+      SokoPosition operator-(const Direction&) const;
+
+      /// The coordinates (x,y) of this position.
       int x, y;
   };
 }

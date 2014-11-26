@@ -1,16 +1,14 @@
-#include <iostram>
+#include <iostream>
 #include "gui.hpp"
 
 int main(int argc, char** argv) {
   Gui *gui = new Gui();
   gui->gameLoop();
+  // startASCIIMode();
   return EXIT_SUCCESS;
 }
 
-
-/**
-This function starts the game in ASCII mode. Useful for testing, but not so funny =/
-*/
+/// This function starts the game in ASCII mode. Useful for testing, but not so funny =/
 void startASCIIMode() {
   SokoBoard board("map1.soko");
   bool go = true;
@@ -22,10 +20,10 @@ void startASCIIMode() {
     cin >> command;
     switch(command) {
     case 'w':
-      board.move(Direction::DOWN);  // Yes, up and down are inverted. Your life is a lie.
+      board.move(Direction::UP);
       break;
     case 's':
-      board.move(Direction::UP);
+      board.move(Direction::DOWN);
       break;
     case 'd':
       board.move(Direction::RIGHT);
@@ -41,5 +39,4 @@ void startASCIIMode() {
     }
   }
   system("pause");
-  return 0;
 }

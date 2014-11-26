@@ -18,9 +18,9 @@ TEST_F(SokoBoardTest, isValidBoardTest) {
 
   /* Only one character per board. */
   int characters = 0;
-  for (unsigned i = 0; i < bt1.dynamicBoard.size(); ++i)
-    for (unsigned j = 0; j < bt1.dynamicBoard[0].size(); ++j)
-      if (bt1.dynamicBoard[i][j].getType() == SokoObject::CHARACTER)
+  for (unsigned i = 0; i < bt1.getNumberOfColumns(); ++i)
+    for (unsigned j = 0; j < bt1.getNumberOfRows(); ++j)
+      if (bt1.getDynamic(j,i).getType() == SokoObject::CHARACTER)
         ++characters;
   EXPECT_EQ(characters, 1);
 }

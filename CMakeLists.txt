@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 set(PROJECT_NAME "sokoban")
 project(${PROJECT_NAME} C CXX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -g -Wall -Wno-sign-compare")
 
 set(ASSETS_DIR "${PROJECT_SOURCE_DIR}/assets")
 set(DEST_DIR "${PROJECT_SOURCE_DIR}/dest")
@@ -47,7 +47,7 @@ set(
   ${SRC_DIR}/menu.cpp
   ${SRC_DIR}/soko_board.cpp
   ${SRC_DIR}/soko_character.hpp
-  ${SRC_DIR}/soko_object.cpp
+  ${SRC_DIR}/soko_object.hpp
   ${SRC_DIR}/soko_position.cpp
   )
 
