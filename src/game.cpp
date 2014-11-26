@@ -173,25 +173,28 @@ void Game::renderScene() {
     for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
       SokoObject::Type t = board->getStatic(column, row).getType();
       if (t == SokoObject::EMPTY) {
-        drawCube(row, column, 0, size, textureTargetIDs);
-      }
-      else if (t == SokoObject::CHARACTER) {
-        drawCube(row, column, 0, size, textureTargetIDs);
-      }
-      else if (t== SokoObject::LIGHT_BOX) {
-        drawCube(row, column, 0.5, size, textureLightBoxIDs);
-        drawCube(row, column, 0, size, textureTargetIDs);
-      }
-      else if (t == SokoObject::HEAVY_BOX) {
-        drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
-        drawCube(row, column, 0, size, textureTargetIDs);
+        drawCube(row, column, 0, size, textureFloorIDs);
       }
       else if (t == SokoObject::WALL) {
         drawCube(row, column, 0.5, size, textureWallIDs);
-        drawCube(row, column, 0, size, textureTargetIDs);
       }
       else {
         drawCube(row, column, 0, size, textureTargetIDs);
+      }
+    }
+  }
+
+    for (unsigned row = 0; row < board->getNumberOfRows(); row++) {
+    for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
+      SokoObject::Type t = board->getDynamic(column, row).getType();
+      if (t == SokoObject::CHARACTER) {
+        drawCube(row, column, 0.5, size, textureCharacterIDs);
+      }
+      else if (t== SokoObject::LIGHT_BOX) {
+        drawCube(row, column, 0.5, size, textureLightBoxIDs);
+      }
+      else if (t == SokoObject::HEAVY_BOX) {
+        drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
       }
     }
   }
