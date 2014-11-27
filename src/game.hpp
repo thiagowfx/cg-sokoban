@@ -47,22 +47,22 @@ class Game {
 
     const char* GAME_END_IMAGE="assets/textures/end_game.png";
 
-    const char* targetPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
     GLuint textureTargetIDs[6];
 
-    const char* characterPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    const char* characterPath[6] = {"assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg"};
     GLuint textureCharacterIDs[6];
 
-    const char* lightBoxPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    const char* lightBoxPath[6] = {"assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png"};
     GLuint textureLightBoxIDs[6];
 
-    const char* heavyBoxPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    const char* heavyBoxPath[6] = {"assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png"};
     GLuint textureHeavyBoxIDs[6];
 
-    const char* wallPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    const char* wallPath[6] = {"assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png"};
     GLuint textureWallIDs[6];
 
-    const char* floorPath[6] = {"assets/bottom.png", "assets/top.png", "assets/face1.png", "assets/face2.png", "assets/face3.png", "assets/face4.png"};
+    const char* floorPath[6] = {"assets/wall.png", "assets/ftop.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png"};
     GLuint textureFloorIDs[6];
 
 };

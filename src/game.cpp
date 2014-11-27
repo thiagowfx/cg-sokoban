@@ -177,6 +177,7 @@ void Game::renderScene() {
       }
       else if (t == SokoObject::WALL) {
         drawCube(row, column, 0.5, size, textureWallIDs);
+        drawCube(row, column, 0, size, textureFloorIDs);
       }
       else {
         drawCube(row, column, 0, size, textureTargetIDs);
@@ -222,51 +223,52 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* t
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
+  glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
   glBegin(GL_POLYGON);
-    glBindTexture(GL_TEXTURE_2D, textureIDs[0]);   //Enables the texture for the bottom
+       //Enables the texture for the bottom
     glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, -halfEdge );
     glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge, -halfEdge );
     glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
     glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
+  glBindTexture(GL_TEXTURE_2D, textureIDs[1]);   //Enables the texture for the top
   glBegin(GL_POLYGON);
-    glBindTexture(GL_TEXTURE_2D, textureIDs[1]);   //Enables the texture for the top
     glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, halfEdge );
     glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge, halfEdge );
     glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge, halfEdge );
     glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, halfEdge );
   glEnd();
 
+  glBindTexture(GL_TEXTURE_2D, textureIDs[2]);  
   glBegin(GL_POLYGON);
-    glBindTexture(GL_TEXTURE_2D, textureIDs[2]);  
     glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(0,0); glVertex3f( halfEdge, -halfEdge, -halfEdge );
     glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,0); glVertex3f( halfEdge,  halfEdge, -halfEdge );
     glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,1); glVertex3f ( halfEdge,  halfEdge,  halfEdge );
     glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(0,1); glVertex3f( halfEdge, -halfEdge,  halfEdge );
   glEnd();
 
+  glBindTexture(GL_TEXTURE_2D, textureIDs[3]);  
   glBegin(GL_POLYGON);
-    glBindTexture(GL_TEXTURE_2D, textureIDs[3]);  
     glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge, -halfEdge,  halfEdge );
     glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(1,1); glVertex3f( -halfEdge,  halfEdge,  halfEdge );
     glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(1,0); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
     glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
   glEnd();
 
+  glBindTexture(GL_TEXTURE_2D, textureIDs[4]);  
   glBegin(GL_POLYGON);
-    glBindTexture(GL_TEXTURE_2D, textureIDs[4]);  
     glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge,  halfEdge );
     glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(1,0); glVertex3f(  halfEdge,  halfEdge, -halfEdge );
     glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(0,0); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
     glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge,  halfEdge ); 
   glEnd();
 
+  glBindTexture(GL_TEXTURE_2D, textureIDs[5]);   
   glBegin(GL_POLYGON);
-    glBindTexture(GL_TEXTURE_2D, textureIDs[5]);   
     glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, -halfEdge );
     glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(1,1); glVertex3f(  halfEdge, -halfEdge,  halfEdge );
     glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge, -halfEdge,  halfEdge );
@@ -301,7 +303,7 @@ void Game::sokoReshape() {
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(40.0, GLdouble(screenWidth)/screenHeight, 1.0, 10.0) ;
+  gluPerspective(65.0, GLdouble(screenWidth)/screenHeight, 1.0, 10.0) ;
 
   glMatrixMode(GL_MODELVIEW);
 }
