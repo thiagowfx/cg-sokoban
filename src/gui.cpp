@@ -90,10 +90,25 @@ namespace Sokoban {
         SDL_DIE("Failed to load background music");
       }
 
-      //soundCharacterMoved = Mix_LoadWAV("assets/sound/movement.mp3");
-      //if(soundCharacterMoved == NULL) {
-        //SDL_DIE("Failed to load character movement sound");
-      //}
+      soundCharacterMoved = Mix_LoadWAV("assets/sound/blip.wav");
+      if(soundCharacterMoved == NULL) {
+        SDL_DIE("Failed to load character movement sound");
+      }
+
+      soundBoxMoved = Mix_LoadWAV("assets/sound/blip.wav");
+      if(soundBoxMoved == NULL) {
+        SDL_DIE("Failed to load box movemend sound");
+      }
+
+      soundStageFinished = Mix_LoadWAV("assets/sound/stageFinished.wav");
+      if (soundStageFinished == NULL) {
+        SDL_DIE("Failed to load stage finished sound");
+      }
+
+      soundSplash = Mix_LoadWAV("assets/sound/pacman.wav");
+      if (soundSplash == NULL) {
+        SDL_DIE("Failed to load splash sound");
+      }
     }
   }
 
@@ -124,8 +139,18 @@ namespace Sokoban {
     /* Destroy sounds. */
     Mix_FreeMusic(soundBackgroundMusic);
     soundBackgroundMusic = NULL;
+
     Mix_FreeChunk(soundCharacterMoved);
     soundCharacterMoved = NULL;
+
+    Mix_FreeChunk(soundBoxMoved);
+    soundBoxMoved = NULL;
+
+    Mix_FreeChunk(soundStageFinished);
+    soundStageFinished = NULL;
+
+    Mix_FreeChunk(soundSplash);
+    soundSplash = NULL;
 
     IMG_Quit();
     Mix_Quit();
@@ -148,6 +173,7 @@ namespace Sokoban {
     SDL_Event e;
 
     /* Show the game splash screen. */
+    Mix_PlayChannel(-1, soundSplash, 0);
     renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
 
     /* Show the main menu. */
@@ -178,6 +204,9 @@ namespace Sokoban {
         else if (e.type == SDL_KEYDOWN) {
           SDL_Log("SDL_KEYDOWN event: %s", SDL_GetKeyName(e.key.keysym.sym));
 
+          if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym)) {
+            // Mix_PlayChannel(-1, soundCharacterMoved, 0);
+          }
           switch(e.key.keysym.sym) {
             // Quit from the game.
             case SDLK_ESCAPE:
@@ -190,7 +219,9 @@ namespace Sokoban {
                 gameMenu->nextIndex();
               }
               else if (context == CONTEXT_GAME){
-                game->moveDownAction();
+                bool boxMoved = game->moveDownAction();
+                if (boxMoved)
+                  boxMovedEvent();
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
@@ -201,7 +232,9 @@ namespace Sokoban {
                 gameMenu->prevIndex();
               }
               else if (context == CONTEXT_GAME){
-                game->moveUpAction();
+                bool boxMoved = game->moveUpAction();
+                if (boxMoved)
+                  boxMovedEvent();
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
@@ -209,7 +242,9 @@ namespace Sokoban {
             case SDLK_a:
             case SDLK_LEFT:
               if (context == CONTEXT_GAME){
-                game->moveLeftAction();
+                bool boxMoved = game->moveLeftAction();
+                if (boxMoved)
+                  boxMovedEvent();
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
@@ -217,7 +252,9 @@ namespace Sokoban {
             case SDLK_d:
             case SDLK_RIGHT:
               if (context == CONTEXT_GAME){
-                game->moveRightAction();
+                bool boxMoved = game->moveRightAction();
+                if (boxMoved)
+                  boxMovedEvent();
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
@@ -329,8 +366,12 @@ namespace Sokoban {
         SDL_Log("Finished level %d", currentLevel);
         game->loadLevel(++currentLevel);
       }
+      Mix_PlayChannel(-1, soundStageFinished, 0);
       SDL_Delay(STAGE_FINISHED_TIMEOUT);
     }
+  }
 
+  void Gui::boxMovedEvent() {
+    Mix_PlayChannel(-1, soundBoxMoved, 0);
   }
 }

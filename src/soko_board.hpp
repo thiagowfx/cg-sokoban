@@ -22,7 +22,7 @@ namespace Sokoban {
       SokoBoard(std::string filename);
 
       /// Move the character to direction indicated by @direction.      
-      void move(Direction direction);
+      bool move(Direction direction);
 
       /// Prints a representation of this class to a ostream.
       friend ostream& operator<<(ostream&, const SokoBoard&);

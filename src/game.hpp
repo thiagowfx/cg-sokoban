@@ -32,16 +32,16 @@ namespace Sokoban {
       bool isLevelFinished() const;
 
       /// Action of the move down key.
-      void moveDownAction();
+      bool moveDownAction();
 
       /// Action of the move up key.
-      void moveUpAction();
+      bool moveUpAction();
 
       /// Action of the move left key.
-      void moveLeftAction();
+      bool moveLeftAction();
 
       /// Action of the move right key.
-      void moveRightAction();
+      bool moveRightAction();
 
       /// Undo action.
       void undoAction();

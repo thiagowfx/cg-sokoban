@@ -52,6 +52,9 @@ namespace Sokoban {
     /// Check if the current level is finished. If yes, load the next level or end the game, if it is the last level.
     void checkLoadNextLevel(const SDL_Event&);
 
+    /// Whenever a box is moved, this event should be called.
+    void boxMovedEvent();
+
     /// The main SDL window.
     SDL_Window *window = NULL;
 
@@ -90,6 +93,15 @@ namespace Sokoban {
     /// Sound played after moving the character.
     Mix_Chunk *soundCharacterMoved = NULL;
 
+    /// Sound played ater moving a box.
+    Mix_Chunk *soundBoxMoved = NULL;
+
+    /// Sound played when the user completes a stage.
+    Mix_Chunk *soundStageFinished = NULL;
+
+    /// Sound played during the splash screen.
+    Mix_Chunk *soundSplash = NULL;
+
     /// The screen width.
     const int SCREEN_WIDTH = 800;
 
@@ -97,7 +109,7 @@ namespace Sokoban {
     const int SCREEN_HEIGHT = 600;
 
     // Duration of the game splash screen (in milliseconds).
-    const int GAME_SPLASH_TIMEOUT = 1000;
+    const int GAME_SPLASH_TIMEOUT = 4300;
 
     /// Duration of the end game screen (in milliseconds).
     const int GAME_FINISHED_TIMEOUT = 3000;

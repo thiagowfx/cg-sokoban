@@ -361,20 +361,20 @@ namespace Sokoban {
     return board;
   }
 
-  void Game::moveDownAction() {
-    board->move(Direction::DOWN);
+  bool Game::moveDownAction() {
+    return board->move(Direction::DOWN);
   }
 
-  void Game::moveUpAction() {
-    board->move(Direction::UP);
+  bool Game::moveUpAction() {
+    return board->move(Direction::UP);
   }
 
-  void Game::moveLeftAction() {
-    board->move(Direction::LEFT);
+  bool Game::moveLeftAction() {
+    return board->move(Direction::LEFT);
   }
 
-  void Game::moveRightAction() {
-    board->move(Direction::RIGHT);
+  bool Game::moveRightAction() {
+    return board->move(Direction::RIGHT);
   }
 
   void Game::undoAction() {
