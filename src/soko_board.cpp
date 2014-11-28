@@ -165,7 +165,7 @@ void SokoBoard::undo() {
 
 std::string SokoBoard::toString() const {
   std::stringstream ss;
-  ss << "Dynamic Board: " << std::endl;
+  ss << "INFO: Dynamic Board: " << std::endl;
   for(auto line : dynamicBoard) {
     for(auto obj : line)
       ss << " " << obj.getType();
@@ -173,7 +173,7 @@ std::string SokoBoard::toString() const {
   }
   ss << std::endl;
   
-  ss << "Static Board: " << std::endl;
+  ss << "INFO: Static Board: " << std::endl;
   for(auto line : staticBoard) {
     for(auto obj : line)
       ss << " " << obj.getType();
@@ -181,7 +181,9 @@ std::string SokoBoard::toString() const {
   }
   ss << std::endl;
 
-  ss << "Number of moves: " << getNumberOfMoves() << std::endl;
+  ss << "INFO: Number of moves: " << getNumberOfMoves() << std::endl;
+  ss << "INFO: Number of remaining light boxes: " << getNumberOfUnresolvedLightBoxes() << "/" << getNumberOfLightBoxes() << std::endl;
+  ss << "INFO: Number of remaining light boxes: " << getNumberOfUnresolvedHeavyBoxes() << "/" << getNumberOfHeavyBoxes() << std::endl;
   ss << std::endl;
 
   return ss.str();
