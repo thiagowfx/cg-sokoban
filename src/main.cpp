@@ -1,5 +1,6 @@
 #include <iostream>
 #include "gui.hpp"
+using namespace Sokoban;
 
 /// This function starts the game in ASCII mode. Useful for testing, but not so funny. =/
 void startASCIIMode();
@@ -30,7 +31,7 @@ int main(int argc, char** argv) {
     return EXIT_SUCCESS;
   }
 
-  Gui *gui = new Gui();
+  Sokoban::Gui *gui = new Sokoban::Gui();
   gui->gameLoop();
   // startASCIIMode();
   return EXIT_SUCCESS;

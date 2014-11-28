@@ -44,7 +44,6 @@ set(
   SOKOBAN_SOURCES
   ${SRC_DIR}/game.cpp
   ${SRC_DIR}/gui.cpp
-  ${SRC_DIR}/helpers.cpp
   ${SRC_DIR}/sdl_menu.cpp
   ${SRC_DIR}/soko_board.cpp
   ${SRC_DIR}/soko_object.hpp
