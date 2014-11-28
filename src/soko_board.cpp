@@ -147,8 +147,8 @@ void SokoBoard::undo() {
     moves.pop();
 
     SokoPosition previousPosition = characterPosition - last.direction;
-    SokoPosition nextPosition = characterPosition + last.direction;
     dynamicBoard[previousPosition.y][previousPosition.x] = SokoObject(SokoObject::CHARACTER);
+    SokoPosition nextPosition = characterPosition + last.direction;
     
     if (last.boxMoved) {
       SokoObject::Type type = dynamicBoard[nextPosition.y][nextPosition.x].getType();
@@ -156,7 +156,7 @@ void SokoBoard::undo() {
       dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(SokoObject::EMPTY);
     }
     else {
-      dynamicBoard[characterPosition.y][characterPosition.y] = SokoObject(SokoObject::EMPTY);
+      dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
     }
 
     characterPosition = previousPosition;
