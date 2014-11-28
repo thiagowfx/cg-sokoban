@@ -42,7 +42,7 @@ void SDL_DIE(const char* msg) {
 namespace Sokoban {
   Gui::Gui() {
     /* Initialize SDL. */
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
       SDL_DIE("SDL could not be initialized");
     }
 
@@ -79,6 +79,22 @@ namespace Sokoban {
         SDL_DIE("Failed to load the font");
       }
     }
+
+    /* Enable sound. */
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+      SDL_DIE("SDL_Mixer could not initialize");
+    }
+    else {
+      soundBackgroundMusic = Mix_LoadMUS("assets/sound/expshooter2.mp3" );
+      if(soundBackgroundMusic == NULL) {
+        SDL_DIE("Failed to load background music");
+      }
+
+      //soundCharacterMoved = Mix_LoadWAV("assets/sound/movement.mp3");
+      //if(soundCharacterMoved == NULL) {
+        //SDL_DIE("Failed to load character movement sound");
+      //}
+    }
   }
 
   Gui::~Gui() {
@@ -105,7 +121,14 @@ namespace Sokoban {
     windowRenderer = NULL;
     window = NULL;
 
+    /* Destroy sounds. */
+    Mix_FreeMusic(soundBackgroundMusic);
+    soundBackgroundMusic = NULL;
+    Mix_FreeChunk(soundCharacterMoved);
+    soundCharacterMoved = NULL;
+
     IMG_Quit();
+    Mix_Quit();
     TTF_Quit();
     SDL_Quit();
   }
@@ -131,6 +154,9 @@ namespace Sokoban {
     backgroundTexture = loadTexture(windowRenderer, MENU_BACKGROUND_TEXTURE_PATH);
     gameMenu = new Menu(windowRenderer, MENU_LABEL_IN_COLOR, MENU_LABEL_OUT_COLOR, windowFont, SCREEN_WIDTH, SCREEN_HEIGHT, GAME_MENU_LABELS, backgroundTexture);
 
+    /* Play the background music. */
+    Mix_PlayMusic(soundBackgroundMusic, -1);
+
     while(!quit) {
       while(SDL_PollEvent(&e) != 0) {
         // Quit event.
@@ -140,7 +166,7 @@ namespace Sokoban {
           break;
         }
 
-        /// Window resize event.
+        // Window resize event.
         else if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED && context == CONTEXT_GAME) {
           unsigned width = e.window.data1;
           unsigned height = e.window.data2;
@@ -149,15 +175,17 @@ namespace Sokoban {
           game->setWindowSize(width, height);
         }
 
-        /// Key press event.
+        // Key press event.
         else if (e.type == SDL_KEYDOWN) {
           SDL_Log("SDL_KEYDOWN event: %s", SDL_GetKeyName(e.key.keysym.sym));
 
           switch(e.key.keysym.sym) {
+            // Quit from the game.
             case SDLK_ESCAPE:
             case SDLK_q:
               quit = true;
               break;
+              // Down key.
             case SDLK_s:
             case SDLK_DOWN:
               if (context == CONTEXT_MAIN_MENU) {
@@ -167,6 +195,7 @@ namespace Sokoban {
                 game->moveDownAction();
               }
               break;
+              // Up key:
             case SDLK_w:
             case SDLK_UP:
               if (context == CONTEXT_MAIN_MENU) {
@@ -176,18 +205,32 @@ namespace Sokoban {
                 game->moveUpAction();
               }
               break;
+              // Left key.
             case SDLK_a:
             case SDLK_LEFT:
               if (context == CONTEXT_GAME){
                 game->moveLeftAction();
               }
               break;
+              // Right key.
             case SDLK_d:
             case SDLK_RIGHT:
               if (context == CONTEXT_GAME){
                 game->moveRightAction();
               }
               break;
+              // Mute key
+            case SDLK_m:
+              if(Mix_PausedMusic() == true) {
+                Mix_ResumeMusic();
+                SDL_Log("Background music playing again");
+              }
+              else {
+                Mix_PauseMusic();
+                SDL_Log("Background music paused");
+              }
+              break;
+              // Restart key
             case SDLK_r:
               if (context == CONTEXT_GAME) {
                 SDL_Log("Level restarted");

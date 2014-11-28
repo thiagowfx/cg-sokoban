@@ -83,6 +83,12 @@ namespace Sokoban {
     bool OPENGL_LOADED = false;
 
     // Game settings.
+    
+    /// Game background music.
+    Mix_Music *soundBackgroundMusic = NULL;
+
+    /// Sound played after moving the character.
+    Mix_Chunk *soundCharacterMoved = NULL;
 
     /// The screen width.
     const int SCREEN_WIDTH = 800;

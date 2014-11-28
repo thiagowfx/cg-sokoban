@@ -22,6 +22,7 @@ void usage() {
   std::cout << "How to play it:" << std::endl;
   std::cout << "\t- use the directional keys to move the character" << std::endl;
   std::cout << "\t- use the 'u' key to undo your last move" << std::endl;
+  std::cout << "\t- use the 'm' key to mute the background music" << std::endl;
   std::cout << "\t- use the 'q' or the 'ESC' key to quit from the game at any moment" << std::endl;
 }
 
