@@ -3,17 +3,22 @@
 
 #include <SDL2/SDL_ttf.h>
 #include <vector>
-#include "helpers.hpp"
+
+/// Return true if the two rects have a common region of intersection.
+bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2);
 
 /**
  * A reusable menu for SDL.
  */
 class Menu {
   public:
-    /** Construct a new menu. */
+    /// Construct a new menu.
     Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SDL_Color& labelOutColor, TTF_Font *labelFont, int screenWidth, int screenHeight, std::vector<const char*> labels, SDL_Texture* backgroundTexture = NULL);
+
+    /// Destroy SDL artifacts.
     ~Menu();
     
+    /// Main rendering function: renderizes this menu.
     void renderMainMenu();
     
     /// Get current selected menu entry.
@@ -26,14 +31,20 @@ class Menu {
     void nextIndex();
 
   private:
+    /// Textures for when an entry is selected.
     std::vector<SDL_Texture*> inTextures;
+
+    /// Textures for when an entry isn't selected.
     std::vector<SDL_Texture*> outTextures;
+
+    /// Rectangles for the labels.
     std::vector<SDL_Rect> rects;
 
     /// Current selected menu entry.
     int currentIndex = 0;
 
   private:
+    /// Main window renderer.
     SDL_Renderer *windowRenderer;
 
     /// Color of the current selected menu entry.

@@ -1,4 +1,8 @@
-#include "menu.hpp"
+#include "sdl_menu.hpp"
+
+bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2) {
+  return(!(rect1.x + rect1.w <= rect2.x || rect1.x >= rect2.x + rect2.w || rect1.y + rect1.h <= rect2.y || rect1.y >= rect2.y + rect2.h));
+}
 
 Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SDL_Color& labelOutColor, TTF_Font *labelFont, int screenWidth, int screenHeight, std::vector<const char*> labels, SDL_Texture* backgroundTexture) :
   windowRenderer(windowRenderer),

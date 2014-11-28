@@ -11,10 +11,6 @@ bool isMovementKey(const SDL_Keycode& key) {
       key == SDLK_s || key == SDLK_w || key == SDLK_a || key == SDLK_d;
 }
 
-bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2) {
-  return(!(rect1.x + rect1.w <= rect2.x || rect1.x >= rect2.x + rect2.w || rect1.y + rect1.h <= rect2.y || rect1.y >= rect2.y + rect2.h));
-}
-
 SDL_Texture* loadTexture(SDL_Renderer* windowRenderer, const char* path) {
   SDL_Texture* newTexture = NULL;
   SDL_Surface* loadedSurface = IMG_Load(path);

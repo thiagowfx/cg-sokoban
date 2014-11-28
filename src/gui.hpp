@@ -6,7 +6,7 @@
 #include <string>
 #include "game.hpp"
 #include "helpers.hpp"
-#include "menu.hpp"
+#include "sdl_menu.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>

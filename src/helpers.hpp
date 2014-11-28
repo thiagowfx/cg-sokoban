@@ -19,7 +19,6 @@ void LOG_SDL_DIE(const char*);
 /// Return true if this is a movement key.
 bool isMovementKey(const SDL_Keycode& key);
 
-bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2);
 SDL_Texture* loadTexture(SDL_Renderer*, const char* path);
 bool loadPngImage(const char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData);
 
