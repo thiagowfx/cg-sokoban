@@ -6,29 +6,6 @@ void LOG_SDL_DIE(const char* msg) {
   exit(EXIT_FAILURE);
 }
 
-bool isMovementKey(const SDL_Keycode& key) {
-  return key == SDLK_DOWN || key == SDLK_UP || key == SDLK_LEFT || key == SDLK_RIGHT ||
-      key == SDLK_s || key == SDLK_w || key == SDLK_a || key == SDLK_d;
-}
-
-SDL_Texture* loadTexture(SDL_Renderer* windowRenderer, const char* path) {
-  SDL_Texture* newTexture = NULL;
-  SDL_Surface* loadedSurface = IMG_Load(path);
-  if(loadedSurface == NULL) {
-    std::cout << "Unable to load image" << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
-    exit(EXIT_FAILURE);
-  }
-  else {
-    newTexture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);
-    if(newTexture == NULL) {
-      std::cout << "Unable to create texture from " << path << "! SDL Error: " << SDL_GetError() << std::endl;
-      exit(EXIT_FAILURE);
-    }
-    SDL_FreeSurface(loadedSurface);
-  }
-  return newTexture;
-}
-
 bool loadPngImage(const char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData) {
   png_structp png_ptr;
   png_infop info_ptr;

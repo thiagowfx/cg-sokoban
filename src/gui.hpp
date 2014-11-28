@@ -5,82 +5,109 @@
 #include <iostream>
 #include <string>
 #include "game.hpp"
-#include "helpers.hpp"
 #include "sdl_menu.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
-using namespace Sokoban;
 
-/**
-  This class glues up the SDL interface with the game logic.
-  */
-class Gui {
-  /// Represents the context where the game might be.
-  typedef enum Context {
-    CONTEXT_MAIN_MENU = 0,
-    CONTEXT_GAME = 1,
-    CONTEXT_GAME_WON = 2
-  } Context;
+/// Load a SDL Texture with the given renderer at the given path.
+SDL_Texture* loadTexture(SDL_Renderer*, const char* path);
 
-  public:
-  /// SDL initialization.
-  Gui();
+/// Render a splash screen with the given timeout..
+void renderSplashScreen(const char* path, unsigned timeout, SDL_Renderer*, SDL_Color);
 
-  /// Clean up SDL artifacts.
-  ~Gui();
+/// Return true if @key is a movement key.
+bool isMovementKey(const SDL_Keycode& key);
 
-  /// Main game loop. Continuously monitors for user input and renderizes the game on the scree.
-  void gameLoop();
+namespace Sokoban {
+  /**
+    This class glues up the SDL interface with the game logic.
+    */
+  class Gui {
+    /// Represents the context where the game might be.
+    typedef enum Context {
+      CONTEXT_MAIN_MENU = 0,
+      CONTEXT_GAME = 1,
+      CONTEXT_GAME_WON = 2
+    } Context;
 
-  private:
-  void renderSingleText(const char* text, unsigned timeout, SDL_Color color = {0, 0, 0, 255}) const;
-  void renderSplashScreen(const char* path, unsigned timeout) const;
+    public:
+    /// SDL initialization.
+    Gui();
 
-  private:
-  /// The main SDL window.
-  SDL_Window *window = NULL;
+    /// Clean up SDL artifacts.
+    ~Gui();
 
-  /// The main SDL window renderer.
-  SDL_Renderer *windowRenderer = NULL;
+    /// Main game loop. Continuously monitors for user input and renderizes the game on the scree.
+    void gameLoop();
 
-  /// Menu background texture.
-  SDL_Texture *backgroundTexture = NULL;
+    private:
+    /// The main SDL window.
+    SDL_Window *window = NULL;
 
-  /// Type of the font (TTF).
-  TTF_Font *windowFont = NULL;
+    /// The main SDL window renderer.
+    SDL_Renderer *windowRenderer = NULL;
 
-  /// The game menu.
-  Menu *gameMenu = NULL;
+    /// Menu background texture.
+    SDL_Texture *backgroundTexture = NULL;
 
-  /// The game renderization engine.
-  Game *game = NULL;
+    /// Type of the font (TTF).
+    TTF_Font *windowFont = NULL;
 
-  /// The current stage the user is on.
-  unsigned currentLevel;
+    /// The game menu.
+    Menu *gameMenu = NULL;
 
-  /// OpenGL context for SDL.
-  SDL_GLContext glContext;
+    /// The game renderization engine.
+    Game *game = NULL;
 
-  /// The current context the user is on.
-  Context context = CONTEXT_MAIN_MENU;
+    /// The current stage the user is on.
+    unsigned currentLevel;
 
-  /// Indicate if OpenGL has already been initialized.
-  bool OPENGL_LOADED = false;
+    /// OpenGL context for SDL.
+    SDL_GLContext glContext;
 
-  private:
-  const int SCREEN_WIDTH = 800;
-  const int SCREEN_HEIGHT = 600;
-  const int GAME_SPLASH_TIMEOUT = 1200;
-  const vector<const char*> GAME_MENU_LABELS = vector<const char*>{"Stage 1", "Stage 2", "Stage 3", "Quit"}; // Quit must be the last option.
-  const char* GAME_TITLE = "sokoban";
-  const char* MENU_BACKGROUND_TEXTURE_PATH = "assets/textures/menu_background.png";
-  const char* SPLASH_TEXTURE_PATH = "assets/textures/splash.png";
-  const char* GAME_FONT_PATH = "assets/Roboto-Regular.ttf";
-  const SDL_Color WINDOW_CLEAR_COLOR = SDL_Color{225, 225, 225, 255};
-  const SDL_Color MENU_LABEL_IN_COLOR = SDL_Color{160, 120, 60, 255};
-  const SDL_Color MENU_LABEL_OUT_COLOR = SDL_Color{0, 0, 0, 255};
-};
+    /// The current context the user is on.
+    Context context = CONTEXT_MAIN_MENU;
+
+    /// Indicate if OpenGL has already been initialized.
+    bool OPENGL_LOADED = false;
+
+    private:
+    // Game settings.
+
+    /// The screen width.
+    const int SCREEN_WIDTH = 800;
+
+    /// The screen height.
+    const int SCREEN_HEIGHT = 600;
+
+    // Duration of the game splash screen (in milliseconds).
+    const int GAME_SPLASH_TIMEOUT = 1000;
+
+    const vector<const char*> GAME_MENU_LABELS = vector<const char*>{"Stage 1", "Stage 2", "Stage 3", "Quit"}; // Quit must be the last option.
+
+    /// Name of the game.
+    const char* GAME_TITLE = "SOKOLAN";
+
+    /// Path for the menu background texture.
+    const char* MENU_BACKGROUND_TEXTURE_PATH = "assets/textures/menu_background.png";
+
+    /// Path for the splash screen texture.
+    const char* SPLASH_TEXTURE_PATH = "assets/textures/splash.png";
+
+    /// Path to the game font.
+    const char* GAME_FONT_PATH = "assets/Roboto-Regular.ttf";
+
+    /// Background color.
+    const SDL_Color WINDOW_CLEAR_COLOR = SDL_Color{192, 192, 192, 255};
+
+    /// Color of the currently selected menu entry.
+    const SDL_Color MENU_LABEL_IN_COLOR = SDL_Color{160, 120, 60, 255};
+
+    /// Color of non-selected menu entries.
+    const SDL_Color MENU_LABEL_OUT_COLOR = SDL_Color{0, 0, 0, 255};
+  };
+}
 
 #endif // _GUI_H_
