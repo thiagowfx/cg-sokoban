@@ -84,7 +84,7 @@ namespace Sokoban {
       const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
       GLuint textureTargetIDs[6];
 
-      const char* characterPath[6] = {"assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpg"};
+      const char* characterPath[6] = {"assets/perrotta.jpg", "assets/perrotta.jpg", "assets/perrotta.jpg", "assets/perrotta.jpg", "assets/perrotta.jpg", "assets/perrotta.jpg"};
       GLuint textureCharacterIDs[6];
 
       const char* lightBoxPath[6] = {"assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png"};
