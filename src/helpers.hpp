@@ -4,8 +4,8 @@
 #include <iostream>
 #include <GL/glu.h>
 #include <png.h>
-#include "SDL.h"
-#include "SDL_image.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 typedef enum Context {
   CONTEXT_MAIN_MENU = 0,
@@ -13,8 +13,12 @@ typedef enum Context {
   CONTEXT_GAME_WON = 2
 } Context;
 
+/// Log a message using SDL_LOG, then exit.
 void LOG_SDL_DIE(const char*);
+
+/// Return true if this is a movement key.
 bool isMovementKey(const SDL_Keycode& key);
+
 bool rectCollision(const SDL_Rect rect1, const SDL_Rect rect2);
 SDL_Texture* loadTexture(SDL_Renderer*, const char* path);
 bool loadPngImage(const char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData);

@@ -155,10 +155,6 @@ void Gui::gameLoop() {
             game->undoAction();
           }
           break;
-        case SDLK_n:
-          // TODO: remove this later on.
-          game->loadLevel(++currentLevel);
-          break;
         case SDLK_RETURN:
           if (context == CONTEXT_MAIN_MENU) {
             unsigned index = gameMenu->getCurrentIndex();

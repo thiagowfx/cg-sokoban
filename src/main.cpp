@@ -1,6 +1,8 @@
 #include <iostream>
 #include "gui.hpp"
 
+void startASCIIMode();
+
 int main(int argc, char** argv) {
   Gui *gui = new Gui();
   gui->gameLoop();
