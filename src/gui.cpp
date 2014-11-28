@@ -90,7 +90,7 @@ namespace Sokoban {
         SDL_DIE("Failed to load background music");
       }
 
-      soundCharacterMoved = Mix_LoadWAV("assets/sound/blip.wav");
+      soundCharacterMoved = Mix_LoadWAV("assets/sound/baseball_hit.wav");
       if(soundCharacterMoved == NULL) {
         SDL_DIE("Failed to load character movement sound");
       }
@@ -205,7 +205,7 @@ namespace Sokoban {
           SDL_Log("SDL_KEYDOWN event: %s", SDL_GetKeyName(e.key.keysym.sym));
 
           if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym)) {
-            // Mix_PlayChannel(-1, soundCharacterMoved, 0);
+            Mix_PlayChannel(-1, soundCharacterMoved, 0);
           }
           switch(e.key.keysym.sym) {
             // Quit from the game.
