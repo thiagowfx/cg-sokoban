@@ -116,6 +116,9 @@ namespace Sokoban {
     /// Path for the splash screen texture.
     const char* SPLASH_TEXTURE_PATH = "assets/textures/splash.png";
 
+    /// Path to the image to be loaded when the game finishes. 
+    const char* GAME_FINISHED_IMAGE_PATH="assets/textures/game_finished.png";
+
     /// Path to the game font.
     const char* GAME_FONT_PATH = "assets/Roboto-Regular.ttf";
 

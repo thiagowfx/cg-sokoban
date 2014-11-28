@@ -310,7 +310,7 @@ namespace Sokoban {
       }
       else if (context == CONTEXT_GAME_FINISHED) {
         SDL_Log("Congratulations, you've won the game!");
-        game->renderGameFinishedScene();
+        game->renderSingleImage(GAME_FINISHED_IMAGE_PATH);
         Mix_HaltMusic(); 
         SDL_Delay(GAME_FINISHED_TIMEOUT);
         quit = true; break;
@@ -330,7 +330,6 @@ namespace Sokoban {
         game->loadLevel(++currentLevel);
       }
       SDL_Delay(STAGE_FINISHED_TIMEOUT);
-      // TODO: load a special texture between stages.
     }
 
   }

@@ -4,7 +4,6 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
-#include <png.h>
 #include <string>
 #include <sstream>
 #include <GL/glu.h>
@@ -13,8 +12,6 @@
 #include <SOIL/SOIL.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
-
-bool loadPngImage(const char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData);
 
 namespace Sokoban {
   class Game {
@@ -58,8 +55,8 @@ namespace Sokoban {
       /// Main function to render a scene.
       void renderScene();
 
-      /// Render the last scene, when the game finishes.
-      void renderGameFinishedScene();
+      /// Render a single image, at the given path.
+      void renderSingleImage(const char* path);
 
       /// Get the game board.
       SokoBoard* getGameBoard() const;
@@ -77,9 +74,6 @@ namespace Sokoban {
       SokoBoard *board = NULL;
 
       GLdouble xold, yold;
-
-      /// Path to the image to be loaded when the game finishes. 
-      const char* GAME_FINISHED_IMAGE_PATH="assets/textures/game_finished.png";
 
       const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
       GLuint textureTargetIDs[6];
