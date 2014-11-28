@@ -53,7 +53,10 @@ namespace Sokoban {
     void checkLoadNextLevel(const SDL_Event&);
 
     /// Whenever a box is moved, this event should be called.
-    void boxMovedEvent();
+    void boxMovedEvent() const;
+
+    /// Whenever a character is moved, this event should be called.
+    void characterMovedEvent() const;
 
     /// The main SDL window.
     SDL_Window *window = NULL;

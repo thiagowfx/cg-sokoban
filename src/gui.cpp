@@ -204,9 +204,6 @@ namespace Sokoban {
         else if (e.type == SDL_KEYDOWN) {
           SDL_Log("SDL_KEYDOWN event: %s", SDL_GetKeyName(e.key.keysym.sym));
 
-          if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym)) {
-            Mix_PlayChannel(-1, soundCharacterMoved, 0);
-          }
           switch(e.key.keysym.sym) {
             // Quit from the game.
             case SDLK_ESCAPE:
@@ -222,6 +219,8 @@ namespace Sokoban {
                 bool boxMoved = game->moveDownAction();
                 if (boxMoved)
                   boxMovedEvent();
+                else 
+                  characterMovedEvent();
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
@@ -235,6 +234,8 @@ namespace Sokoban {
                 bool boxMoved = game->moveUpAction();
                 if (boxMoved)
                   boxMovedEvent();
+                else 
+                  characterMovedEvent();
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
@@ -245,6 +246,8 @@ namespace Sokoban {
                 bool boxMoved = game->moveLeftAction();
                 if (boxMoved)
                   boxMovedEvent();
+                else 
+                  characterMovedEvent();
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
@@ -255,6 +258,8 @@ namespace Sokoban {
                 bool boxMoved = game->moveRightAction();
                 if (boxMoved)
                   boxMovedEvent();
+                else 
+                  characterMovedEvent();
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
@@ -371,7 +376,11 @@ namespace Sokoban {
     }
   }
 
-  void Gui::boxMovedEvent() {
+  void Gui::boxMovedEvent() const {
     Mix_PlayChannel(-1, soundBoxMoved, 0);
+  }
+
+  void Gui::characterMovedEvent() const {
+    Mix_PlayChannel(-1, soundCharacterMoved, 0);
   }
 }
