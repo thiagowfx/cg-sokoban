@@ -22,32 +22,61 @@ namespace Sokoban {
       Game(SDL_Window*, SDL_GLContext*, int screenWidth, int screenHeight);
       ~Game();
 
+      /// Load the specified @level.
       void loadLevel(const unsigned level);
+
+      /// Set the window size to @width x @height.
       void setWindowSize(unsigned width, unsigned height);
+
       void setOldPosition(GLdouble x, GLdouble y);
       void setNewPosition(GLdouble xnew, GLdouble ynew);
+
+      /// Return true if the current level has been finished.
       bool isLevelFinished() const;
 
+      /// Action of the move down key.
       void moveDownAction();
+
+      /// Action of the move up key.
       void moveUpAction();
+
+      /// Action of the move left key.
       void moveLeftAction();
+
+      /// Action of the move right key.
       void moveRightAction();
+
+      /// Undo action.
       void undoAction();
 
-      /* Draws a cube of size edge centered at position (x, y, z). */
+      /// Draws a cube of size edge centered at (x,y,z).
       void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs);
+
+      /// Reshape function.
       void sokoReshape();
+
+      /// Main function to render a scene.
       void renderScene();
-      void renderGameFinished();
+
+      /// Render the last scene, when the game finishes.
+      void renderGameFinishedScene();
 
     private:
+      /// Main SDL window.
       SDL_Window* window;
+
+      /// The OpenGL context from SDL.
       SDL_GLContext* glContext;
+
       int screenWidth, screenHeight;
+
+      /// The current soko board
       SokoBoard *board = NULL;
+
       GLdouble xold, yold;
 
-      const char* GAME_END_IMAGE="assets/textures/end_game.png";
+      /// Path to the image to be loaded when the game finishes. 
+      const char* GAME_FINISHED_IMAGE_PATH="assets/textures/end_game.png";
 
       const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
       GLuint textureTargetIDs[6];

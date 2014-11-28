@@ -326,7 +326,7 @@ namespace Sokoban {
     return board->isFinished();
   }
 
-  void Game::renderGameFinished() {
+  void Game::renderGameFinishedScene() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -342,7 +342,7 @@ namespace Sokoban {
     bool hasAlpha;
     GLubyte* textureData;
 
-    bool success = loadPngImage(GAME_END_IMAGE, width, height, hasAlpha, &textureData);
+    bool success = loadPngImage(GAME_FINISHED_IMAGE_PATH_PATH, width, height, hasAlpha, &textureData);
     if (!success) {
       SDL_Log("Unable to load png file");
       exit(EXIT_FAILURE);

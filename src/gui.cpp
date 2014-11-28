@@ -308,7 +308,7 @@ namespace Sokoban {
       }
       else if (context == CONTEXT_GAME_FINISHED) {
         SDL_Log("Congratulations, you've won the game!");
-        game->renderGameFinished();
+        game->renderGameFinishedScene();
         SDL_Delay(GAME_FINISHED_TIMEOUT);
         quit = true; break;
       }
