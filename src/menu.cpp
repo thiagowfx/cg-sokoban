@@ -1,6 +1,6 @@
 #include "menu.hpp"
 
-Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SDL_Color& labelOutColor, TTF_Font *labelFont, int screenWidth, int screenHeight, vector<const char*> labels, SDL_Texture* backgroundTexture) :
+Menu::Menu(SDL_Renderer *windowRenderer, const SDL_Color& labelInColor, const SDL_Color& labelOutColor, TTF_Font *labelFont, int screenWidth, int screenHeight, std::vector<const char*> labels, SDL_Texture* backgroundTexture) :
   windowRenderer(windowRenderer),
   labelInColor(labelInColor),
   labelOutColor(labelOutColor),
@@ -56,7 +56,7 @@ void Menu::renderMainMenu() {
   SDL_RenderPresent(windowRenderer);
 }
 
-int Menu::getCurrentIndex() const {
+unsigned Menu::getCurrentIndex() const {
   return currentIndex;
 }
 
