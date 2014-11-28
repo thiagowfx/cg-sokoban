@@ -1,6 +1,10 @@
 #ifndef _SOKO_POSITION_H_
 #define _SOKO_POSITION_H_
 
+#include <fstream>
+#include <sstream>
+using namespace std;
+
 namespace Sokoban {
    /**
   Represents directions that boxes and the character might move.
@@ -22,6 +26,12 @@ namespace Sokoban {
 
       /// Constructs a new SokoPosition on (x,y).
       SokoPosition(int x, int y);
+
+      /// Prints a representation of this class to a ostream.
+      friend ostream& operator<<(ostream&, const SokoPosition&);
+
+      /// Return the string representation of this object.
+      std::string toString() const;
 
       /// Return a new SokoPosition, moved on the specified direction.
       SokoPosition operator+(const Direction&) const;

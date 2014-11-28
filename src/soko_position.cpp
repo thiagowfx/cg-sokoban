@@ -50,4 +50,15 @@ SokoPosition SokoPosition::operator-(const Direction& direction) const {
   }
 }
 
+std::string SokoPosition::toString() const {
+  std::stringstream ss;
+  ss << "(" << x << "," << y << ")" << std::endl;
+  return ss.str();
+}
+
+std::ostream& operator<<(std::ostream& os, const SokoPosition& s) {
+  os << s.toString();
+  return os;
+}
+
 }

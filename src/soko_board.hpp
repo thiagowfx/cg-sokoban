@@ -27,7 +27,7 @@ namespace Sokoban {
       /// Prints a representation of this class to a ostream.
       friend ostream& operator<<(ostream&, const SokoBoard&);
 
-      /// Return the string representation of this class
+      /// Return the string representation of this object.
       std::string toString() const;
 
       /// Get the number of moves of the character so far.
