@@ -33,44 +33,50 @@ bool isMovementKey(const SDL_Keycode& key) {
     key == SDLK_s || key == SDLK_w || key == SDLK_a || key == SDLK_d;
 }
 
+void SDL_DIE(const char* msg) {
+  std::cout << msg << std::endl;
+  std::cout << "DIE: SDL_Error: " << SDL_GetError() << std::endl;
+  exit(EXIT_FAILURE);
+}
+
 namespace Sokoban {
   Gui::Gui() {
     /* Initialize SDL. */
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-      LOG_SDL_DIE("SDL could not be initialized");
+      SDL_DIE("SDL could not be initialized");
     }
 
     /* Set texture filtering to linear. */
     if(!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-      std::cout << "Warning: Linear texture filtering not enabled!" << std::endl;
+      std::cout << "INFO: Warning: Linear texture filtering not enabled!" << std::endl;
     }
 
     /* Create the main window. */
     window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);// | SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (window == NULL) {
-      LOG_SDL_DIE("SDL Window could not be created");
+      SDL_DIE("SDL Window could not be created");
     }
 
     /* Create the renderer for the window. */
     windowRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
     if(windowRenderer == NULL) {
-      LOG_SDL_DIE("Renderer could not be created");
+      SDL_DIE("Renderer could not be created");
     }
 
     /* Enable PNG and JPEG support from SDL2_image. */
     int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
     if(!(IMG_Init(imgFlags) & imgFlags)) {
-      LOG_SDL_DIE("SDL_image could not initialize");
+      SDL_DIE("SDL_image could not initialize");
     }
 
     /* Enable TTF support from SDL2_TTF. */
     if(TTF_Init() == -1) {
-      LOG_SDL_DIE("SDL_ttf could not initialize");
+      SDL_DIE("SDL_ttf could not initialize");
     }
     else {
       windowFont = TTF_OpenFont(GAME_FONT_PATH, 60);
       if (windowFont == NULL) {
-        LOG_SDL_DIE("Failed to load the font");
+        SDL_DIE("Failed to load the font");
       }
     }
   }
@@ -104,6 +110,16 @@ namespace Sokoban {
     SDL_Quit();
   }
 
+  void Gui::loadOpenGL() {
+    /* Create the OpenGL context. */
+    glContext = SDL_GL_CreateContext(window);
+    if(glContext == NULL) {
+      SDL_DIE("OpenGL context could not be created");
+    }
+
+    OPENGL_LOADED = true;
+  }
+
   void Gui::gameLoop() {
     bool quit = false;
     SDL_Event e;
@@ -117,11 +133,14 @@ namespace Sokoban {
 
     while(!quit) {
       while(SDL_PollEvent(&e) != 0) {
+        // Quit event.
         if (e.type == SDL_QUIT) {
           SDL_Log("SDL_QUIT event");
           quit = true;
           break;
         }
+
+        /// Window resize event.
         else if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED && context == CONTEXT_GAME) {
           unsigned width = e.window.data1;
           unsigned height = e.window.data2;
@@ -129,20 +148,11 @@ namespace Sokoban {
           SDL_SetWindowSize(window, width, height);
           game->setWindowSize(width, height);
         }
+
+        /// Key press event.
         else if (e.type == SDL_KEYDOWN) {
           SDL_Log("SDL_KEYDOWN event: %s", SDL_GetKeyName(e.key.keysym.sym));
-          if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym)) {
-            if (game->isLevelFinished()) {
-              if (currentLevel == (GAME_MENU_LABELS.size() - 1)) {
-                SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_WON.", currentLevel);
-                context = CONTEXT_GAME_WON;
-              }
-              else {
-                SDL_Log("Finished level %d", currentLevel);
-                game->loadLevel(++currentLevel);
-              }
-            }
-          }
+
           switch(e.key.keysym.sym) {
             case SDLK_ESCAPE:
             case SDLK_q:
@@ -199,8 +209,8 @@ namespace Sokoban {
                 else {
                   context = CONTEXT_GAME;
                   if(!OPENGL_LOADED) {
+                    loadOpenGL();
                     game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
-                    OPENGL_LOADED = true;
                   }
                   game->loadLevel(currentLevel = index + 1);
                 }
@@ -208,6 +218,7 @@ namespace Sokoban {
               break;
           }
         }
+        /// Mouse motion event.
         else if (e.type == SDL_MOUSEMOTION) {
           if (context == CONTEXT_GAME) {
             int x, y; Uint32 mouseState = SDL_GetMouseState(&x, &y);
@@ -230,8 +241,8 @@ namespace Sokoban {
               else {
                 context = CONTEXT_GAME;
                 if(!OPENGL_LOADED) {
+                  loadOpenGL();
                   game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
-                  OPENGL_LOADED = true;
                 }
                 currentLevel = index + 1;
                 game->loadLevel(currentLevel);
@@ -244,21 +255,37 @@ namespace Sokoban {
         }
       }
 
-      /* Actual rendering happens here. */
+      // Actual rendering happens here.
       if (context == CONTEXT_MAIN_MENU) {
         gameMenu->renderMainMenu();
       }
       else if (context == CONTEXT_GAME) {
         game->renderScene();
+        checkLoadNextLevel(e);
       }
-      else if (context == CONTEXT_GAME_WON) {
+      else if (context == CONTEXT_GAME_FINISHED) {
         SDL_Log("Congratulations, you've won the game!");
         game->renderGameFinished();
-        SDL_Delay(2 * GAME_SPLASH_TIMEOUT);
-        quit = true;
-        break;
+        SDL_Delay(GAME_FINISHED_TIMEOUT);
+        quit = true; break;
       }
-      /* Actual rendering ends here. */
+      // Actual rendering ends here.
     }
+  }
+
+  void Gui::checkLoadNextLevel(const SDL_Event& e) {
+    if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym) && game->isLevelFinished()) {
+      if (currentLevel == (GAME_MENU_LABELS.size() - 1)) {
+        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", currentLevel);
+        context = CONTEXT_GAME_FINISHED;
+      }
+      else {
+        SDL_Log("Finished level %d", currentLevel);
+        game->loadLevel(++currentLevel);
+      }
+      SDL_Delay(STAGE_FINISHED_TIMEOUT);
+      // TODO: load a special texture between stages.
+    }
+
   }
 }

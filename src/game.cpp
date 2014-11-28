@@ -16,17 +16,6 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 
-    /* Create the OpenGL context. */
-    *glContext = SDL_GL_CreateContext(window);
-    if(*glContext == NULL) {
-      LOG_SDL_DIE("OpenGL context could not be created");
-    }
-
-    /* Enable VSync. */
-    //if(SDL_GL_SetSwapInterval(1) < 0) {
-    //sdldie("Warning: Unable to set VSync");
-    //}
-
     /* Enable Z-Depth. */
     glEnable(GL_DEPTH_TEST);
 

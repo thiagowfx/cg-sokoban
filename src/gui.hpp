@@ -20,6 +20,9 @@ void renderSplashScreen(const char* path, unsigned timeout, SDL_Renderer*, SDL_C
 /// Return true if @key is a movement key.
 bool isMovementKey(const SDL_Keycode& key);
 
+/// Log a message using SDL_LOG, then exit.
+void SDL_DIE(const char*);
+
 namespace Sokoban {
   /**
     This class glues up the SDL interface with the game logic.
@@ -29,7 +32,7 @@ namespace Sokoban {
     typedef enum Context {
       CONTEXT_MAIN_MENU = 0,
       CONTEXT_GAME = 1,
-      CONTEXT_GAME_WON = 2
+      CONTEXT_GAME_FINISHED = 2
     } Context;
 
     public:
@@ -43,6 +46,12 @@ namespace Sokoban {
     void gameLoop();
 
     private:
+    /// Load OpenGL for the first time.
+    void loadOpenGL();
+
+    /// Check if the current level is finished. If yes, load the next level or end the game, if it is the last level.
+    void checkLoadNextLevel(const SDL_Event&);
+
     /// The main SDL window.
     SDL_Window *window = NULL;
 
@@ -73,7 +82,6 @@ namespace Sokoban {
     /// Indicate if OpenGL has already been initialized.
     bool OPENGL_LOADED = false;
 
-    private:
     // Game settings.
 
     /// The screen width.
@@ -84,6 +92,12 @@ namespace Sokoban {
 
     // Duration of the game splash screen (in milliseconds).
     const int GAME_SPLASH_TIMEOUT = 1000;
+
+    /// Duration of the end game screen (in milliseconds).
+    const int GAME_FINISHED_TIMEOUT = 3000;
+
+    /// Delay between two stages.
+    const int STAGE_FINISHED_TIMEOUT = 1500;
 
     const vector<const char*> GAME_MENU_LABELS = vector<const char*>{"Stage 1", "Stage 2", "Stage 3", "Quit"}; // Quit must be the last option.
 

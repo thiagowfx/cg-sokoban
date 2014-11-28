@@ -1,11 +1,5 @@
 #include "helpers.hpp"
 
-void LOG_SDL_DIE(const char* msg) {
-  std::cout << msg << std::endl;
-  std::cout << "DIE: SDL_Error: " << SDL_GetError() << std::endl;
-  exit(EXIT_FAILURE);
-}
-
 bool loadPngImage(const char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData) {
   png_structp png_ptr;
   png_infop info_ptr;
