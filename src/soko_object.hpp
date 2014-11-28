@@ -1,8 +1,6 @@
 #ifndef _SOKO_OBJECT_H_
 #define _SOKO_OBJECT_H_
 
-#include "soko_position.hpp"
-
 namespace Sokoban {
   /**
   This class represents an object that is on a sokoban board. 

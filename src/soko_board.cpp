@@ -59,7 +59,7 @@ SokoBoard::SokoBoard(std::string filename) :
     mapFile.close();
   }
   else {
-    cout << "Unable to open file " << filename.c_str() << endl;
+    std::cout << "INFO: Unable to open file " << filename << std::endl;
   }
 }
 
@@ -70,11 +70,11 @@ void SokoBoard::move(Direction direction) {
 
   // Out-of-bounds on y.
   if(nextPosition.y < 0 || nextPosition.y >= staticBoard.size()) //checking if it is leaving the board y
-    return;  // TODO: maybe do something
+    return;
 
   // Out-of-bounds on x.
   if(nextPosition.x < 0 || nextPosition.x >= staticBoard[nextPosition.y].size()) //checking if it is leaving the board x
-    return;  // TODO: maybe do something
+    return;
 
   if(staticBoard[nextPosition.y][nextPosition.x].getType() != SokoObject::WALL) {
 
@@ -92,11 +92,11 @@ void SokoBoard::move(Direction direction) {
 
       // Out-of-bounds on y.
       if(boxNextPosition.y < 0 || boxNextPosition.y >= staticBoard.size()) //checking if box is leaving board's y
-        return;  // TODO: maybe do something
+        return;
 
       // Out-of-bounds on x.
       if(boxNextPosition.x < 0 || boxNextPosition.x >= staticBoard[nextPosition.y].size()) //checking if box is leaving board's x
-        return;  // TODO: maybe do something
+        return;
 
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
           staticBoard[boxNextPosition.y][boxNextPosition.x].getType() != SokoObject::WALL) {
@@ -116,11 +116,11 @@ void SokoBoard::move(Direction direction) {
 
       // Out-of-bounds on y.
       if(boxNextPosition.y < 0 || boxNextPosition.y >= staticBoard.size()) //checking if box is leaving board's y
-        return;  // TODO: maybe do something
+        return;
 
       // Out-of-bounds on x.
       if(boxNextPosition.x < 0 || boxNextPosition.x >= staticBoard[nextPosition.y].size()) //checking if box is leaving board's x
-        return;  // TODO: maybe do something
+        return;
 
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
           staticBoard[boxNextPosition.y][boxNextPosition.x].getType() != SokoObject::WALL) {
@@ -138,13 +138,13 @@ void SokoBoard::move(Direction direction) {
     updateUnresolvedBoxes();
 
   if(characterMoved)
-    moves.push(Movement(direction, boxMoved));
+    undoTree.push(Movement(direction, boxMoved));
 }
 
 void SokoBoard::undo() {
-  if (!moves.empty()) {
-    Movement last = moves.top();
-    moves.pop();
+  if (!undoTree.empty()) {
+    Movement last = undoTree.top();
+    undoTree.pop();
 
     SokoPosition previousPosition = characterPosition - last.direction;
     dynamicBoard[previousPosition.y][previousPosition.x] = SokoObject(SokoObject::CHARACTER);
@@ -165,18 +165,25 @@ void SokoBoard::undo() {
 
 std::string SokoBoard::toString() const {
   std::stringstream ss;
-  ss<< "Dynamic Board: " << endl;
+  ss << "Dynamic Board: " << std::endl;
   for(auto line : dynamicBoard) {
     for(auto obj : line)
       ss << " " << obj.getType();
-    ss << endl;
+    ss << std::endl;
   }
-  ss<< "Static Board: " << endl;
+  ss << std::endl;
+  
+  ss << "Static Board: " << std::endl;
   for(auto line : staticBoard) {
     for(auto obj : line)
       ss << " " << obj.getType();
-    ss << endl;
+    ss << std::endl;
   }
+  ss << std::endl;
+
+  ss << "Number of moves: " << getNumberOfMoves() << std::endl;
+  ss << std::endl;
+
   return ss.str();
 }
 
@@ -185,13 +192,14 @@ std::ostream& operator<<(std::ostream& os, const SokoBoard& s) {
   return os;
 }
 
+/** 
+  Every test here is necessary (and done only when necessary).
+  If you don't trust me, waste your time and please, increase the counter.
+  Time wasted with these tests: 0.12 hours.
+  */
 void SokoBoard::updateUnresolvedBoxes() {
   unresolvedLightBoxes = lightBoxes;
   unresolvedHeavyBoxes = heavyBoxes;
-  /* Every test here is necessary (and done only when necessary).
-     If you don't trust me, waste your time and please, increase the counter.
-     Time wasted with these tests: 0.12 hours.
-     */
   for(unsigned y = 0; y < staticBoard.size(); y++) {
     for(unsigned x = 0; x < staticBoard[y].size(); x++) {
       if(staticBoard[y][x].getType() == SokoObject::TARGET) {
@@ -204,6 +212,10 @@ void SokoBoard::updateUnresolvedBoxes() {
       }
     }
   }
+}
+
+unsigned SokoBoard::getNumberOfMoves() const {
+  return undoTree.size();
 }
 
 unsigned SokoBoard::getNumberOfBoxes() const {

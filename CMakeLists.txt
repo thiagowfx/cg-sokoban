@@ -46,7 +46,6 @@ set(
   ${SRC_DIR}/helpers.cpp
   ${SRC_DIR}/menu.cpp
   ${SRC_DIR}/soko_board.cpp
-  ${SRC_DIR}/soko_character.hpp
   ${SRC_DIR}/soko_object.hpp
   ${SRC_DIR}/soko_position.cpp
   )

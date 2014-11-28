@@ -22,13 +22,16 @@ namespace Sokoban {
       SokoBoard(std::string filename);
 
       /// Move the character to direction indicated by @direction.      
-      void move(Direction direction); // TODO
+      void move(Direction direction);
 
       /// Prints a representation of this class to a ostream.
       friend ostream& operator<<(ostream&, const SokoBoard&);
 
       /// Return the string representation of this class
       std::string toString() const;
+
+      /// Get the number of moves of the character so far.
+      unsigned getNumberOfMoves() const;
 
       /// Get the number of boxes of this board.
       unsigned getNumberOfBoxes() const;
@@ -60,13 +63,13 @@ namespace Sokoban {
       /// Returns true if this board is finished, with all boxes moved to targets.
       bool isFinished() const;
 
-      /// Returns the element in position x, y of the dynamic board
+      /// Returns the element in position x, y of the dynamic board.
       SokoObject getDynamic(int x, int y);
 
-      /// Returns the element in position x, y of the static board
+      /// Returns the element in position x, y of the static board.
       SokoObject getStatic(int x, int y);
 
-      /// Undo the last movement.
+      /// Undo the last character movement.
       void undo();
 
     private:
@@ -76,21 +79,22 @@ namespace Sokoban {
       /// This nested class represents a movement from the character
       class Movement {
         public:
-          Movement(Direction direction_, bool boxMoved_) : direction(direction_), 
-                                                           boxMoved(boxMoved_) { };
+          Movement(Direction direction, bool boxMoved) : direction(direction), 
+                                                           boxMoved(boxMoved) {};
           /// The direction of the movement
           Direction direction;
+
           /// True if a box was moved with this movement
           bool boxMoved;
       };
 
-      /// The stack with all the movements that happened
-      std::stack<Movement> moves;
+      /// The stack with all the movements that happened.
+      std::stack<Movement> undoTree;
 
       /// The character position.
       SokoPosition characterPosition;
 
-      /// The direction the character is facing
+      /// The direction the character is facing.
       Direction characterDirection;
       
       /// Stores dynamic SokoObjects of a board, such as boxes and the character.
