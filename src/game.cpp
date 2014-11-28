@@ -82,6 +82,10 @@ Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int sc
     int width, height;
     glEnable(GL_TEXTURE_2D);        
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     glGenTextures(6, textureTargetIDs);
     for (int i=0; i<=5; i++){
@@ -187,15 +191,24 @@ void Game::renderScene() {
 
     for (unsigned row = 0; row < board->getNumberOfRows(); row++) {
     for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
+      SokoObject::Type u = board->getStatic(column, row).getType();
       SokoObject::Type t = board->getDynamic(column, row).getType();
       if (t == SokoObject::CHARACTER) {
         drawCube(row, column, 0.5, size, textureCharacterIDs);
       }
       else if (t== SokoObject::LIGHT_BOX) {
+        if(u == SokoObject::TARGET){
+          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        }
         drawCube(row, column, 0.5, size, textureLightBoxIDs);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
       else if (t == SokoObject::HEAVY_BOX) {
+        if(u == SokoObject::TARGET){
+          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        }
         drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
     }
   }
@@ -206,7 +219,7 @@ void Game::renderScene() {
 
 void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs) {
   GLdouble halfEdge = edge / 2.0;
-  GLfloat color[4] = {0, 0.3, 1, 1.0};
+  GLfloat color[4] = {1.0, 0.0, 0.0, 1.0}; //color is red
   GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
@@ -220,11 +233,6 @@ void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* t
   glPushMatrix();
   glTranslatef(x * edge, y * edge, z);
 
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
   glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
   glBegin(GL_POLYGON);

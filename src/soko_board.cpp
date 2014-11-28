@@ -76,7 +76,7 @@ void SokoBoard::move(Direction direction) {
   if(nextPosition.x < 0 || nextPosition.x >= staticBoard[nextPosition.y].size()) //checking if it is leaving the board x
     return;  // TODO: maybe do something
 
-  if(staticBoard[nextPosition.y][nextPosition.x].getType() == SokoObject::EMPTY) {
+  if(staticBoard[nextPosition.y][nextPosition.x].getType() != SokoObject::WALL) {
 
     // CASE: Character movement only.
     if(dynamicBoard[nextPosition.y][nextPosition.x].getType() == SokoObject::EMPTY) {
@@ -99,7 +99,7 @@ void SokoBoard::move(Direction direction) {
         return;  // TODO: maybe do something
 
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
-          staticBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY) {
+          staticBoard[boxNextPosition.y][boxNextPosition.x].getType() != SokoObject::WALL) {
         dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::LIGHT_BOX);
         dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(SokoObject::CHARACTER);
         dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
@@ -123,7 +123,7 @@ void SokoBoard::move(Direction direction) {
         return;  // TODO: maybe do something
 
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
-          staticBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY) {
+          staticBoard[boxNextPosition.y][boxNextPosition.x].getType() != SokoObject::WALL) {
         dynamicBoard[boxNextPosition.y][boxNextPosition.x] = SokoObject(SokoObject::HEAVY_BOX);
         dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(SokoObject::CHARACTER);
         dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
