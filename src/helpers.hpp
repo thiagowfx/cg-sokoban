@@ -7,12 +7,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-typedef enum Context {
-  CONTEXT_MAIN_MENU = 0,
-  CONTEXT_GAME = 1,
-  CONTEXT_GAME_WON = 2
-} Context;
-
 /// Log a message using SDL_LOG, then exit.
 void LOG_SDL_DIE(const char*);
 

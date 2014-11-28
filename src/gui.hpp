@@ -9,32 +9,67 @@
 #include "sdl_menu.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 using namespace Sokoban;
 
+/**
+  This class glues up the SDL interface with the game logic.
+  */
 class Gui {
-public:
+  /// Represents the context where the game might be.
+  typedef enum Context {
+    CONTEXT_MAIN_MENU = 0,
+    CONTEXT_GAME = 1,
+    CONTEXT_GAME_WON = 2
+  } Context;
+
+  public:
+  /// SDL initialization.
   Gui();
+
+  /// Clean up SDL artifacts.
   ~Gui();
+
+  /// Main game loop. Continuously monitors for user input and renderizes the game on the scree.
   void gameLoop();
 
-private:
+  private:
   void renderSingleText(const char* text, unsigned timeout, SDL_Color color = {0, 0, 0, 255}) const;
   void renderSplashScreen(const char* path, unsigned timeout) const;
 
-private:
+  private:
+  /// The main SDL window.
   SDL_Window *window = NULL;
+
+  /// The main SDL window renderer.
   SDL_Renderer *windowRenderer = NULL;
+
+  /// Menu background texture.
   SDL_Texture *backgroundTexture = NULL;
+
+  /// Type of the font (TTF).
   TTF_Font *windowFont = NULL;
+
+  /// The game menu.
   Menu *gameMenu = NULL;
+
+  /// The game renderization engine.
   Game *game = NULL;
+
+  /// The current stage the user is on.
   unsigned currentLevel;
+
+  /// OpenGL context for SDL.
   SDL_GLContext glContext;
+
+  /// The current context the user is on.
   Context context = CONTEXT_MAIN_MENU;
+
+  /// Indicate if OpenGL has already been initialized.
   bool OPENGL_LOADED = false;
 
-private:
+  private:
   const int SCREEN_WIDTH = 800;
   const int SCREEN_HEIGHT = 600;
   const int GAME_SPLASH_TIMEOUT = 1200;
