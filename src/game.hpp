@@ -61,6 +61,9 @@ namespace Sokoban {
       /// Render the last scene, when the game finishes.
       void renderGameFinishedScene();
 
+      /// Get the game board.
+      SokoBoard* getGameBoard() const;
+
     private:
       /// Main SDL window.
       SDL_Window* window;
@@ -76,7 +79,7 @@ namespace Sokoban {
       GLdouble xold, yold;
 
       /// Path to the image to be loaded when the game finishes. 
-      const char* GAME_FINISHED_IMAGE_PATH="assets/textures/end_game.png";
+      const char* GAME_FINISHED_IMAGE_PATH="assets/textures/game_finished.png";
 
       const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
       GLuint textureTargetIDs[6];
@@ -95,7 +98,6 @@ namespace Sokoban {
 
       const char* floorPath[6] = {"assets/wall.png", "assets/ftop.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png"};
       GLuint textureFloorIDs[6];
-
   };
 }
 

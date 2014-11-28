@@ -21,7 +21,7 @@ void renderSplashScreen(const char* path, unsigned timeout, SDL_Renderer*, SDL_C
 bool isMovementKey(const SDL_Keycode& key);
 
 /// Log a message using SDL_LOG, then exit.
-void SDL_DIE(const char*);
+void SDL_DIE(std::string);
 
 namespace Sokoban {
   /**

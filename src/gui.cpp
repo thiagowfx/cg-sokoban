@@ -33,7 +33,7 @@ bool isMovementKey(const SDL_Keycode& key) {
     key == SDLK_s || key == SDLK_w || key == SDLK_a || key == SDLK_d;
 }
 
-void SDL_DIE(const char* msg) {
+void SDL_DIE(std::string msg) {
   std::cout << msg << std::endl;
   std::cout << "DIE: SDL_Error: " << SDL_GetError() << std::endl;
   exit(EXIT_FAILURE);
@@ -162,8 +162,7 @@ namespace Sokoban {
         // Quit event.
         if (e.type == SDL_QUIT) {
           SDL_Log("SDL_QUIT event");
-          quit = true;
-          break;
+          quit = true; break;
         }
 
         // Window resize event.
@@ -183,8 +182,7 @@ namespace Sokoban {
             // Quit from the game.
             case SDLK_ESCAPE:
             case SDLK_q:
-              quit = true;
-              break;
+              quit = true; break;
               // Down key.
             case SDLK_s:
             case SDLK_DOWN:
@@ -193,6 +191,7 @@ namespace Sokoban {
               }
               else if (context == CONTEXT_GAME){
                 game->moveDownAction();
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
               // Up key:
@@ -203,6 +202,7 @@ namespace Sokoban {
               }
               else if (context == CONTEXT_GAME){
                 game->moveUpAction();
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
               // Left key.
@@ -210,6 +210,7 @@ namespace Sokoban {
             case SDLK_LEFT:
               if (context == CONTEXT_GAME){
                 game->moveLeftAction();
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
               // Right key.
@@ -217,6 +218,7 @@ namespace Sokoban {
             case SDLK_RIGHT:
               if (context == CONTEXT_GAME){
                 game->moveRightAction();
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
               // Mute key
@@ -240,14 +242,15 @@ namespace Sokoban {
             case SDLK_u:
               if (context == CONTEXT_GAME) {
                 game->undoAction();
+                SDL_Log("Undo action");
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
             case SDLK_RETURN:
               if (context == CONTEXT_MAIN_MENU) {
                 unsigned index = gameMenu->getCurrentIndex();
                 if (index == GAME_MENU_LABELS.size() - 1) {
-                  quit = true;
-                  break;
+                  quit = true; break;
                 }
                 else {
                   context = CONTEXT_GAME;
@@ -278,8 +281,7 @@ namespace Sokoban {
             if (context == CONTEXT_MAIN_MENU) {
               unsigned index = gameMenu->getCurrentIndex();
               if (index == GAME_MENU_LABELS.size() - 1) {
-                quit = true;
-                break;
+                quit = true; break;
               }
               else {
                 context = CONTEXT_GAME;
@@ -309,6 +311,7 @@ namespace Sokoban {
       else if (context == CONTEXT_GAME_FINISHED) {
         SDL_Log("Congratulations, you've won the game!");
         game->renderGameFinishedScene();
+        Mix_HaltMusic(); 
         SDL_Delay(GAME_FINISHED_TIMEOUT);
         quit = true; break;
       }

@@ -342,7 +342,7 @@ namespace Sokoban {
     bool hasAlpha;
     GLubyte* textureData;
 
-    bool success = loadPngImage(GAME_FINISHED_IMAGE_PATH_PATH, width, height, hasAlpha, &textureData);
+    bool success = loadPngImage(GAME_FINISHED_IMAGE_PATH, width, height, hasAlpha, &textureData);
     if (!success) {
       SDL_Log("Unable to load png file");
       exit(EXIT_FAILURE);
@@ -372,24 +372,24 @@ namespace Sokoban {
     SDL_GL_SwapWindow(window);
   }
 
+  SokoBoard* Game::getGameBoard() const {
+    return board;
+  }
+
   void Game::moveDownAction() {
     board->move(Direction::DOWN);
-    SDL_Log(board->toString().c_str());
   }
 
   void Game::moveUpAction() {
     board->move(Direction::UP);
-    SDL_Log(board->toString().c_str());
   }
 
   void Game::moveLeftAction() {
     board->move(Direction::LEFT);
-    SDL_Log(board->toString().c_str());
   }
 
   void Game::moveRightAction() {
     board->move(Direction::RIGHT);
-    SDL_Log(board->toString().c_str());
   }
 
   void Game::undoAction() {
