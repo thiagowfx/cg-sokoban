@@ -44,7 +44,7 @@ namespace Sokoban {
       bool moveRightAction();
 
       /// Undo action.
-      void undoAction();
+      bool undoAction();
 
       /// Draws a cube of size edge centered at (x,y,z).
       void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs);

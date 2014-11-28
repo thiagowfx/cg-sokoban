@@ -70,7 +70,7 @@ namespace Sokoban {
       SokoObject getStatic(int x, int y);
 
       /// Undo the last character movement.
-      void undo();
+      bool undo();
 
     private:
       unsigned unresolvedLightBoxes, unresolvedHeavyBoxes, 

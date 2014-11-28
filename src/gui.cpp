@@ -283,7 +283,11 @@ namespace Sokoban {
               break;
             case SDLK_u:
               if (context == CONTEXT_GAME) {
-                game->undoAction();
+                bool boxMoved = game->undoAction();
+                if (boxMoved)
+                  boxMovedEvent();
+                else
+                  characterMovedEvent();
                 SDL_Log("Undo action");
                 SDL_Log(game->getGameBoard()->toString().c_str());
               }

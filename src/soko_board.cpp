@@ -143,7 +143,7 @@ bool SokoBoard::move(Direction direction) {
   return boxMoved;
 }
 
-void SokoBoard::undo() {
+bool SokoBoard::undo() {
   if (!undoTree.empty()) {
     Movement last = undoTree.top();
     undoTree.pop();
@@ -162,7 +162,9 @@ void SokoBoard::undo() {
     }
 
     characterPosition = previousPosition;
+    return last.boxMoved;
   }
+  return false;
 }
 
 std::string SokoBoard::toString() const {

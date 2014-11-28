@@ -377,7 +377,7 @@ namespace Sokoban {
     return board->move(Direction::RIGHT);
   }
 
-  void Game::undoAction() {
-    board->undo();
+  bool Game::undoAction() {
+    return board->undo();
   }
 }
