@@ -173,8 +173,9 @@ namespace Sokoban {
     SDL_Event e;
 
     /* Show the game splash screen. */
-    Mix_PlayChannel(-1, soundSplash, 0);
-    renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
+    // TODO: reenable this later.
+    //Mix_PlayChannel(-1, soundSplash, 0);
+    //renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
 
     /* Show the main menu. */
     backgroundTexture = loadTexture(windowRenderer, MENU_BACKGROUND_TEXTURE_PATH);
@@ -302,7 +303,7 @@ namespace Sokoban {
                   context = CONTEXT_GAME;
                   if(!OPENGL_LOADED) {
                     loadOpenGL();
-                    game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
+                    game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT, windowFont, windowRenderer);
                   }
                   game->loadLevel(currentLevel = index + 1);
                 }
@@ -320,6 +321,7 @@ namespace Sokoban {
             }
           }
         }
+        /// Mouse click event.
         else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
           int x, y; Uint32 mouseState = SDL_GetMouseState(&x, &y);
           if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
@@ -333,10 +335,9 @@ namespace Sokoban {
                 context = CONTEXT_GAME;
                 if(!OPENGL_LOADED) {
                   loadOpenGL();
-                  game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
+                  game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT, windowFont, windowRenderer);
                 }
-                currentLevel = index + 1;
-                game->loadLevel(currentLevel);
+                game->loadLevel(currentLevel = index + 1);
               }
             }
             else if(context == CONTEXT_GAME) {

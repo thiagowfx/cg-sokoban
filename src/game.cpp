@@ -1,11 +1,13 @@
 #include "game.hpp"
 
 namespace Sokoban {
-  Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int screenHeight) :
+  Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int screenHeight, TTF_Font* windowFont, SDL_Renderer* windowRenderer) :
     window(window),
     glContext(glContext),
     screenWidth(screenWidth),
-    screenHeight(screenHeight) {
+    screenHeight(screenHeight),
+    windowFont(windowFont),
+    windowRenderer(windowRenderer) {
 
       /* Set OpenGL attributes. */
       SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -162,7 +164,6 @@ namespace Sokoban {
     glMatrixMode(GL_MODELVIEW);
     const double size = 0.5;
 
-
     for (unsigned row = 0; row < board->getNumberOfRows(); row++) {
       for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
         SokoObject::Type t = board->getStatic(column, row).getType();
@@ -203,8 +204,50 @@ namespace Sokoban {
       }
     }
 
+    stringstream ss;
+
+    ss.clear();
+    ss << "Moves: " << board->getNumberOfMoves();
+    renderText(ss.str(), SDL_Color{200,0,0,255});
+
+    ss.clear();
+    ss << "Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
+    renderText(ss.str(), SDL_Color{0, 200, 0, 255});
+
     glFlush();
     SDL_GL_SwapWindow(window);
+  }
+
+  void Game::renderText(std::string text, SDL_Color color) {
+    SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
+
+    glPushMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glViewport(0, 0, screenWidth/2, screenHeight/10);
+
+    float width, height;
+    float x = -1.0, y = -1.0;
+    SDL_GL_BindTexture(texture, &width, &height);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 1.0 * height);         glVertex2f(x, y);
+    glTexCoord2f(1.0 * width, 1.0 * height); glVertex2f(x + 2.0, y);
+    glTexCoord2f(1.0 * width, 0.0);          glVertex2f(x + 2.0, y + 2.0);
+    glTexCoord2f(0.0, 0.0);                  glVertex2f(x, y + 2.0);
+    glEnd();
+
+    glPopMatrix();
+
+    SDL_GL_UnbindTexture(texture);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
   }
 
   void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs) {
@@ -296,7 +339,6 @@ namespace Sokoban {
   }
 
   void Game::sokoReshape() {
-    /* Viewport: whole window. */
     glViewport(0.0, 0.0, screenWidth, screenHeight);
 
     glMatrixMode(GL_PROJECTION);

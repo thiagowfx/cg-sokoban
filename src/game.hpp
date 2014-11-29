@@ -12,11 +12,12 @@
 #include <SOIL/SOIL.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_ttf.h>
 
 namespace Sokoban {
   class Game {
     public:
-      Game(SDL_Window*, SDL_GLContext*, int screenWidth, int screenHeight);
+      Game(SDL_Window*, SDL_GLContext*, int screenWidth, int screenHeight, TTF_Font* windowFont, SDL_Renderer* windowRenderer);
       ~Game();
 
       /// Load the specified @level.
@@ -58,6 +59,8 @@ namespace Sokoban {
       /// Render a single image, at the given path.
       void renderSingleImage(const char* path);
 
+      void renderText(std::string text, SDL_Color color);
+
       /// Get the game board.
       SokoBoard* getGameBoard() const;
 
@@ -69,6 +72,12 @@ namespace Sokoban {
       SDL_GLContext* glContext;
 
       int screenWidth, screenHeight;
+
+      /// The window font (TTF).
+      TTF_Font* windowFont;
+
+      /// The main window renderer.
+      SDL_Renderer* windowRenderer;
 
       /// The current soko board
       SokoBoard *board = NULL;
