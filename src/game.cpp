@@ -69,7 +69,6 @@ namespace Sokoban {
       glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.1);
 
       /*Generating Textures*/
-
       unsigned char* image;
       int width, height;
       glEnable(GL_TEXTURE_2D);        
@@ -134,8 +133,6 @@ namespace Sokoban {
       }
 
       //std::cout << textureTargetIDs[0] << " " << textureFloorIDs[1] << " " << textureFloorIDs[5] << std::endl;
-      /* Clean the background and sets it to the RGB parameters. */
-      glClearColor(0.5, 0.5, 0.5, 1.0);
 
       /* Set the Projection Matrix to the Identity. */
       glMatrixMode(GL_PROJECTION);
@@ -158,9 +155,11 @@ namespace Sokoban {
   }
 
   void Game::renderScene() {
+    // Clear.
+    glClearColor(230/255.0, 212/255.0, 143/255.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /*Objects drawing*/
+    // Objects drawing.
     glMatrixMode(GL_MODELVIEW);
     const double size = 0.5;
 
@@ -204,8 +203,8 @@ namespace Sokoban {
       }
     }
 
+    // Statusbar.
     stringstream ss;
-
     ss.clear();
     ss << "Stage: " << getCurrentLevel();
     ss << " | Moves: " << board->getNumberOfMoves();
@@ -338,6 +337,7 @@ namespace Sokoban {
     setOldPosition(xnew, ynew);
 
     glMatrixMode(GL_MODELVIEW);
+
     glRotatef(atan(2.0 * xstep), 0.0, 0.0, 1.0);
     glRotatef(atan(2.0 * ystep), 0.0, 1.0, 0.0);
 
@@ -347,11 +347,9 @@ namespace Sokoban {
 
   void Game::sokoReshape() {
     glViewport(0.0, 0.0, screenWidth, screenHeight);
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(65.0, GLdouble(screenWidth)/screenHeight, 1.0, 10.0) ;
-
     glMatrixMode(GL_MODELVIEW);
   }
 
