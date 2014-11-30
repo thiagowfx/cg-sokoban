@@ -207,9 +207,10 @@ namespace Sokoban {
     stringstream ss;
 
     ss.clear();
-    ss << "Moves: " << board->getNumberOfMoves();
-    ss << "  Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
-    ss << "  Heavy boxes: " << board->getNumberOfUnresolvedHeavyBoxes();
+    ss << "Stage: " << getCurrentLevel();
+    ss << " | Moves: " << board->getNumberOfMoves();
+    ss << " | Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
+    ss << " | Heavy boxes: " << board->getNumberOfUnresolvedHeavyBoxes();
     renderStatusbar(ss.str(), SDL_Color{255, 255, 255, 255}, SDL_Color{0, 0, 0, 255});
     
     glFlush();
@@ -365,8 +366,9 @@ namespace Sokoban {
       delete board;
       board = NULL;
     }
+    currentLevel = level;
     stringstream ss;
-    ss << "assets/stages/stage" << level << ".sok";
+    ss << "assets/stages/stage" << currentLevel << ".sok";
     board = new SokoBoard(ss.str());
   }
 
@@ -416,6 +418,10 @@ namespace Sokoban {
 
   SokoBoard* Game::getGameBoard() const {
     return board;
+  }
+
+  unsigned Game::getCurrentLevel() const {
+    return currentLevel;
   }
 
   bool Game::moveDownAction() {

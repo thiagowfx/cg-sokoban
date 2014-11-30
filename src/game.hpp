@@ -66,6 +66,9 @@ namespace Sokoban {
       /// Get the game board.
       SokoBoard* getGameBoard() const;
 
+      /// Get the current game level.
+      unsigned getCurrentLevel() const;
+
     private:
       /// Main SDL window.
       SDL_Window* window;
@@ -74,6 +77,9 @@ namespace Sokoban {
       SDL_GLContext* glContext;
 
       int screenWidth, screenHeight;
+
+      /// The current game level.
+      unsigned currentLevel;
 
       /// The window font (TTF).
       TTF_Font* windowFont;

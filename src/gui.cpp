@@ -279,7 +279,7 @@ namespace Sokoban {
             case SDLK_r:
               if (context == CONTEXT_GAME) {
                 SDL_Log("Level restarted");
-                game->loadLevel(currentLevel);
+                game->loadLevel(game->getCurrentLevel());
               }
               break;
             case SDLK_u:
@@ -305,7 +305,7 @@ namespace Sokoban {
                     loadOpenGL();
                     game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT, windowFont, windowRenderer);
                   }
-                  game->loadLevel(currentLevel = index + 1);
+                  game->loadLevel(index + 1);
                 }
               }
               break;
@@ -337,7 +337,7 @@ namespace Sokoban {
                   loadOpenGL();
                   game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT, windowFont, windowRenderer);
                 }
-                game->loadLevel(currentLevel = index + 1);
+                game->loadLevel(index + 1);
               }
             }
             else if(context == CONTEXT_GAME) {
@@ -368,13 +368,13 @@ namespace Sokoban {
 
   void Gui::checkLoadNextLevel(const SDL_Event& e) {
     if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym) && game->isLevelFinished()) {
-      if (currentLevel == (GAME_MENU_LABELS.size() - 1)) {
-        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", currentLevel);
+      if (game->getCurrentLevel() == (GAME_MENU_LABELS.size() - 1)) {
+        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", game->getCurrentLevel());
         context = CONTEXT_GAME_FINISHED;
       }
       else {
-        SDL_Log("Finished level %d", currentLevel);
-        game->loadLevel(++currentLevel);
+        SDL_Log("Finished level %d", game->getCurrentLevel());
+        game->loadLevel(game->getCurrentLevel() + 1);
       }
       Mix_PlayChannel(-1, soundStageFinished, 0);
       SDL_Delay(STAGE_FINISHED_TIMEOUT);
