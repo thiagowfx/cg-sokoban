@@ -208,18 +208,16 @@ namespace Sokoban {
 
     ss.clear();
     ss << "Moves: " << board->getNumberOfMoves();
-    renderText(ss.str(), SDL_Color{200,0,0,255});
-    
-    ss.clear();
     ss << "  Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
-    renderText(ss.str(), SDL_Color{0, 200, 0, 255});
+    ss << "  Heavy boxes: " << board->getNumberOfUnresolvedHeavyBoxes();
+    renderStatusbar(ss.str(), SDL_Color{255, 255, 255, 255}, SDL_Color{0, 0, 0, 255});
     
     glFlush();
     SDL_GL_SwapWindow(window);
   }
 
-  void Game::renderText(std::string text, SDL_Color color) {
-    SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), color);
+  void Game::renderStatusbar(std::string text, SDL_Color textColor, SDL_Color backgroundColor) {
+    SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), textColor);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
 
     glMatrixMode(GL_PROJECTION);
@@ -231,7 +229,7 @@ namespace Sokoban {
     glLoadIdentity();
     glDisable(GL_DEPTH_TEST);
 
-    glViewport(0, 0, screenWidth/2, screenHeight/10);
+    glViewport(0, 0, screenWidth, screenHeight/20);
 
     float width, height;
     float x = -1.0, y = -1.0;
@@ -380,7 +378,7 @@ namespace Sokoban {
     SDL_Surface* loadedSurface = IMG_Load(path);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);    
 
-    // Starting que matrixes
+    // Starting the matrixes.
     glMatrixMode(GL_PROJECTION);
     glPushMatrix(); 
     glLoadIdentity();
@@ -388,6 +386,7 @@ namespace Sokoban {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
+
     glDisable(GL_DEPTH_TEST);
 
     float width, height;
@@ -401,14 +400,14 @@ namespace Sokoban {
     glTexCoord2f(0.0, 0.0);                  glVertex2f(x, y + 2.0);
     glEnd();
 
-    glFlush();
-    SDL_GL_SwapWindow(window);
-
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+
+    glFlush();
+    SDL_GL_SwapWindow(window);
 
     SDL_GL_UnbindTexture(texture);
     SDL_DestroyTexture(texture);

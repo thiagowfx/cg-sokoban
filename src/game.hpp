@@ -60,7 +60,8 @@ namespace Sokoban {
       /// Render a single image, at the given path.
       void renderSingleImage(const char* path);
 
-      void renderText(std::string text, SDL_Color color);
+      /// Render the status bar.
+      void renderStatusbar(std::string text, SDL_Color textColor, SDL_Color backgroundColor);
 
       /// Get the game board.
       SokoBoard* getGameBoard() const;
