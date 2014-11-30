@@ -209,11 +209,11 @@ namespace Sokoban {
     ss.clear();
     ss << "Moves: " << board->getNumberOfMoves();
     renderText(ss.str(), SDL_Color{200,0,0,255});
-
+    /*
     ss.clear();
     ss << "Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
     renderText(ss.str(), SDL_Color{0, 200, 0, 255});
-
+    */
     glFlush();
     SDL_GL_SwapWindow(window);
   }
@@ -222,13 +222,16 @@ namespace Sokoban {
     SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
 
-    glPushMatrix();
+    //glPushMatrix();
 
     glMatrixMode(GL_PROJECTION);
+    glPushMatrix(); 
     glLoadIdentity();
 
     glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
     glLoadIdentity();
+    glDisable(GL_DEPTH_TEST);
 
     glViewport(0, 0, screenWidth/2, screenHeight/10);
 
@@ -243,8 +246,15 @@ namespace Sokoban {
     glTexCoord2f(0.0, 0.0);                  glVertex2f(x, y + 2.0);
     glEnd();
 
+    glEnable(GL_DEPTH_TEST);
+
+    glViewport(0, 0, screenWidth, screenHeight);
+    glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    
     SDL_GL_UnbindTexture(texture);
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);
