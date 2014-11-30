@@ -379,7 +379,7 @@ namespace Sokoban {
   void Game::renderSingleImage(const char* path) {
     SDL_Surface* loadedSurface = IMG_Load(path);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);    
-
+    
     // Starting que matrixes
     glMatrixMode(GL_PROJECTION);
     glPushMatrix(); 
@@ -404,6 +404,7 @@ namespace Sokoban {
     glFlush();
     SDL_GL_SwapWindow(window);
 
+    // Popping the matrixes
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
