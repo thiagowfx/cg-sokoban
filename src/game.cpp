@@ -258,7 +258,7 @@ namespace Sokoban {
   }
 
   void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs) {
-    GLdouble halfEdge = edge / 2.0;
+    GLdouble halfEdge = scale*(edge / 2.0);
     GLfloat color[4] = {1.0, 0.0, 0.0, 1.0}; //color is red
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
