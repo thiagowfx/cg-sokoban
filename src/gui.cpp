@@ -311,6 +311,12 @@ namespace Sokoban {
               break;
           }
         }
+        /// Mouse wheel event.
+        else if (e.type == SDL_MOUSEWHEEL) {
+          if (context == CONTEXT_GAME) {
+            SDL_Log("%d\n", e.y);
+          }
+        }
         /// Mouse motion event.
         else if (e.type == SDL_MOUSEMOTION) {
           if (context == CONTEXT_GAME) {
