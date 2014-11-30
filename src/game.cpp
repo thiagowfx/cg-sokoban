@@ -418,10 +418,10 @@ namespace Sokoban {
 
   void Game::changeScale(int n) {
     if (n == 1) {
-      scale *= 1.02;
+      scale *= 1.05;
     }
     else {
-      scale *= 0.98;
+      scale *= 0.95;
     }
   }
 
