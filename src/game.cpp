@@ -416,6 +416,15 @@ namespace Sokoban {
     SDL_FreeSurface(loadedSurface);
   }
 
+  void Game::changeScale(int n) {
+    if (n == 1) {
+      scale *= 1.02;
+    }
+    else {
+      scale *= 0.98;
+    }
+  }
+
   SokoBoard* Game::getGameBoard() const {
     return board;
   }

@@ -314,7 +314,8 @@ namespace Sokoban {
         /// Mouse wheel event.
         else if (e.type == SDL_MOUSEWHEEL) {
           if (context == CONTEXT_GAME) {
-            SDL_Log("%d\n", e.y);
+            SDL_Log("Moved mouse scroll wheel: %d\n", e.wheel.y);
+            game->changeScale(e.wheel.y);
           }
         }
         /// Mouse motion event.

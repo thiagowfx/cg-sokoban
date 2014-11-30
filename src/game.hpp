@@ -69,6 +69,9 @@ namespace Sokoban {
       /// Get the current game level.
       unsigned getCurrentLevel() const;
 
+      /// Change the game scale. 1 = should increase and -1 should decrease.
+      void changeScale(int);
+
     private:
       /// Main SDL window.
       SDL_Window* window;
@@ -91,6 +94,9 @@ namespace Sokoban {
       SokoBoard *board = NULL;
 
       GLdouble xold, yold;
+
+      /// The game scale (zoom) factor.
+      double scale = 1.0;
 
       const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
       GLuint textureTargetIDs[6];
