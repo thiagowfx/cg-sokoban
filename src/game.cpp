@@ -211,13 +211,13 @@ namespace Sokoban {
     ss << " | Moves: " << board->getNumberOfMoves();
     ss << " | Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
     ss << " | Heavy boxes: " << board->getNumberOfUnresolvedHeavyBoxes();
-    renderStatusbar(ss.str(), SDL_Color{255, 255, 255, 255}, SDL_Color{0, 0, 0, 255});
+    renderStatusbar(ss.str(), SDL_Color{255, 255, 255, 255});
     
     glFlush();
     SDL_GL_SwapWindow(window);
   }
 
-  void Game::renderStatusbar(std::string text, SDL_Color textColor, SDL_Color backgroundColor) {
+  void Game::renderStatusbar(std::string text, SDL_Color textColor) {
     SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), textColor);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
 
