@@ -168,14 +168,14 @@ namespace Sokoban {
       for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
         SokoObject::Type t = board->getStatic(column, row).getType();
         if (t == SokoObject::EMPTY) {
-          drawCube(row, column, 0, size, textureFloorIDs);
+          drawCube(scale*row, scale*column, 0, size, textureFloorIDs);
         }
         else if (t == SokoObject::WALL) {
-          drawCube(row, column, 0.5, size, textureWallIDs);
-          drawCube(row, column, 0, size, textureFloorIDs);
+          drawCube(scale*row, scale*column, scale*0.5, size, textureWallIDs);
+          drawCube(scale*row, scale*column, 0, size, textureFloorIDs);
         }
         else {
-          drawCube(row, column, 0, size, textureTargetIDs);
+          drawCube(scale*row, scale*column, 0, size, textureTargetIDs);
         }
       }
     }
@@ -185,20 +185,20 @@ namespace Sokoban {
         SokoObject::Type u = board->getStatic(column, row).getType();
         SokoObject::Type t = board->getDynamic(column, row).getType();
         if (t == SokoObject::CHARACTER) {
-          drawCube(row, column, 0.5, size, textureCharacterIDs);
+          drawCube(scale*row, scale*column, scale*0.5, size, textureCharacterIDs);
         }
         else if (t== SokoObject::LIGHT_BOX) {
           if(u == SokoObject::TARGET){
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
           }
-          drawCube(row, column, 0.5, size, textureLightBoxIDs);
+          drawCube(scale*row, scale*column, scale*0.5, size, textureLightBoxIDs);
           glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         }
         else if (t == SokoObject::HEAVY_BOX) {
           if(u == SokoObject::TARGET){
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
           }
-          drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
+          drawCube(scale*row, scale*column,scale* 0.5, size, textureHeavyBoxIDs);
           glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         }
       }
