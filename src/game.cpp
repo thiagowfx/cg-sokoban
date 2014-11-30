@@ -72,7 +72,7 @@ namespace Sokoban {
       int width, height;
       glEnable(GL_TEXTURE_2D);        
       glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -188,17 +188,21 @@ namespace Sokoban {
         }
         else if (t== SokoObject::LIGHT_BOX) {
           if(u == SokoObject::TARGET){
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            color[1] = 0; //color is red
+            color[2] = 0;
           }
           drawCube(row, column, 0.5, size, textureLightBoxIDs);
-          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+          color[1] = 1; //color is white again
+          color[2] = 1;
         }
         else if (t == SokoObject::HEAVY_BOX) {
           if(u == SokoObject::TARGET){
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            color[1] = 0; //color is red
+            color[2] = 0;
           }
           drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
-          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+          color[1] = 1; //color is white again
+          color[2] = 1;
         }
       }
     }
@@ -209,7 +213,6 @@ namespace Sokoban {
 
   void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs) {
     GLdouble halfEdge = edge / 2.0;
-    GLfloat color[4] = {1.0, 0.0, 0.0, 1.0}; //color is red
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
