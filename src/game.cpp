@@ -209,11 +209,11 @@ namespace Sokoban {
     ss.clear();
     ss << "Moves: " << board->getNumberOfMoves();
     renderText(ss.str(), SDL_Color{200,0,0,255});
-    /*
+    
     ss.clear();
-    ss << "Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
+    ss << "  Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
     renderText(ss.str(), SDL_Color{0, 200, 0, 255});
-    */
+    
     glFlush();
     SDL_GL_SwapWindow(window);
   }
@@ -221,8 +221,6 @@ namespace Sokoban {
   void Game::renderText(std::string text, SDL_Color color) {
     SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
-
-    //glPushMatrix();
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix(); 
@@ -379,34 +377,42 @@ namespace Sokoban {
   }
 
   void Game::renderSingleImage(const char* path) {
+    SDL_Surface* loadedSurface = IMG_Load(path);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);    
+
+    // Starting que matrixes
     glMatrixMode(GL_PROJECTION);
+    glPushMatrix(); 
     glLoadIdentity();
 
     glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
     glLoadIdentity();
+    glDisable(GL_DEPTH_TEST);
 
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    unsigned char* image;
-    int width, height;
-    glEnable(GL_TEXTURE_2D);
-
-    image = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGBA);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
-    SOIL_free_image_data(image);
+    float width, height;
+    float x = -1.0, y = -1.0;
+    SDL_GL_BindTexture(texture, &width, &height);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, -1.0, 0.0);
-    glTexCoord2f(1.0, 1.0); glVertex3f(1.0, -1.0, 0.0);
-    glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 1.0, 0.0);
-    glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, 1.0, 0.0);
+    glTexCoord2f(0.0, 1.0 * height);         glVertex2f(x, y);
+    glTexCoord2f(1.0 * width, 1.0 * height); glVertex2f(x + 2.0, y);
+    glTexCoord2f(1.0 * width, 0.0);          glVertex2f(x + 2.0, y + 2.0);
+    glTexCoord2f(0.0, 0.0);                  glVertex2f(x, y + 2.0);
     glEnd();
-
-    glDisable(GL_TEXTURE_2D);
 
     glFlush();
     SDL_GL_SwapWindow(window);
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    SDL_GL_UnbindTexture(texture);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(loadedSurface);
   }
 
   SokoBoard* Game::getGameBoard() const {
