@@ -173,9 +173,8 @@ namespace Sokoban {
     SDL_Event e;
 
     /* Show the game splash screen. */
-    // TODO: reenable this later.
-    //Mix_PlayChannel(-1, soundSplash, 0);
-    //renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
+    Mix_PlayChannel(-1, soundSplash, 0);
+    renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
 
     /* Show the main menu. */
     backgroundTexture = loadTexture(windowRenderer, MENU_BACKGROUND_TEXTURE_PATH);
