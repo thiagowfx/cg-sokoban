@@ -115,6 +115,8 @@ namespace Sokoban {
 
       const char* floorPath[6] = {"assets/wall_top.jpg", "assets/floor.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg"};
       GLuint textureFloorIDs[6];
+
+      GLfloat color[4] = {1.0, 1.0, 1.0, 1.0};
   };
 }
 
