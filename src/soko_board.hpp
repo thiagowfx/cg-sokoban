@@ -9,6 +9,7 @@
 #include <vector>
 #include "soko_position.hpp"
 #include "soko_object.hpp"
+#include "soko_dynamic_object.hpp"
 using namespace std;
 
 namespace Sokoban {
@@ -29,33 +30,6 @@ namespace Sokoban {
           bool boxMoved;
       };
 
-      /// This nested class represents an animated object
-      class Animated {
-        friend SokoBoard;
-        public:
-          Animated(SokoObject obj_, 
-                  SokoPosition start_, 
-                  Direction direction_,
-                  int totalSteps_) : 
-                  obj(obj_),
-                  startPosition(start_),
-                  direction(direction_),
-                  stepCounter(0)
-                  { };
-          
-          SokoPosition getEndPosition() { return startPosition + direction; };
-          SokoPosition getStartPosition() { return startPosition; };
-          Direction getDirection() { return direction; };
-          int getTotalSteps() { return totalSteps; };
-          int getStepCounter() { return stepCounter; };
-          SokoObject getObject() { return obj; };
-
-        private:
-          SokoObject obj;
-          SokoPosition startPosition;
-          Direction direction;
-          int totalSteps, stepCounter;          
-      };
     public:
 
       /// Constructs a new SokoBoard from @filename.
@@ -65,10 +39,10 @@ namespace Sokoban {
       bool move(Direction direction);
 
       /// Prints a representation of this class to a ostream.
-      friend ostream& operator<<(ostream&, const SokoBoard&);
+      friend ostream& operator<<(ostream&, SokoBoard&);
 
       /// Return the string representation of this object.
-      std::string toString() const;
+      std::string toString();
 
       /// Get the number of moves of the character so far.
       unsigned getNumberOfMoves() const;
@@ -104,43 +78,46 @@ namespace Sokoban {
       bool isFinished() const;
 
       /// Returns the element in position x, y of the dynamic board.
-      SokoObject getDynamic(int x, int y);
+      std::vector< SokoDynamicObject > getDynamic();
+
+      /** Returns the element in position x, y of the static board.
+      Please note that dynamic elements might be in more than one neighbor.
+      */
+      SokoDynamicObject getDynamic(int x, int y);
 
       /// Returns the element in position x, y of the static board.
-      SokoObject getStatic(int x, int y);
+      SokoObject getStatic(int x, int y) const;
 
       /// Undo the last character movement.
       bool undo();
-
-      /// Returns the animated objects list
-      std::vector< Animated > getAnimated();
 
     private:
       unsigned unresolvedLightBoxes, unresolvedHeavyBoxes, 
         lightBoxes, heavyBoxes, targets;
 
-      
-
-      /// A vector with all the objects that are currently being animated
-      std::vector< Animated > animated;
-
       /// The stack with all the movements that happened.
       std::stack< Movement > undoTree;
 
       /// The character position.
-      SokoPosition characterPosition;
+      //SokoPosition characterPosition;
+
+      /// The character index.
+      int characterIndex;
 
       /// The direction the character is facing.
       Direction characterDirection;
       
       /// Stores dynamic SokoObjects of a board, such as boxes and the character.
-      std::vector< std::vector< SokoObject > > dynamicBoard;
+      std::vector< SokoDynamicObject > dynamicBoard;
       
       /// Stores static SokoObjects of a board, such as walls and targets.
       std::vector< std::vector< SokoObject > > staticBoard;
 
       /// Update how many boxes are (un)resolved.
       void updateUnresolvedBoxes();
+
+      /// Setting all the dynamic objects indexes
+      void setDynamicIndexes();
   };
 }
 

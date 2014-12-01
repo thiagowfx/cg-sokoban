@@ -29,6 +29,7 @@ namespace Sokoban {
     SokoObject(const Type& type) : 
       type(type) {};
 
+
     /// Return the type of this SokoObject.
     Type getType() const {
       return type;
