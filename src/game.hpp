@@ -18,7 +18,9 @@
 namespace Sokoban {
   class Game {
     public:
-      Game(SDL_Window*, SDL_GLContext*, int screenWidth, int screenHeight, TTF_Font* windowFont, SDL_Renderer* windowRenderer);
+      Game(SDL_Window*, SDL_GLContext*, int screenWidth, 
+            int screenHeight, TTF_Font* windowFont, 
+            SDL_Renderer* windowRenderer);
       ~Game();
 
       /// Load the specified @level.
@@ -49,7 +51,8 @@ namespace Sokoban {
       bool undoAction();
 
       /// Draws a cube of size edge centered at (x,y,z).
-      void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs);
+      void drawCube(GLdouble x, GLdouble y, GLdouble z, 
+            GLdouble edge, GLuint* textureIDs);
 
       /// Reshape function.
       void sokoReshape();

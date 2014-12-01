@@ -162,6 +162,7 @@ bool SokoBoard::undo() {
     }
 
     characterPosition = previousPosition;
+    animated.clear();
     return last.boxMoved;
   }
   return false;
@@ -270,6 +271,19 @@ unsigned SokoBoard::getNumberOfRows() const {
 
 unsigned SokoBoard::getNumberOfColumns() const {
   return staticBoard[0].size();
+}
+
+vector< SokoBoard::Animated > SokoBoard::getAnimated() {
+  for(vector< Animated >::iterator it=animated.begin(); it!= animated.end(); ){
+    it->stepCounter++;
+    if(it->stepCounter >= it->totalSteps){
+      dynamicBoard[it->getEndPosition().y][it->getEndPosition().x] = it->obj.getType();
+      it = animated.erase(it);
+    } else {
+      it ++;
+    }
+  }
+  return animated;
 }
 
 }

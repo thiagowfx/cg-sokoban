@@ -164,6 +164,7 @@ namespace Sokoban {
     glMatrixMode(GL_MODELVIEW);
     const double size = 0.5;
 
+    // Drawing static objects
     for (unsigned row = 0; row < board->getNumberOfRows(); row++) {
       for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
         SokoObject::Type t = board->getStatic(column, row).getType();
@@ -180,6 +181,7 @@ namespace Sokoban {
       }
     }
 
+    // Drawing dynamic objects
     for (unsigned row = 0; row < board->getNumberOfRows(); row++) {
       for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
         SokoObject::Type u = board->getStatic(column, row).getType();
@@ -204,12 +206,29 @@ namespace Sokoban {
       }
     }
 
-    stringstream ss;
+    // Drawing animated objects
+    for (auto moving : board->getAnimated()) {
+      SokoObject::Type t = moving.getObject().getType();
+      unsigned row = moving.getStartPosition().y;
+      unsigned column = moving.getStartPosition().x;
+      if (t == SokoObject::CHARACTER) {
+        drawCube(row, column, 0.5, size, textureCharacterIDs);
+      }
+      else if (t== SokoObject::LIGHT_BOX) {
+        drawCube(row, column, 0.5, size, textureLightBoxIDs);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+      }
+      else if (t == SokoObject::HEAVY_BOX) {
+        drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+      }
+    }
 
+    // Render Hud
+    stringstream ss;
     ss.clear();
     ss << "Moves: " << board->getNumberOfMoves();
-    renderText(ss.str(), SDL_Color{200,0,0,255});
-    
+    renderText(ss.str(), SDL_Color{200,0,0,255});    
     ss.clear();
     ss << "  Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
     renderText(ss.str(), SDL_Color{0, 200, 0, 255});
@@ -258,7 +277,8 @@ namespace Sokoban {
     SDL_FreeSurface(surface);
   }
 
-  void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs) {
+  void Game::drawCube(GLdouble x, GLdouble y, GLdouble z,
+                      GLdouble edge, GLuint* textureIDs) {
     GLdouble halfEdge = edge / 2.0;
     GLfloat color[4] = {1.0, 0.0, 0.0, 1.0}; //color is red
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
