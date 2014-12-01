@@ -77,10 +77,11 @@ namespace Sokoban {
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
-      /*glGenTextures(6, textureTargetIDs);
+      glGenTextures(6, textureTargetIDs);
       for (int i=0; i<=5; i++){
         glBindTexture(GL_TEXTURE_2D, textureTargetIDs[i]);
         image = SOIL_load_image(targetPath[i], &width, &height,0, SOIL_LOAD_RGBA);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
         SOIL_free_image_data(image);
       }
@@ -89,6 +90,7 @@ namespace Sokoban {
       for (int i=0; i<=5; i++){
         glBindTexture(GL_TEXTURE_2D, textureCharacterIDs[i]);
         image = SOIL_load_image(characterPath[i], &width, &height,0, SOIL_LOAD_RGBA);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
         SOIL_free_image_data(image);
       }
@@ -97,6 +99,7 @@ namespace Sokoban {
       for (int i=0; i<=5; i++){
         glBindTexture(GL_TEXTURE_2D, textureLightBoxIDs[i]);
         image = SOIL_load_image(lightBoxPath[i], &width, &height,0, SOIL_LOAD_RGBA);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
         SOIL_free_image_data(image);
       }
@@ -105,6 +108,7 @@ namespace Sokoban {
       for (int i=0; i<=5; i++){
         glBindTexture(GL_TEXTURE_2D, textureHeavyBoxIDs[i]);
         image = SOIL_load_image(heavyBoxPath[i], &width, &height,0, SOIL_LOAD_RGBA);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
         SOIL_free_image_data(image);
       }
@@ -113,6 +117,7 @@ namespace Sokoban {
       for (int i=0; i<=5; i++){
         glBindTexture(GL_TEXTURE_2D, textureWallIDs[i]);
         image = SOIL_load_image(wallPath[i], &width, &height,0, SOIL_LOAD_RGBA);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
         SOIL_free_image_data(image);
       }
@@ -121,17 +126,12 @@ namespace Sokoban {
       for (int i=0; i<=5; i++){
         glBindTexture(GL_TEXTURE_2D, textureFloorIDs[i]);
         image = SOIL_load_image(floorPath[i], &width, &height,0, SOIL_LOAD_RGBA);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
         SOIL_free_image_data(image);
-      }*/
+      }
 
-      glGenTextures(1, &textureID);
-      glBindTexture(GL_TEXTURE_2D, textureID);
-      image = SOIL_load_image(path, &width, &height,0, SOIL_LOAD_RGBA);
-      gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
-      SOIL_free_image_data(image);
-
-
+      //std::cout << textureTargetIDs[0] << " " << textureFloorIDs[1] << " " << textureFloorIDs[5] << std::endl;
       /* Clean the background and sets it to the RGB parameters. */
       glClearColor(0.5, 0.5, 0.5, 1.0);
 
@@ -167,14 +167,14 @@ namespace Sokoban {
       for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
         SokoObject::Type t = board->getStatic(column, row).getType();
         if (t == SokoObject::EMPTY) {
-          drawCube(row, column, 0, size, 0/6);
+          drawCube(row, column, 0, size, textureFloorIDs);
         }
         else if (t == SokoObject::WALL) {
-          drawCube(row, column, 0.5, size, 1/6);
-          drawCube(row, column, 0, size, 1/6);
+          drawCube(row, column, 0.5, size, textureWallIDs);
+          drawCube(row, column, 0, size, textureFloorIDs);
         }
         else {
-          drawCube(row, column, 0, size, 2/6);
+          drawCube(row, column, 0, size, textureTargetIDs);
         }
       }
     }
@@ -184,14 +184,14 @@ namespace Sokoban {
         SokoObject::Type u = board->getStatic(column, row).getType();
         SokoObject::Type t = board->getDynamic(column, row).getType();
         if (t == SokoObject::CHARACTER) {
-          drawCube(row, column, 0.5, size, 3/6);
+          drawCube(row, column, 0.5, size, textureCharacterIDs);
         }
         else if (t== SokoObject::LIGHT_BOX) {
           if(u == SokoObject::TARGET){
             color[1] = 0; //color is red
             color[2] = 0;
           }
-          drawCube(row, column, 0.5, size, 4/6);
+          drawCube(row, column, 0.5, size, textureLightBoxIDs);
           color[1] = 1; //color is white again
           color[2] = 1;
         }
@@ -200,9 +200,7 @@ namespace Sokoban {
             color[1] = 0; //color is red
             color[2] = 0;
           }
-          drawCube(row, column, 0.5, size, 5/6);
-          color[1] = 1; //color is white again
-          color[2] = 1;
+          drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
         }
       }
     }
@@ -211,16 +209,14 @@ namespace Sokoban {
     SDL_GL_SwapWindow(window);
   }
 
-  void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, double tAxisPosition) {
+  void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs) {
     GLdouble halfEdge = edge / 2.0;
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0);
 
-    //For the t-axis
-    double tB = tAxisPosition;
-    double tT = tAxisPosition + 1/6;
+
     //glEnable(GL_TEXTURE_2D);        
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -229,53 +225,53 @@ namespace Sokoban {
     glTranslatef(x * edge, y * edge, z);
 
 
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glBindTexture(GL_TEXTURE_2D, textureIDs[0]);
     glBegin(GL_POLYGON);
     //Enables the texture for the bottom
-    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(1/6,0); glVertex3f(  halfEdge, -halfEdge, -halfEdge );
-    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(1/6,1); glVertex3f(  halfEdge,  halfEdge, -halfEdge );
-    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(0/6,1); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(0/6,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(0.0, 0.0, -1.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
     glEnd();
 
-    //glBindTexture(GL_TEXTURE_2D, textureIDs[1]);   //Enables the texture for the top
+    glBindTexture(GL_TEXTURE_2D, textureIDs[1]);   //Enables the texture for the top
     glBegin(GL_POLYGON);
-    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(2/6,0); glVertex3f(  halfEdge, -halfEdge, halfEdge );
-    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(2/6,1); glVertex3f(  halfEdge,  halfEdge, halfEdge );
-    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(1/6,1); glVertex3f( -halfEdge,  halfEdge, halfEdge );
-    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(1/6,0); glVertex3f( -halfEdge, -halfEdge, halfEdge );
+    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, halfEdge );
+    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge, halfEdge );
+    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge, halfEdge );
+    glNormal3f(0.0, 0.0, 1.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, halfEdge );
     glEnd();
 
-    //glBindTexture(GL_TEXTURE_2D, textureIDs[2]);  
+    glBindTexture(GL_TEXTURE_2D, textureIDs[2]);  
     glBegin(GL_POLYGON);
-    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(2/6,0); glVertex3f( halfEdge, -halfEdge, -halfEdge );
-    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(3/6,0); glVertex3f( halfEdge,  halfEdge, -halfEdge );
-    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(3/6,1); glVertex3f ( halfEdge,  halfEdge,  halfEdge );
-    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(2/6,1); glVertex3f( halfEdge, -halfEdge,  halfEdge );
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(0,0); glVertex3f( halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,0); glVertex3f( halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(1,1); glVertex3f ( halfEdge,  halfEdge,  halfEdge );
+    glNormal3f(1.0, 0.0, 0.0); glTexCoord2f(0,1); glVertex3f( halfEdge, -halfEdge,  halfEdge );
     glEnd();
 
-    //glBindTexture(GL_TEXTURE_2D, textureIDs[3]);  
+    glBindTexture(GL_TEXTURE_2D, textureIDs[3]);  
     glBegin(GL_POLYGON);
-    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(3/6,1); glVertex3f( -halfEdge, -halfEdge,  halfEdge );
-    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(4/6,1); glVertex3f( -halfEdge,  halfEdge,  halfEdge );
-    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(4/6,0); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(3/6,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge, -halfEdge,  halfEdge );
+    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(1,1); glVertex3f( -halfEdge,  halfEdge,  halfEdge );
+    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(1,0); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(-1.0, 0.0, 0.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
     glEnd();
 
-    //glBindTexture(GL_TEXTURE_2D, textureIDs[4]);  
+    glBindTexture(GL_TEXTURE_2D, textureIDs[4]);  
     glBegin(GL_POLYGON);
-    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(5/6,1); glVertex3f(  halfEdge,  halfEdge,  halfEdge );
-    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(5/6,0); glVertex3f(  halfEdge,  halfEdge, -halfEdge );
-    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(4/6,0); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
-    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(4/6,1); glVertex3f( -halfEdge,  halfEdge,  halfEdge ); 
+    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(1,1); glVertex3f(  halfEdge,  halfEdge,  halfEdge );
+    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(1,0); glVertex3f(  halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(0,0); glVertex3f( -halfEdge,  halfEdge, -halfEdge );
+    glNormal3f(0.0, 1.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge,  halfEdge,  halfEdge ); 
     glEnd();
 
-    //glBindTexture(GL_TEXTURE_2D, textureIDs[5]);   
+    glBindTexture(GL_TEXTURE_2D, textureIDs[5]);   
     glBegin(GL_POLYGON);
-    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(6/6,0); glVertex3f(  halfEdge, -halfEdge, -halfEdge );
-    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(6/6,1); glVertex3f(  halfEdge, -halfEdge,  halfEdge );
-    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(5/6,1); glVertex3f( -halfEdge, -halfEdge,  halfEdge );
-    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(5/6,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(1,0); glVertex3f(  halfEdge, -halfEdge, -halfEdge );
+    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(1,1); glVertex3f(  halfEdge, -halfEdge,  halfEdge );
+    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(0,1); glVertex3f( -halfEdge, -halfEdge,  halfEdge );
+    glNormal3f(0.0, -1.0, 0.0); glTexCoord2f(0,0); glVertex3f( -halfEdge, -halfEdge, -halfEdge );
     glEnd();
 
     glPopMatrix();

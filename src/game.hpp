@@ -35,7 +35,7 @@ namespace Sokoban {
       void undoAction();
 
       /* Draws a cube of size edge centered at position (x, y, z). */
-      void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, double tAxisPosition);
+      void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs);
       void sokoReshape();
       void renderScene();
       void renderGameFinished();
@@ -49,7 +49,7 @@ namespace Sokoban {
 
       const char* GAME_END_IMAGE="assets/textures/end_game.png";
 
-      /*const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
+      const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
       GLuint textureTargetIDs[6];
 
       const char* characterPath[6] = {"assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpg"};
@@ -65,10 +65,7 @@ namespace Sokoban {
       GLuint textureWallIDs[6];
 
       const char* floorPath[6] = {"assets/wall.png", "assets/ftop.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png"};
-      GLuint textureFloorIDs[6];*/
-
-      const char* path = "assets/texture.png";
-      GLuint textureID;
+      GLuint textureFloorIDs[6];
 
       GLfloat color[4] = {1.0, 1.0, 1.0, 1.0};
 
