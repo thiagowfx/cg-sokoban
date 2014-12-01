@@ -175,9 +175,10 @@ std::string SokoBoard::toString() {
   ss << "INFO: Number of remaining heavy boxes: " << getNumberOfUnresolvedHeavyBoxes() << "/" << getNumberOfHeavyBoxes() << std::endl;
   ss << std::endl;
 
-  for (auto obj : dynamicBoard)
+  for (auto obj : dynamicBoard) {
     ss << "Dynamic " << obj.getType() << " in position "<< obj.positionX << " ,"<< obj.positionY << std::endl;
-
+    ss << "Dynamic " << obj.getType() << " lastposition "<< obj.lastPosition.x << " ,"<< obj.lastPosition.y << std::endl;
+  }
   ss << std::endl; 
   return ss.str();
 }

@@ -182,48 +182,30 @@ namespace Sokoban {
     }
 
     // Drawing dynamic objects
-    for (unsigned row = 0; row < board->getNumberOfRows(); row++) {
-      for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
-        SokoObject::Type u = board->getStatic(column, row).getType();
-        SokoObject::Type t = board->getDynamic(column, row).getType();
-        if (t == SokoObject::CHARACTER) {
-          drawCube(row, column, 0.5, size, textureCharacterIDs);
-        }
-        else if (t== SokoObject::LIGHT_BOX) {
-          if(u == SokoObject::TARGET){
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-          }
-          drawCube(row, column, 0.5, size, textureLightBoxIDs);
-          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        }
-        else if (t == SokoObject::HEAVY_BOX) {
-          if(u == SokoObject::TARGET){
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-          }
-          drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
-          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        }
-      }
-    }
-
-    // Drawing animated objects
-    for (auto moving : board->getAnimated()) {
-      SokoObject::Type t = moving.getObject().getType();
-      unsigned row = moving.getStartPosition().y;
-      unsigned column = moving.getStartPosition().x;
+    for (auto obj : board->getDynamic()) {
+      auto t = obj.getType();
+      unsigned column = obj.position.x;
+      unsigned row = obj.position.y;
+      SokoObject::Type u = board->getStatic(column, row).getType();
       if (t == SokoObject::CHARACTER) {
-        drawCube(row, column, 0.5, size, textureCharacterIDs);
+        drawCube(obj.positionY, obj.positionX, 0.5, size, textureCharacterIDs);
       }
       else if (t== SokoObject::LIGHT_BOX) {
-        drawCube(row, column, 0.5, size, textureLightBoxIDs);
+        if(u == SokoObject::TARGET){
+          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        }
+        drawCube(obj.positionY, obj.positionX, 0.5, size, textureLightBoxIDs);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
       else if (t == SokoObject::HEAVY_BOX) {
-        drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
+        if(u == SokoObject::TARGET){
+          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        }
+        drawCube(obj.positionY, obj.positionX, 0.5, size, textureHeavyBoxIDs);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
     }
-
+    board->update(1.0);
     // Render Hud
     stringstream ss;
     ss.clear();

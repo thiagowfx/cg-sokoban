@@ -35,23 +35,21 @@ namespace Sokoban {
 
       int getIndex() { return index; };
 
-      void move(double step){
-      	double dX = position.x;
-      	double dY = position.y;
-      	if((positionX > dX+0.01 && positionX < dX - 0.01) || 
-      		(positionY > dY+0.01 && positionY < dY - 0.01)) {
-          positionX = positionX + (lastPosition.x - position.x)*step;
-          positionY = positionY + (lastPosition.y - position.y)*step;
-      	}
+      void move(double step) {
+      	//double dX = (lastPosition.x - position.x)*0.1;
+      	//double dY = (lastPosition.y - position.y)*0.1;
 
-      	/*positionX = (double) position.x;
-      	positionY = (double) position.y;*/
+        positionX = position.x;
+        positionY = position.y;
+
       };
 
       /// The index of this object in the Dynamic board
       int index;
 
       void updatePosition(SokoPosition newPosition) {
+      	positionX = position.x;
+      	positionY = position.y;
       	lastPosition = position;
       	position = newPosition;
       }
