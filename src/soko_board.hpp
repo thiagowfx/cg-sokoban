@@ -91,6 +91,9 @@ namespace Sokoban {
       /// Undo the last character movement.
       bool undo();
 
+      /// Updates all the elements in the board for a time t
+      void update(double t);
+
     private:
       unsigned unresolvedLightBoxes, unresolvedHeavyBoxes, 
         lightBoxes, heavyBoxes, targets;

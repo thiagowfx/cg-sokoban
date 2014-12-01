@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
   Sokoban::Gui *gui = new Sokoban::Gui();
   gui->gameLoop();
-  // startASCIIMode();
+  //startASCIIMode();
   return EXIT_SUCCESS;
 }
 

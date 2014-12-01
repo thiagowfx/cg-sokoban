@@ -77,7 +77,7 @@ bool SokoBoard::move(Direction direction) {
     SokoDynamicObject nextObj = getDynamic(nextPosition.x, nextPosition.y);
 
     if(nextObj.getType() == SokoObject::EMPTY) {
-      dynamicBoard[characterIndex].position = nextPosition;
+      dynamicBoard[characterIndex].updatePosition(nextPosition);
       characterMoved = true;
     }
 
@@ -100,8 +100,8 @@ bool SokoBoard::move(Direction direction) {
 
         if(boxNextObj.getType() == SokoObject::EMPTY &&
             staticBoard[boxNextPosition.y][boxNextPosition.x].getType() != SokoObject::WALL) {
-          dynamicBoard[nextObj.index].position = boxNextPosition;
-          dynamicBoard[characterIndex].position = nextPosition;
+          dynamicBoard[nextObj.index].updatePosition(boxNextPosition);
+          dynamicBoard[characterIndex].updatePosition(nextPosition);
           characterMoved = true;
           boxMoved = true;
         }
@@ -175,6 +175,10 @@ std::string SokoBoard::toString() {
   ss << "INFO: Number of remaining heavy boxes: " << getNumberOfUnresolvedHeavyBoxes() << "/" << getNumberOfHeavyBoxes() << std::endl;
   ss << std::endl;
 
+  for (auto obj : dynamicBoard)
+    ss << "Dynamic " << obj.getType() << " in position "<< obj.positionX << " ,"<< obj.positionY << std::endl;
+
+  ss << std::endl; 
   return ss.str();
 }
 
@@ -268,6 +272,11 @@ void SokoBoard::setDynamicIndexes() {
     if(dynamicBoard[i].getType() == SokoObject::CHARACTER)
       characterIndex = i;
   }
+}
+
+void SokoBoard::update(double t) {
+  for(int i=0; i < dynamicBoard.size(); i++)
+    dynamicBoard[i].move(t);
 }
 
 }

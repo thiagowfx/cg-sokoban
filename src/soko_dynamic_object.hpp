@@ -3,6 +3,7 @@
 
 #include "soko_object.hpp"
 #include "soko_position.hpp"
+#include <iostream>
 
 namespace Sokoban {
   /**
@@ -19,11 +20,9 @@ namespace Sokoban {
 
       /// Constructs a new SokoObject of this given @type and @position.
       SokoDynamicObject(const Type& type, const SokoPosition position_) :
-                       SokoObject(type), position(position_) { };
-
-/*	  /// Constructs a new SokoObject of this given @type and coordinates. 
-	  SokoDynamicObject(const Type& type, double x, double y) : 
-	                    SokoObject(type), positionX(x), positionY(y) {};*/
+                       SokoObject(type), position(position_) { 
+                       	positionX = position_.x;
+                       	positionY = position_.y; };
       
       /// The x position of this object on 2d free space
       double positionX;
@@ -32,11 +31,30 @@ namespace Sokoban {
       double positionY;
 
       SokoPosition position;
+      SokoPosition lastPosition;
 
       int getIndex() { return index; };
 
+      void move(double step){
+      	double dX = position.x;
+      	double dY = position.y;
+      	if((positionX > dX+0.01 && positionX < dX - 0.01) || 
+      		(positionY > dY+0.01 && positionY < dY - 0.01)) {
+          positionX = positionX + (lastPosition.x - position.x)*step;
+          positionY = positionY + (lastPosition.y - position.y)*step;
+      	}
+
+      	/*positionX = (double) position.x;
+      	positionY = (double) position.y;*/
+      };
+
       /// The index of this object in the Dynamic board
       int index;
+
+      void updatePosition(SokoPosition newPosition) {
+      	lastPosition = position;
+      	position = newPosition;
+      }
   };
 }
 
