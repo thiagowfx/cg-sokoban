@@ -4,7 +4,6 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
-#include <png.h>
 #include <string>
 #include <sstream>
 #include <GL/glu.h>
@@ -12,47 +11,97 @@
 #include "soko_board.hpp"
 #include <SOIL/SOIL.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_opengl.h>
-
-bool loadPngImage(const char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData);
+#include <SDL2/SDL_ttf.h>
 
 namespace Sokoban {
   class Game {
     public:
-      Game(SDL_Window*, SDL_GLContext*, int screenWidth, int screenHeight);
+      Game(SDL_Window*, SDL_GLContext*, int screenWidth, int screenHeight, TTF_Font* windowFont, SDL_Renderer* windowRenderer);
       ~Game();
 
+      /// Load the specified @level.
       void loadLevel(const unsigned level);
+
+      /// Set the window size to @width x @height.
       void setWindowSize(unsigned width, unsigned height);
+
       void setOldPosition(GLdouble x, GLdouble y);
       void setNewPosition(GLdouble xnew, GLdouble ynew);
+
+      /// Return true if the current level has been finished.
       bool isLevelFinished() const;
 
-      void moveDownAction();
-      void moveUpAction();
-      void moveLeftAction();
-      void moveRightAction();
-      void undoAction();
+      /// Action of the move down key.
+      bool moveDownAction();
 
-      /* Draws a cube of size edge centered at position (x, y, z). */
+      /// Action of the move up key.
+      bool moveUpAction();
+
+      /// Action of the move left key.
+      bool moveLeftAction();
+
+      /// Action of the move right key.
+      bool moveRightAction();
+
+      /// Undo action.
+      bool undoAction();
+
+      /// Draws a cube of size edge centered at (x,y,z).
       void drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs);
+
+      /// Reshape function.
       void sokoReshape();
+
+      /// Main function to render a scene.
       void renderScene();
-      void renderGameFinished();
+
+      /// Render a single image, at the given path.
+      void renderSingleImage(const char* path);
+
+      /// Render the status bar.
+      void renderStatusbar(std::string text, SDL_Color textColor);
+
+      /// Get the game board.
+      SokoBoard* getGameBoard() const;
+
+      /// Get the current game level.
+      unsigned getCurrentLevel() const;
+
+      /// Change the game scale. 1 = should increase and -1 should decrease.
+      void changeScale(int);
 
     private:
+      /// Main SDL window.
       SDL_Window* window;
+
+      /// The OpenGL context from SDL.
       SDL_GLContext* glContext;
+
       int screenWidth, screenHeight;
+
+      /// The current game level.
+      unsigned currentLevel;
+
+      /// The window font (TTF).
+      TTF_Font* windowFont;
+
+      /// The main window renderer.
+      SDL_Renderer* windowRenderer;
+
+      /// The current soko board
       SokoBoard *board = NULL;
+
       GLdouble xold, yold;
 
-      const char* GAME_END_IMAGE="assets/textures/end_game.png";
+      /// The game scale (zoom) factor.
+      double scale = 1.0;
 
-      const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
+      const char* targetPath[6] = {"assets/wall_top.jpg", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
       GLuint textureTargetIDs[6];
 
-      const char* characterPath[6] = {"assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpeg", "assets/perrotta.jpg"};
+      const char* characterPath[6] = {"assets/claudio.jpg", "assets/claudio.jpg", "assets/claudio.jpg", "assets/claudio.jpg", "assets/claudio.jpg", "assets/claudio.jpg"};
       GLuint textureCharacterIDs[6];
 
       const char* lightBoxPath[6] = {"assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png"};
@@ -61,13 +110,16 @@ namespace Sokoban {
       const char* heavyBoxPath[6] = {"assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png"};
       GLuint textureHeavyBoxIDs[6];
 
-      const char* wallPath[6] = {"assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png"};
+      const char* wallPath[6] = {"assets/wall_top.jpg", "assets/wall_top.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg"};
       GLuint textureWallIDs[6];
 
-      const char* floorPath[6] = {"assets/wall.png", "assets/ftop.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png"};
+      const char* floorPath[6] = {"assets/wall_top.jpg", "assets/floor.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg"};
       GLuint textureFloorIDs[6];
 
+
       GLfloat color[4] = {1.0, 1.0, 1.0, 1.0};
+
+
 
   };
 }

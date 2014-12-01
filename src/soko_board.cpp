@@ -63,18 +63,18 @@ SokoBoard::SokoBoard(std::string filename) :
   }
 }
 
-void SokoBoard::move(Direction direction) {
+bool SokoBoard::move(Direction direction) {
   bool boxMoved = false, characterMoved = false;
 
   SokoPosition nextPosition = characterPosition + direction;
 
   // Out-of-bounds on y.
   if(nextPosition.y < 0 || nextPosition.y >= staticBoard.size()) //checking if it is leaving the board y
-    return;
+    return false;
 
   // Out-of-bounds on x.
   if(nextPosition.x < 0 || nextPosition.x >= staticBoard[nextPosition.y].size()) //checking if it is leaving the board x
-    return;
+    return false;
 
   if(staticBoard[nextPosition.y][nextPosition.x].getType() != SokoObject::WALL) {
 
@@ -92,11 +92,11 @@ void SokoBoard::move(Direction direction) {
 
       // Out-of-bounds on y.
       if(boxNextPosition.y < 0 || boxNextPosition.y >= staticBoard.size()) //checking if box is leaving board's y
-        return;
+        return false;
 
       // Out-of-bounds on x.
       if(boxNextPosition.x < 0 || boxNextPosition.x >= staticBoard[nextPosition.y].size()) //checking if box is leaving board's x
-        return;
+        return false;
 
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
           staticBoard[boxNextPosition.y][boxNextPosition.x].getType() != SokoObject::WALL) {
@@ -116,11 +116,11 @@ void SokoBoard::move(Direction direction) {
 
       // Out-of-bounds on y.
       if(boxNextPosition.y < 0 || boxNextPosition.y >= staticBoard.size()) //checking if box is leaving board's y
-        return;
+        return false;
 
       // Out-of-bounds on x.
       if(boxNextPosition.x < 0 || boxNextPosition.x >= staticBoard[nextPosition.y].size()) //checking if box is leaving board's x
-        return;
+        return false;
 
       if(dynamicBoard[boxNextPosition.y][boxNextPosition.x].getType() == SokoObject::EMPTY &&
           staticBoard[boxNextPosition.y][boxNextPosition.x].getType() != SokoObject::WALL) {
@@ -139,9 +139,11 @@ void SokoBoard::move(Direction direction) {
 
   if(characterMoved)
     undoTree.push(Movement(direction, boxMoved));
+
+  return boxMoved;
 }
 
-void SokoBoard::undo() {
+bool SokoBoard::undo() {
   if (!undoTree.empty()) {
     Movement last = undoTree.top();
     undoTree.pop();
@@ -160,7 +162,9 @@ void SokoBoard::undo() {
     }
 
     characterPosition = previousPosition;
+    return last.boxMoved;
   }
+  return false;
 }
 
 std::string SokoBoard::toString() const {

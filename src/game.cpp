@@ -1,11 +1,13 @@
 #include "game.hpp"
 
 namespace Sokoban {
-  Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int screenHeight) :
+  Game::Game(SDL_Window* window, SDL_GLContext* glContext, int screenWidth, int screenHeight, TTF_Font* windowFont, SDL_Renderer* windowRenderer) :
     window(window),
     glContext(glContext),
     screenWidth(screenWidth),
-    screenHeight(screenHeight) {
+    screenHeight(screenHeight),
+    windowFont(windowFont),
+    windowRenderer(windowRenderer) {
 
       /* Set OpenGL attributes. */
       SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -67,7 +69,6 @@ namespace Sokoban {
       glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.1);
 
       /*Generating Textures*/
-
       unsigned char* image;
       int width, height;
       glEnable(GL_TEXTURE_2D);        
@@ -132,8 +133,6 @@ namespace Sokoban {
       }
 
       //std::cout << textureTargetIDs[0] << " " << textureFloorIDs[1] << " " << textureFloorIDs[5] << std::endl;
-      /* Clean the background and sets it to the RGB parameters. */
-      glClearColor(0.5, 0.5, 0.5, 1.0);
 
       /* Set the Projection Matrix to the Identity. */
       glMatrixMode(GL_PROJECTION);
@@ -156,25 +155,26 @@ namespace Sokoban {
   }
 
   void Game::renderScene() {
+    // Clear.
+    glClearColor(230/255.0, 212/255.0, 143/255.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /*Objects drawing*/
+    // Objects drawing.
     glMatrixMode(GL_MODELVIEW);
     const double size = 0.5;
-
 
     for (unsigned row = 0; row < board->getNumberOfRows(); row++) {
       for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
         SokoObject::Type t = board->getStatic(column, row).getType();
         if (t == SokoObject::EMPTY) {
-          drawCube(row, column, 0, size, textureFloorIDs);
+          drawCube(scale*row, scale*column, 0, size, textureFloorIDs);
         }
         else if (t == SokoObject::WALL) {
-          drawCube(row, column, 0.5, size, textureWallIDs);
-          drawCube(row, column, 0, size, textureFloorIDs);
+          drawCube(scale*row, scale*column, scale*0.5, size, textureWallIDs);
+          drawCube(scale*row, scale*column, 0, size, textureFloorIDs);
         }
         else {
-          drawCube(row, column, 0, size, textureTargetIDs);
+          drawCube(scale*row, scale*column, 0, size, textureTargetIDs);
         }
       }
     }
@@ -184,16 +184,18 @@ namespace Sokoban {
         SokoObject::Type u = board->getStatic(column, row).getType();
         SokoObject::Type t = board->getDynamic(column, row).getType();
         if (t == SokoObject::CHARACTER) {
-          drawCube(row, column, 0.5, size, textureCharacterIDs);
+          drawCube(scale*row, scale*column, scale*0.5, size, textureCharacterIDs);
         }
         else if (t== SokoObject::LIGHT_BOX) {
           if(u == SokoObject::TARGET){
             color[1] = 0; //color is red
             color[2] = 0;
           }
+
           drawCube(row, column, 0.5, size, textureLightBoxIDs);
           color[1] = 1; //color is white again
           color[2] = 1;
+          drawCube(scale*row, scale*column, scale*0.5, size, textureLightBoxIDs);
         }
         else if (t == SokoObject::HEAVY_BOX) {
           if(u == SokoObject::TARGET){
@@ -201,16 +203,72 @@ namespace Sokoban {
             color[2] = 0;
           }
           drawCube(row, column, 0.5, size, textureHeavyBoxIDs);
+          drawCube(scale*row, scale*column,scale* 0.5, size, textureHeavyBoxIDs);
+          color[1] = 1; //color is white again
+          color[2] = 1;
         }
       }
     }
 
+    // Statusbar.
+    stringstream ss;
+    ss.clear();
+    ss << "Stage: " << getCurrentLevel();
+    ss << " | Moves: " << board->getNumberOfMoves();
+    ss << " | Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
+    ss << " | Heavy boxes: " << board->getNumberOfUnresolvedHeavyBoxes();
+    renderStatusbar(ss.str(), SDL_Color{255, 255, 255, 255});
+    
     glFlush();
     SDL_GL_SwapWindow(window);
   }
 
+  void Game::renderStatusbar(std::string text, SDL_Color textColor) {
+    SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), textColor);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix(); 
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glDisable(GL_DEPTH_TEST);
+
+    glViewport(0, 0, screenWidth, screenHeight/20);
+
+    float width, height;
+    float x = -1.0, y = -1.0;
+    SDL_GL_BindTexture(texture, &width, &height);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 1.0 * height);         glVertex2f(x, y);
+    glTexCoord2f(1.0 * width, 1.0 * height); glVertex2f(x + 2.0, y);
+    glTexCoord2f(1.0 * width, 0.0);          glVertex2f(x + 2.0, y + 2.0);
+    glTexCoord2f(0.0, 0.0);                  glVertex2f(x, y + 2.0);
+    glEnd();
+
+    glEnable(GL_DEPTH_TEST);
+
+    glViewport(0, 0, screenWidth, screenHeight);
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    
+    SDL_GL_UnbindTexture(texture);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+  }
+
   void Game::drawCube(GLdouble x, GLdouble y, GLdouble z, GLdouble edge, GLuint* textureIDs) {
-    GLdouble halfEdge = edge / 2.0;
+
+    //GLdouble halfEdge = edge / 2.0;
+
+    GLdouble halfEdge = scale*(edge / 2.0);
+
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
@@ -289,6 +347,7 @@ namespace Sokoban {
     setOldPosition(xnew, ynew);
 
     glMatrixMode(GL_MODELVIEW);
+
     glRotatef(atan(2.0 * xstep), 0.0, 0.0, 1.0);
     glRotatef(atan(2.0 * ystep), 0.0, 1.0, 0.0);
 
@@ -297,13 +356,10 @@ namespace Sokoban {
   }
 
   void Game::sokoReshape() {
-    /* Viewport: whole window. */
     glViewport(0.0, 0.0, screenWidth, screenHeight);
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(65.0, GLdouble(screenWidth)/screenHeight, 1.0, 10.0) ;
-
     glMatrixMode(GL_MODELVIEW);
   }
 
@@ -318,8 +374,9 @@ namespace Sokoban {
       delete board;
       board = NULL;
     }
+    currentLevel = level;
     stringstream ss;
-    ss << "assets/stages/stage" << level << ".sok";
+    ss << "assets/stages/stage" << currentLevel << ".sok";
     board = new SokoBoard(ss.str());
   }
 
@@ -327,191 +384,80 @@ namespace Sokoban {
     return board->isFinished();
   }
 
-  void Game::renderGameFinished() {
+  void Game::renderSingleImage(const char* path) {
+    SDL_Surface* loadedSurface = IMG_Load(path);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);    
+
+    // Starting the matrixes.
     glMatrixMode(GL_PROJECTION);
+    glPushMatrix(); 
     glLoadIdentity();
 
     glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
     glLoadIdentity();
 
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
 
-    glEnable(GL_TEXTURE_2D); 
-
-    int width, height;
-    bool hasAlpha;
-    GLubyte* textureData;
-
-    bool success = loadPngImage(GAME_END_IMAGE, width, height, hasAlpha, &textureData);
-    if (!success) {
-      SDL_Log("Unable to load png file");
-      exit(EXIT_FAILURE);
-    }
-    else {
-      SDL_Log("PNG Image loaded: %d x %d. Transparency? %d", width, height, hasAlpha);
-    }
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, hasAlpha ? 4 : 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glShadeModel(GL_FLAT);
+    float width, height;
+    float x = -1.0, y = -1.0;
+    SDL_GL_BindTexture(texture, &width, &height);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, 0.0);
-    glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, 0.0);
-    glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0.0);
-    glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, 0.0);
+    glTexCoord2f(0.0, 1.0 * height);         glVertex2f(x, y);
+    glTexCoord2f(1.0 * width, 1.0 * height); glVertex2f(x + 2.0, y);
+    glTexCoord2f(1.0 * width, 0.0);          glVertex2f(x + 2.0, y + 2.0);
+    glTexCoord2f(0.0, 0.0);                  glVertex2f(x, y + 2.0);
     glEnd();
 
-    glDisable(GL_TEXTURE_2D);
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
 
     glFlush();
     SDL_GL_SwapWindow(window);
+
+    SDL_GL_UnbindTexture(texture);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(loadedSurface);
   }
 
-  void Game::moveDownAction() {
-    board->move(Direction::DOWN);
-    SDL_Log(board->toString().c_str());
+  void Game::changeScale(int n) {
+    if (n == 1) {
+      scale *= 1.05;
+    }
+    else {
+      scale *= 0.95;
+    }
   }
 
-  void Game::moveUpAction() {
-    board->move(Direction::UP);
-    SDL_Log(board->toString().c_str());
+  SokoBoard* Game::getGameBoard() const {
+    return board;
   }
 
-  void Game::moveLeftAction() {
-    board->move(Direction::LEFT);
-    SDL_Log(board->toString().c_str());
+  unsigned Game::getCurrentLevel() const {
+    return currentLevel;
   }
 
-  void Game::moveRightAction() {
-    board->move(Direction::RIGHT);
-    SDL_Log(board->toString().c_str());
+  bool Game::moveDownAction() {
+    return board->move(Direction::DOWN);
   }
 
-  void Game::undoAction() {
-    board->undo();
-    SDL_Log(board->toString().c_str());
+  bool Game::moveUpAction() {
+    return board->move(Direction::UP);
+  }
+
+  bool Game::moveLeftAction() {
+    return board->move(Direction::LEFT);
+  }
+
+  bool Game::moveRightAction() {
+    return board->move(Direction::RIGHT);
+  }
+
+  bool Game::undoAction() {
+    return board->undo();
   }
 }
-
-bool loadPngImage(const char *name, int &outWidth, int &outHeight, bool &outHasAlpha, GLubyte **outData) {
-  png_structp png_ptr;
-  png_infop info_ptr;
-  unsigned int sig_read = 0;
-  int color_type, interlace_type;
-  FILE *fp;
-
-  if ((fp = fopen(name, "rb")) == NULL)
-    return false;
-
-  /* Create and initialize the png_struct
-   * with the desired error handler
-   * functions.  If you want to use the
-   * default stderr and longjump method,
-   * you can supply NULL for the last
-   * three parameters.  We also supply the
-   * the compiler header file version, so
-   * that we know if the application
-   * was compiled with a compatible version
-   * of the library.  REQUIRED
-   */
-  png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
-      NULL, NULL, NULL);
-
-  if (png_ptr == NULL) {
-    fclose(fp);
-    return false;
-  }
-
-  /* Allocate/initialize the memory
-   * for image information.  REQUIRED. */
-  info_ptr = png_create_info_struct(png_ptr);
-  if (info_ptr == NULL) {
-    fclose(fp);
-    png_destroy_read_struct(&png_ptr, NULL, NULL);
-    return false;
-  }
-
-  /* Set error handling if you are
-   * using the setjmp/longjmp method
-   * (this is the normal method of
-   * doing things with libpng).
-   * REQUIRED unless you  set up
-   * your own error handlers in
-   * the png_create_read_struct()
-   * earlier.
-   */
-  if (setjmp(png_jmpbuf(png_ptr))) {
-    /* Free all of the memory associated
-     * with the png_ptr and info_ptr */
-    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-    fclose(fp);
-    /* If we get here, we had a
-     * problem reading the file */
-    return false;
-  }
-
-  /* Set up the output control if
-   * you are using standard C streams */
-  png_init_io(png_ptr, fp);
-
-  /* If we have already
-   * read some of the signature */
-  png_set_sig_bytes(png_ptr, sig_read);
-
-  /*
-   * If you have enough memory to read
-   * in the entire image at once, and
-   * you need to specify only
-   * transforms that can be controlled
-   * with one of the PNG_TRANSFORM_*
-   * bits (this presently excludes
-   * dithering, filling, setting
-   * background, and doing gamma
-   * adjustment), then you can read the
-   * entire image (including pixels)
-   * into the info structure with this
-   * call
-   *
-   * PNG_TRANSFORM_STRIP_16 |
-   * PNG_TRANSFORM_PACKING  forces 8 bit
-   * PNG_TRANSFORM_EXPAND forces to
-   *  expand a palette into RGB
-   */
-  png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING | PNG_TRANSFORM_EXPAND, NULL);
-
-  png_uint_32 width, height;
-  int bit_depth;
-  png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
-      &interlace_type, NULL, NULL);
-  outWidth = width;
-  outHeight = height;
-
-  unsigned int row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-  *outData = (unsigned char*) malloc(row_bytes * outHeight);
-
-  png_bytepp row_pointers = png_get_rows(png_ptr, info_ptr);
-
-  for (int i = 0; i < outHeight; i++) {
-    // note that png is ordered top to
-    // bottom, but OpenGL expect it bottom to top
-    // so the order or swapped
-    memcpy(*outData+(row_bytes * (outHeight-1-i)), row_pointers[i], row_bytes);
-  }
-
-  /* Clean up after the read,
-   * and free any memory allocated */
-  png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-
-  /* Close the file */
-  fclose(fp);
-
-  /* That's it */
-  return true;
-}
-

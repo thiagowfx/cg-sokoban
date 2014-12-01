@@ -21,7 +21,7 @@ void renderSplashScreen(const char* path, unsigned timeout, SDL_Renderer*, SDL_C
 bool isMovementKey(const SDL_Keycode& key);
 
 /// Log a message using SDL_LOG, then exit.
-void SDL_DIE(const char*);
+void SDL_DIE(std::string);
 
 namespace Sokoban {
   /**
@@ -52,6 +52,12 @@ namespace Sokoban {
     /// Check if the current level is finished. If yes, load the next level or end the game, if it is the last level.
     void checkLoadNextLevel(const SDL_Event&);
 
+    /// Whenever a box is moved, this event should be called.
+    void boxMovedEvent() const;
+
+    /// Whenever a character is moved, this event should be called.
+    void characterMovedEvent() const;
+
     /// The main SDL window.
     SDL_Window *window = NULL;
 
@@ -70,9 +76,6 @@ namespace Sokoban {
     /// The game renderization engine.
     Game *game = NULL;
 
-    /// The current stage the user is on.
-    unsigned currentLevel;
-
     /// OpenGL context for SDL.
     SDL_GLContext glContext;
 
@@ -90,6 +93,15 @@ namespace Sokoban {
     /// Sound played after moving the character.
     Mix_Chunk *soundCharacterMoved = NULL;
 
+    /// Sound played ater moving a box.
+    Mix_Chunk *soundBoxMoved = NULL;
+
+    /// Sound played when the user completes a stage.
+    Mix_Chunk *soundStageFinished = NULL;
+
+    /// Sound played during the splash screen.
+    Mix_Chunk *soundSplash = NULL;
+
     /// The screen width.
     const int SCREEN_WIDTH = 800;
 
@@ -97,7 +109,7 @@ namespace Sokoban {
     const int SCREEN_HEIGHT = 600;
 
     // Duration of the game splash screen (in milliseconds).
-    const int GAME_SPLASH_TIMEOUT = 1000;
+    const int GAME_SPLASH_TIMEOUT = 4300;
 
     /// Duration of the end game screen (in milliseconds).
     const int GAME_FINISHED_TIMEOUT = 3000;
@@ -115,6 +127,9 @@ namespace Sokoban {
 
     /// Path for the splash screen texture.
     const char* SPLASH_TEXTURE_PATH = "assets/textures/splash.png";
+
+    /// Path to the image to be loaded when the game finishes. 
+    const char* GAME_FINISHED_IMAGE_PATH="assets/textures/game_finished.png";
 
     /// Path to the game font.
     const char* GAME_FONT_PATH = "assets/Roboto-Regular.ttf";

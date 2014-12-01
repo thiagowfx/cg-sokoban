@@ -33,7 +33,7 @@ bool isMovementKey(const SDL_Keycode& key) {
     key == SDLK_s || key == SDLK_w || key == SDLK_a || key == SDLK_d;
 }
 
-void SDL_DIE(const char* msg) {
+void SDL_DIE(std::string msg) {
   std::cout << msg << std::endl;
   std::cout << "DIE: SDL_Error: " << SDL_GetError() << std::endl;
   exit(EXIT_FAILURE);
@@ -90,10 +90,25 @@ namespace Sokoban {
         SDL_DIE("Failed to load background music");
       }
 
-      //soundCharacterMoved = Mix_LoadWAV("assets/sound/movement.mp3");
-      //if(soundCharacterMoved == NULL) {
-        //SDL_DIE("Failed to load character movement sound");
-      //}
+      soundCharacterMoved = Mix_LoadWAV("assets/sound/baseball_hit.wav");
+      if(soundCharacterMoved == NULL) {
+        SDL_DIE("Failed to load character movement sound");
+      }
+
+      soundBoxMoved = Mix_LoadWAV("assets/sound/blip.wav");
+      if(soundBoxMoved == NULL) {
+        SDL_DIE("Failed to load box movemend sound");
+      }
+
+      soundStageFinished = Mix_LoadWAV("assets/sound/stageFinished.wav");
+      if (soundStageFinished == NULL) {
+        SDL_DIE("Failed to load stage finished sound");
+      }
+
+      soundSplash = Mix_LoadWAV("assets/sound/pacman.wav");
+      if (soundSplash == NULL) {
+        SDL_DIE("Failed to load splash sound");
+      }
     }
   }
 
@@ -124,8 +139,18 @@ namespace Sokoban {
     /* Destroy sounds. */
     Mix_FreeMusic(soundBackgroundMusic);
     soundBackgroundMusic = NULL;
+
     Mix_FreeChunk(soundCharacterMoved);
     soundCharacterMoved = NULL;
+
+    Mix_FreeChunk(soundBoxMoved);
+    soundBoxMoved = NULL;
+
+    Mix_FreeChunk(soundStageFinished);
+    soundStageFinished = NULL;
+
+    Mix_FreeChunk(soundSplash);
+    soundSplash = NULL;
 
     IMG_Quit();
     Mix_Quit();
@@ -148,7 +173,9 @@ namespace Sokoban {
     SDL_Event e;
 
     /* Show the game splash screen. */
-    renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
+    // TODO: reenable this later.
+    //Mix_PlayChannel(-1, soundSplash, 0);
+    //renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
 
     /* Show the main menu. */
     backgroundTexture = loadTexture(windowRenderer, MENU_BACKGROUND_TEXTURE_PATH);
@@ -162,8 +189,7 @@ namespace Sokoban {
         // Quit event.
         if (e.type == SDL_QUIT) {
           SDL_Log("SDL_QUIT event");
-          quit = true;
-          break;
+          quit = true; break;
         }
 
         // Window resize event.
@@ -183,8 +209,7 @@ namespace Sokoban {
             // Quit from the game.
             case SDLK_ESCAPE:
             case SDLK_q:
-              quit = true;
-              break;
+              quit = true; break;
               // Down key.
             case SDLK_s:
             case SDLK_DOWN:
@@ -192,7 +217,12 @@ namespace Sokoban {
                 gameMenu->nextIndex();
               }
               else if (context == CONTEXT_GAME){
-                game->moveDownAction();
+                bool boxMoved = game->moveDownAction();
+                if (boxMoved)
+                  boxMovedEvent();
+                else 
+                  characterMovedEvent();
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
               // Up key:
@@ -202,21 +232,36 @@ namespace Sokoban {
                 gameMenu->prevIndex();
               }
               else if (context == CONTEXT_GAME){
-                game->moveUpAction();
+                bool boxMoved = game->moveUpAction();
+                if (boxMoved)
+                  boxMovedEvent();
+                else 
+                  characterMovedEvent();
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
               // Left key.
             case SDLK_a:
             case SDLK_LEFT:
               if (context == CONTEXT_GAME){
-                game->moveLeftAction();
+                bool boxMoved = game->moveLeftAction();
+                if (boxMoved)
+                  boxMovedEvent();
+                else 
+                  characterMovedEvent();
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
               // Right key.
             case SDLK_d:
             case SDLK_RIGHT:
               if (context == CONTEXT_GAME){
-                game->moveRightAction();
+                bool boxMoved = game->moveRightAction();
+                if (boxMoved)
+                  boxMovedEvent();
+                else 
+                  characterMovedEvent();
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
               // Mute key
@@ -234,31 +279,43 @@ namespace Sokoban {
             case SDLK_r:
               if (context == CONTEXT_GAME) {
                 SDL_Log("Level restarted");
-                game->loadLevel(currentLevel);
+                game->loadLevel(game->getCurrentLevel());
               }
               break;
             case SDLK_u:
               if (context == CONTEXT_GAME) {
-                game->undoAction();
+                bool boxMoved = game->undoAction();
+                if (boxMoved)
+                  boxMovedEvent();
+                else
+                  characterMovedEvent();
+                SDL_Log("Undo action");
+                SDL_Log(game->getGameBoard()->toString().c_str());
               }
               break;
             case SDLK_RETURN:
               if (context == CONTEXT_MAIN_MENU) {
                 unsigned index = gameMenu->getCurrentIndex();
                 if (index == GAME_MENU_LABELS.size() - 1) {
-                  quit = true;
-                  break;
+                  quit = true; break;
                 }
                 else {
                   context = CONTEXT_GAME;
                   if(!OPENGL_LOADED) {
                     loadOpenGL();
-                    game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
+                    game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT, windowFont, windowRenderer);
                   }
-                  game->loadLevel(currentLevel = index + 1);
+                  game->loadLevel(index + 1);
                 }
               }
               break;
+          }
+        }
+        /// Mouse wheel event.
+        else if (e.type == SDL_MOUSEWHEEL) {
+          if (context == CONTEXT_GAME) {
+            SDL_Log("Moved mouse scroll wheel: %d\n", e.wheel.y);
+            game->changeScale(e.wheel.y);
           }
         }
         /// Mouse motion event.
@@ -271,6 +328,7 @@ namespace Sokoban {
             }
           }
         }
+        /// Mouse click event.
         else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
           int x, y; Uint32 mouseState = SDL_GetMouseState(&x, &y);
           if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
@@ -278,17 +336,15 @@ namespace Sokoban {
             if (context == CONTEXT_MAIN_MENU) {
               unsigned index = gameMenu->getCurrentIndex();
               if (index == GAME_MENU_LABELS.size() - 1) {
-                quit = true;
-                break;
+                quit = true; break;
               }
               else {
                 context = CONTEXT_GAME;
                 if(!OPENGL_LOADED) {
                   loadOpenGL();
-                  game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT);
+                  game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT, windowFont, windowRenderer);
                 }
-                currentLevel = index + 1;
-                game->loadLevel(currentLevel);
+                game->loadLevel(index + 1);
               }
             }
             else if(context == CONTEXT_GAME) {
@@ -308,7 +364,8 @@ namespace Sokoban {
       }
       else if (context == CONTEXT_GAME_FINISHED) {
         SDL_Log("Congratulations, you've won the game!");
-        game->renderGameFinished();
+        game->renderSingleImage(GAME_FINISHED_IMAGE_PATH);
+        Mix_HaltMusic(); 
         SDL_Delay(GAME_FINISHED_TIMEOUT);
         quit = true; break;
       }
@@ -318,17 +375,24 @@ namespace Sokoban {
 
   void Gui::checkLoadNextLevel(const SDL_Event& e) {
     if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym) && game->isLevelFinished()) {
-      if (currentLevel == (GAME_MENU_LABELS.size() - 1)) {
-        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", currentLevel);
+      if (game->getCurrentLevel() == (GAME_MENU_LABELS.size() - 1)) {
+        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", game->getCurrentLevel());
         context = CONTEXT_GAME_FINISHED;
       }
       else {
-        SDL_Log("Finished level %d", currentLevel);
-        game->loadLevel(++currentLevel);
+        SDL_Log("Finished level %d", game->getCurrentLevel());
+        game->loadLevel(game->getCurrentLevel() + 1);
       }
+      Mix_PlayChannel(-1, soundStageFinished, 0);
       SDL_Delay(STAGE_FINISHED_TIMEOUT);
-      // TODO: load a special texture between stages.
     }
+  }
 
+  void Gui::boxMovedEvent() const {
+    Mix_PlayChannel(-1, soundBoxMoved, 0);
+  }
+
+  void Gui::characterMovedEvent() const {
+    Mix_PlayChannel(-1, soundCharacterMoved, 0);
   }
 }

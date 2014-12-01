@@ -11,7 +11,6 @@ System dependencies
 - g++ (build only)
 - SDL2
 - OpenGL 2.2+
-- libpng (usually already installed)
 - SOIL
 
 
