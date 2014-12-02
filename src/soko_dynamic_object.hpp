@@ -31,32 +31,41 @@ namespace Sokoban {
       /// The x position of this object on 2d free space
       double positionY;
 
+      /// The position of this object on the board
       SokoPosition position;
+
+      /// The last position of this object on the board
       SokoPosition lastPosition;
 
       int getIndex() { return index; };
 
+      /// Moves the object with step. Step can be from 0.0 to 1.0
       void move(double step) {
-      	//double dX = (lastPosition.x - position.x)*0.1;
-      	//double dY = (lastPosition.y - position.y)*0.1;
         progress +=step;
         
         if(progress < 1.0) {
           positionX = (1.0-progress) * lastPosition.x + (progress * position.x);
           positionY = (1.0-progress) * lastPosition.y + (progress * position.y);
         }
-
       };
 
       /// The index of this object in the Dynamic board
       int index;
 
+      /// Updates the position of the object
       void updatePosition(SokoPosition newPosition) {
       	positionX = position.x;
       	positionY = position.y;
       	lastPosition = position;
       	position = newPosition;
         progress = 0.0;
+      }
+
+      void resetPosition(SokoPosition newPosition) {
+        positionX = newPosition.x;
+        positionY = newPosition.y;
+        position = newPosition;
+        progress = 1.0;
       }
 
     private:

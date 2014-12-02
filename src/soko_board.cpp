@@ -59,8 +59,8 @@ SokoBoard::SokoBoard(std::string filename) :
   }
 }
 
-bool SokoBoard::move(Direction direction) {
-  bool boxMoved = false, characterMoved = false;
+int SokoBoard::move(Direction direction) {
+  int boxMovedIndex = -1, characterMoved = false;
   SokoPosition characterPosition = dynamicBoard[characterIndex].position;
   SokoPosition nextPosition = characterPosition + direction;
 
@@ -103,43 +103,36 @@ bool SokoBoard::move(Direction direction) {
           dynamicBoard[nextObj.index].updatePosition(boxNextPosition);
           dynamicBoard[characterIndex].updatePosition(nextPosition);
           characterMoved = true;
-          boxMoved = true;
+          boxMovedIndex = nextObj.index;
         }
       } 
     }
   }
 
-  if(boxMoved)
+
+  if(characterMoved) {
+    undoTree.push(Movement(direction, boxMovedIndex));
     updateUnresolvedBoxes();
+  }
 
-  if(characterMoved)
-    undoTree.push(Movement(direction, boxMoved));
-
-  return boxMoved;
-  return true;
+  return boxMovedIndex;
 }
 
-bool SokoBoard::undo() {
-  /*if (!undoTree.empty()) {
+int SokoBoard::undo() {
+  if (!undoTree.empty()) {
     Movement last = undoTree.top();
     undoTree.pop();
 
-    SokoPosition previousPosition = characterPosition - last.direction;
-    dynamicBoard[previousPosition.y][previousPosition.x] = SokoDynamicObject(SokoObject::CHARACTER);
-    SokoPosition nextPosition = characterPosition + last.direction;
+    SokoPosition previousPosition = dynamicBoard[characterIndex].position - last.direction;
+    dynamicBoard[characterIndex].resetPosition(previousPosition);
     
-    if (last.boxMoved) {
-      SokoObject::Type type = dynamicBoard[nextPosition.y][nextPosition.x].getType();
-      dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(type);
-      dynamicBoard[nextPosition.y][nextPosition.x] = SokoObject(SokoObject::EMPTY);
+    if (last.boxMoved >= 0) {
+      SokoPosition boxPosition = dynamicBoard[last.boxMoved].position - last.direction;
+      dynamicBoard[last.boxMoved].resetPosition(boxPosition);
     }
-    else {
-      dynamicBoard[characterPosition.y][characterPosition.x] = SokoObject(SokoObject::EMPTY);
-    }
-
     return last.boxMoved;
-  }*/
-  return false;
+  }
+  return -1;
 }
 
 std::string SokoBoard::toString() {

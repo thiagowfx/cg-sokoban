@@ -21,13 +21,13 @@ namespace Sokoban {
       /// This nested class represents a movement from the character
       class Movement {
         public:
-          Movement(Direction direction, bool boxMoved) : direction(direction), 
+          Movement(Direction direction, int boxMoved = -1) : direction(direction), 
                                                            boxMoved(boxMoved) {};
           /// The direction of the movement
           Direction direction;
 
-          /// True if a box was moved with this movement
-          bool boxMoved;
+          /// Index of the box moved with this movement;
+          int boxMoved;
       };
 
     public:
@@ -36,7 +36,7 @@ namespace Sokoban {
       SokoBoard(std::string filename);
 
       /// Move the character to direction indicated by @direction.      
-      bool move(Direction direction);
+      int move(Direction direction);
 
       /// Prints a representation of this class to a ostream.
       friend ostream& operator<<(ostream&, SokoBoard&);
@@ -89,7 +89,7 @@ namespace Sokoban {
       SokoObject getStatic(int x, int y) const;
 
       /// Undo the last character movement.
-      bool undo();
+      int undo();
 
       /// Updates all the elements in the board for a time t
       void update(double t);
