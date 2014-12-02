@@ -173,9 +173,8 @@ namespace Sokoban {
     SDL_Event e;
 
     /* Show the game splash screen. */
-    // TODO: reenable this later.
-    //Mix_PlayChannel(-1, soundSplash, 0);
-    //renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
+    Mix_PlayChannel(-1, soundSplash, 0);
+    renderSplashScreen(SPLASH_TEXTURE_PATH, GAME_SPLASH_TIMEOUT, windowRenderer, WINDOW_CLEAR_COLOR);
 
     /* Show the main menu. */
     backgroundTexture = loadTexture(windowRenderer, MENU_BACKGROUND_TEXTURE_PATH);
@@ -279,7 +278,7 @@ namespace Sokoban {
             case SDLK_r:
               if (context == CONTEXT_GAME) {
                 SDL_Log("Level restarted");
-                game->loadLevel(currentLevel);
+                game->loadLevel(game->getCurrentLevel());
               }
               break;
             case SDLK_u:
@@ -305,10 +304,17 @@ namespace Sokoban {
                     loadOpenGL();
                     game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT, windowFont, windowRenderer);
                   }
-                  game->loadLevel(currentLevel = index + 1);
+                  game->loadLevel(index + 1);
                 }
               }
               break;
+          }
+        }
+        /// Mouse wheel event.
+        else if (e.type == SDL_MOUSEWHEEL) {
+          if (context == CONTEXT_GAME) {
+            SDL_Log("Moved mouse scroll wheel: %d\n", e.wheel.y);
+            game->changeScale(e.wheel.y);
           }
         }
         /// Mouse motion event.
@@ -337,7 +343,7 @@ namespace Sokoban {
                   loadOpenGL();
                   game = new Game(window, &glContext, SCREEN_WIDTH, SCREEN_HEIGHT, windowFont, windowRenderer);
                 }
-                game->loadLevel(currentLevel = index + 1);
+                game->loadLevel(index + 1);
               }
             }
             else if(context == CONTEXT_GAME) {
@@ -368,13 +374,13 @@ namespace Sokoban {
 
   void Gui::checkLoadNextLevel(const SDL_Event& e) {
     if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym) && game->isLevelFinished()) {
-      if (currentLevel == (GAME_MENU_LABELS.size() - 1)) {
-        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", currentLevel);
+      if (game->getCurrentLevel() == (GAME_MENU_LABELS.size() - 1)) {
+        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", game->getCurrentLevel());
         context = CONTEXT_GAME_FINISHED;
       }
       else {
-        SDL_Log("Finished level %d", currentLevel);
-        game->loadLevel(++currentLevel);
+        SDL_Log("Finished level %d", game->getCurrentLevel());
+        game->loadLevel(game->getCurrentLevel() + 1);
       }
       Mix_PlayChannel(-1, soundStageFinished, 0);
       SDL_Delay(STAGE_FINISHED_TIMEOUT);

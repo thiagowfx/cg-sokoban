@@ -69,12 +69,11 @@ namespace Sokoban {
       glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.1);
 
       /*Generating Textures*/
-
       unsigned char* image;
       int width, height;
       glEnable(GL_TEXTURE_2D);        
       glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -134,8 +133,6 @@ namespace Sokoban {
       }
 
       //std::cout << textureTargetIDs[0] << " " << textureFloorIDs[1] << " " << textureFloorIDs[5] << std::endl;
-      /* Clean the background and sets it to the RGB parameters. */
-      glClearColor(0.5, 0.5, 0.5, 1.0);
 
       /* Set the Projection Matrix to the Identity. */
       glMatrixMode(GL_PROJECTION);
@@ -158,9 +155,11 @@ namespace Sokoban {
   }
 
   void Game::renderScene() {
+    // Clear.
+    glClearColor(230/255.0, 212/255.0, 143/255.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /*Objects drawing*/
+    // Objects drawing.
     glMatrixMode(GL_MODELVIEW);
     const double size = 0.5;
 
@@ -169,14 +168,14 @@ namespace Sokoban {
       for (unsigned column = 0; column < board->getNumberOfColumns(); column++) {
         SokoObject::Type t = board->getStatic(column, row).getType();
         if (t == SokoObject::EMPTY) {
-          drawCube(row, column, 0, size, textureFloorIDs);
+          drawCube(scale*row, scale*column, 0, size, textureFloorIDs);
         }
         else if (t == SokoObject::WALL) {
-          drawCube(row, column, 0.5, size, textureWallIDs);
-          drawCube(row, column, 0, size, textureFloorIDs);
+          drawCube(scale*row, scale*column, scale*0.5, size, textureWallIDs);
+          drawCube(scale*row, scale*column, 0, size, textureFloorIDs);
         }
         else {
-          drawCube(row, column, 0, size, textureTargetIDs);
+          drawCube(scale*row, scale*column, 0, size, textureTargetIDs);
         }
       }
     }
@@ -207,20 +206,21 @@ namespace Sokoban {
     }
     board->update(0.1);
     // Render Hud
+    // Statusbar.
     stringstream ss;
     ss.clear();
-    ss << "Moves: " << board->getNumberOfMoves();
-    renderText(ss.str(), SDL_Color{200,0,0,255});    
-    ss.clear();
-    ss << "  Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
-    renderText(ss.str(), SDL_Color{0, 200, 0, 255});
+    ss << "Stage: " << getCurrentLevel();
+    ss << " | Moves: " << board->getNumberOfMoves();
+    ss << " | Light boxes: " << board->getNumberOfUnresolvedLightBoxes();
+    ss << " | Heavy boxes: " << board->getNumberOfUnresolvedHeavyBoxes();
+    renderStatusbar(ss.str(), SDL_Color{255, 255, 255, 255});
     
     glFlush();
     SDL_GL_SwapWindow(window);
   }
 
-  void Game::renderText(std::string text, SDL_Color color) {
-    SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), color);
+  void Game::renderStatusbar(std::string text, SDL_Color textColor) {
+    SDL_Surface* surface = TTF_RenderText_Solid(windowFont, text.c_str(), textColor);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, surface);
 
     glMatrixMode(GL_PROJECTION);
@@ -234,7 +234,8 @@ namespace Sokoban {
     glDisable(GL_DEPTH_TEST);
 
     // Setting the viewport
-    glViewport(0, 0, screenWidth/2, screenHeight/10);
+    //glViewport(0, 0, screenWidth/2, screenHeight/10);
+    glViewport(0, 0, screenWidth, screenHeight/20);
 
     //Binding the texture
     float width, height;
@@ -262,8 +263,9 @@ namespace Sokoban {
 
   void Game::drawCube(GLdouble x, GLdouble y, GLdouble z,
                       GLdouble edge, GLuint* textureIDs) {
-    GLdouble halfEdge = edge / 2.0;
-    GLfloat color[4] = {1.0, 0.0, 0.0, 1.0}; //color is red
+
+    GLdouble halfEdge = scale*(edge / 2.0);
+
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
@@ -341,6 +343,7 @@ namespace Sokoban {
     setOldPosition(xnew, ynew);
 
     glMatrixMode(GL_MODELVIEW);
+
     glRotatef(atan(2.0 * xstep), 0.0, 0.0, 1.0);
     glRotatef(atan(2.0 * ystep), 0.0, 1.0, 0.0);
 
@@ -350,11 +353,9 @@ namespace Sokoban {
 
   void Game::sokoReshape() {
     glViewport(0.0, 0.0, screenWidth, screenHeight);
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(65.0, GLdouble(screenWidth)/screenHeight, 1.0, 10.0) ;
-
     glMatrixMode(GL_MODELVIEW);
   }
 
@@ -369,8 +370,9 @@ namespace Sokoban {
       delete board;
       board = NULL;
     }
+    currentLevel = level;
     stringstream ss;
-    ss << "assets/stages/stage" << level << ".sok";
+    ss << "assets/stages/stage" << currentLevel << ".sok";
     board = new SokoBoard(ss.str());
   }
 
@@ -382,7 +384,7 @@ namespace Sokoban {
     SDL_Surface* loadedSurface = IMG_Load(path);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(windowRenderer, loadedSurface);    
     
-    // Starting que matrixes
+    // Starting the matrixes.
     glMatrixMode(GL_PROJECTION);
     glPushMatrix(); 
     glLoadIdentity();
@@ -390,6 +392,7 @@ namespace Sokoban {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
+
     glDisable(GL_DEPTH_TEST);
 
     float width, height;
@@ -403,9 +406,6 @@ namespace Sokoban {
     glTexCoord2f(0.0, 0.0);                  glVertex2f(x, y + 2.0);
     glEnd();
 
-    glFlush();
-    SDL_GL_SwapWindow(window);
-
     // Popping the matrixes
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -413,13 +413,29 @@ namespace Sokoban {
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
+    glFlush();
+    SDL_GL_SwapWindow(window);
+
     SDL_GL_UnbindTexture(texture);
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(loadedSurface);
   }
 
+  void Game::changeScale(int n) {
+    if (n == 1) {
+      scale *= 1.05;
+    }
+    else {
+      scale *= 0.95;
+    }
+  }
+
   SokoBoard* Game::getGameBoard() const {
     return board;
+  }
+
+  unsigned Game::getCurrentLevel() const {
+    return currentLevel;
   }
 
   bool Game::moveDownAction() {
