@@ -22,7 +22,8 @@ namespace Sokoban {
       SokoDynamicObject(const Type& type, const SokoPosition position_) :
                        SokoObject(type), position(position_) { 
                        	positionX = position_.x;
-                       	positionY = position_.y; };
+                       	positionY = position_.y;
+                        progress = 1.0; };
       
       /// The x position of this object on 2d free space
       double positionX;
@@ -38,9 +39,12 @@ namespace Sokoban {
       void move(double step) {
       	//double dX = (lastPosition.x - position.x)*0.1;
       	//double dY = (lastPosition.y - position.y)*0.1;
-
-        positionX = position.x;
-        positionY = position.y;
+        progress +=step;
+        
+        if(progress < 1.0) {
+          positionX = (1.0-progress) * lastPosition.x + (progress * position.x);
+          positionY = (1.0-progress) * lastPosition.y + (progress * position.y);
+        }
 
       };
 
@@ -52,7 +56,11 @@ namespace Sokoban {
       	positionY = position.y;
       	lastPosition = position;
       	position = newPosition;
+        progress = 0.0;
       }
+
+    private:
+      double progress;
   };
 }
 

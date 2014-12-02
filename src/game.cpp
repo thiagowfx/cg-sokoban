@@ -205,7 +205,7 @@ namespace Sokoban {
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
     }
-    board->update(1.0);
+    board->update(0.1);
     // Render Hud
     stringstream ss;
     ss.clear();

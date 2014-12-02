@@ -198,11 +198,12 @@ void SokoBoard::updateUnresolvedBoxes() {
   unresolvedHeavyBoxes = heavyBoxes;
 
   for(SokoDynamicObject dyn : dynamicBoard) {
-    if(staticBoard[dyn.position.y][dyn.position.x].getType() == SokoObject::TARGET)
-    if(dyn.getType() == SokoObject::LIGHT_BOX)
-      unresolvedLightBoxes--;
-    if(dyn.getType() == SokoObject::HEAVY_BOX)    
-      unresolvedHeavyBoxes--;
+    if(staticBoard[dyn.position.y][dyn.position.x].getType() == SokoObject::TARGET) {
+      if(dyn.getType() == SokoObject::LIGHT_BOX)
+        unresolvedLightBoxes--;
+      if(dyn.getType() == SokoObject::HEAVY_BOX)    
+        unresolvedHeavyBoxes--;
+    }
   }
 }
 
