@@ -18,22 +18,18 @@ namespace Sokoban {
       } Type;
 
     protected:
-    /// The type of this SokoObject.
-    Type type;
+      /// The type of this SokoObject.
+      Type type;
 
     public:
-    /// Constructs a new SokoObject.
-    SokoObject() {};
+      /// Constructs a new SokoObject.
+      SokoObject() {};
 
-    /// Constructs a new SokoObject of this given @type.
-    SokoObject(const Type& type) : 
-      type(type) {};
+      /// Constructs a new SokoObject of this given @type.
+      SokoObject(const Type& type) : type(type) {};
 
-
-    /// Return the type of this SokoObject.
-    Type getType() const {
-      return type;
-    };
+      /// Return the type of this SokoObject.
+      Type getType() const { return type; };  
   };
 }
 

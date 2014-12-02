@@ -35,8 +35,7 @@ SokoBoard::SokoBoard(std::string filename) :
         // Build both boards
         if(type == SokoObject::EMPTY || type == SokoObject::TARGET || type == SokoObject::WALL) {
           staticObj = SokoObject(type);
-        }
-        else {
+        } else {
           staticObj = SokoObject(SokoObject::EMPTY);
           dynamicObj = SokoDynamicObject(type, SokoPosition(x_now, y_now));
           dynamicBoard.push_back(dynamicObj);
@@ -61,8 +60,7 @@ SokoBoard::SokoBoard(std::string filename) :
 
 int SokoBoard::move(Direction direction) {
   int boxMovedIndex = -1, characterMoved = false;
-  SokoPosition characterPosition = dynamicBoard[characterIndex].position;
-  SokoPosition nextPosition = characterPosition + direction;
+  SokoPosition nextPosition = dynamicBoard[characterIndex].position + direction;
 
   // Checking out-of-bounds on y.
   if(nextPosition.y < 0 || nextPosition.y >= staticBoard.size())
@@ -79,9 +77,7 @@ int SokoBoard::move(Direction direction) {
     if(nextObj.getType() == SokoObject::EMPTY) {
       dynamicBoard[characterIndex].updatePosition(nextPosition);
       characterMoved = true;
-    }
-
-    else { 
+    } else { 
       SokoPosition boxNextPosition = nextPosition + direction;
 
       // Checking out-of-bounds on y.
@@ -109,23 +105,25 @@ int SokoBoard::move(Direction direction) {
     }
   }
 
-
+  // Saving the movement for undo
   if(characterMoved) {
-    undoTree.push(Movement(direction, boxMovedIndex));
+    undoTree.push(SokoMovement(direction, boxMovedIndex));
     updateUnresolvedBoxes();
   }
-
   return boxMovedIndex;
 }
 
 int SokoBoard::undo() {
   if (!undoTree.empty()) {
-    Movement last = undoTree.top();
+    // Retrieving the movement
+    SokoMovement last = undoTree.top();
     undoTree.pop();
 
+    // Changing character's position
     SokoPosition previousPosition = dynamicBoard[characterIndex].position - last.direction;
     dynamicBoard[characterIndex].resetPosition(previousPosition);
     
+    // Cheking if a box was moved and undo this movement
     if (last.boxMoved >= 0) {
       SokoPosition boxPosition = dynamicBoard[last.boxMoved].position - last.direction;
       dynamicBoard[last.boxMoved].resetPosition(boxPosition);
@@ -137,13 +135,6 @@ int SokoBoard::undo() {
 
 std::string SokoBoard::toString() {
   std::stringstream ss;
-  /*ss << "INFO: Dynamic Board: " << std::endl;
-  for(auto line : dynamicBoard) {
-    for(auto obj : line)
-      ss << " " << obj.getType();
-    ss << std::endl;
-  }
-  ss << std::endl;*/
   
   ss << "INFO: Board: " << std::endl;
   int x(0), y(0);
@@ -164,8 +155,10 @@ std::string SokoBoard::toString() {
   ss << std::endl;
 
   ss << "INFO: Number of moves: " << getNumberOfMoves() << std::endl;
-  ss << "INFO: Number of remaining light boxes: " << getNumberOfUnresolvedLightBoxes() << "/" << getNumberOfLightBoxes() << std::endl;
-  ss << "INFO: Number of remaining heavy boxes: " << getNumberOfUnresolvedHeavyBoxes() << "/" << getNumberOfHeavyBoxes() << std::endl;
+  ss << "INFO: Number of remaining light boxes: " << getNumberOfUnresolvedLightBoxes() 
+  << "/" << getNumberOfLightBoxes() << std::endl;
+  ss << "INFO: Number of remaining heavy boxes: " << getNumberOfUnresolvedHeavyBoxes() 
+  << "/" << getNumberOfHeavyBoxes() << std::endl;
   ss << std::endl;
 
   for (auto obj : dynamicBoard) {
@@ -181,11 +174,6 @@ std::ostream& operator<<(std::ostream& os, SokoBoard& s) {
   return os;
 }
 
-/** 
-  Every test here is necessary (and done only when necessary).
-  If you don't trust me, waste your time and please, increase the counter.
-  Time wasted with these tests: 0.12 hours.
-  */
 void SokoBoard::updateUnresolvedBoxes() {
   unresolvedLightBoxes = lightBoxes;
   unresolvedHeavyBoxes = heavyBoxes;
@@ -273,5 +261,4 @@ void SokoBoard::update(double t) {
   for(int i=0; i < dynamicBoard.size(); i++)
     dynamicBoard[i].move(t);
 }
-
 }

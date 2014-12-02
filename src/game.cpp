@@ -230,10 +230,13 @@ namespace Sokoban {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
+    // Disabling depth test for 2d rendering
     glDisable(GL_DEPTH_TEST);
 
+    // Setting the viewport
     glViewport(0, 0, screenWidth/2, screenHeight/10);
 
+    //Binding the texture
     float width, height;
     float x = -1.0, y = -1.0;
     SDL_GL_BindTexture(texture, &width, &height);
@@ -245,15 +248,13 @@ namespace Sokoban {
     glTexCoord2f(0.0, 0.0);                  glVertex2f(x, y + 2.0);
     glEnd();
 
+    // Cleaning the used data structures
     glEnable(GL_DEPTH_TEST);
-
     glViewport(0, 0, screenWidth, screenHeight);
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-
     glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    
+    glPopMatrix();    
     SDL_GL_UnbindTexture(texture);
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);
@@ -327,7 +328,6 @@ namespace Sokoban {
     glEnd();
 
     glPopMatrix();
-    //glDisable(GL_TEXTURE_2D);
   }
 
   void Game::setOldPosition(GLdouble x, GLdouble y) {

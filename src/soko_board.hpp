@@ -18,10 +18,10 @@ namespace Sokoban {
   */
   class SokoBoard {
     private:
-      /// This nested class represents a movement from the character
-      class Movement {
+      /// This nested class represents a movement from a caracter and/or a box
+      class SokoMovement {
         public:
-          Movement(Direction direction, int boxMoved = -1) : direction(direction), 
+          SokoMovement(Direction direction, int boxMoved = -1) : direction(direction), 
                                                            boxMoved(boxMoved) {};
           /// The direction of the movement
           Direction direction;
@@ -80,9 +80,8 @@ namespace Sokoban {
       /// Returns the element in position x, y of the dynamic board.
       std::vector< SokoDynamicObject > getDynamic();
 
-      /** Returns the element in position x, y of the static board.
-      Please note that dynamic elements might be in more than one neighbor.
-      */
+      
+      // Returns the element in position x, y of the dynamic board.
       SokoDynamicObject getDynamic(int x, int y);
 
       /// Returns the element in position x, y of the static board.
@@ -99,7 +98,7 @@ namespace Sokoban {
         lightBoxes, heavyBoxes, targets;
 
       /// The stack with all the movements that happened.
-      std::stack< Movement > undoTree;
+      std::stack< SokoMovement > undoTree;
 
       /// The character position.
       //SokoPosition characterPosition;
