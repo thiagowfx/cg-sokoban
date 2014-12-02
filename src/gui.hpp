@@ -76,9 +76,6 @@ namespace Sokoban {
     /// The game renderization engine.
     Game *game = NULL;
 
-    /// The current stage the user is on.
-    unsigned currentLevel;
-
     /// OpenGL context for SDL.
     SDL_GLContext glContext;
 

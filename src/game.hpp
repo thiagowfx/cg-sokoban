@@ -63,10 +63,17 @@ namespace Sokoban {
       /// Render a single image, at the given path.
       void renderSingleImage(const char* path);
 
-      void renderText(std::string text, SDL_Color color);
+      /// Render the status bar.
+      void renderStatusbar(std::string text, SDL_Color textColor);
 
       /// Get the game board.
       SokoBoard* getGameBoard() const;
+
+      /// Get the current game level.
+      unsigned getCurrentLevel() const;
+
+      /// Change the game scale. 1 = should increase and -1 should decrease.
+      void changeScale(int);
 
     private:
       /// Main SDL window.
@@ -76,6 +83,9 @@ namespace Sokoban {
       SDL_GLContext* glContext;
 
       int screenWidth, screenHeight;
+
+      /// The current game level.
+      unsigned currentLevel;
 
       /// The window font (TTF).
       TTF_Font* windowFont;
@@ -88,10 +98,13 @@ namespace Sokoban {
 
       GLdouble xold, yold;
 
-      const char* targetPath[6] = {"assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
+      /// The game scale (zoom) factor.
+      double scale = 1.0;
+
+      const char* targetPath[6] = {"assets/wall_top.jpg", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png", "assets/x.png"};
       GLuint textureTargetIDs[6];
 
-      const char* characterPath[6] = {"assets/perrotta.jpg", "assets/perrotta.jpg", "assets/perrotta.jpg", "assets/perrotta.jpg", "assets/perrotta.jpg", "assets/perrotta.jpg"};
+      const char* characterPath[6] = {"assets/claudio.jpg", "assets/claudio.jpg", "assets/claudio.jpg", "assets/claudio.jpg", "assets/claudio.jpg", "assets/claudio.jpg"};
       GLuint textureCharacterIDs[6];
 
       const char* lightBoxPath[6] = {"assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png", "assets/wood.png"};
@@ -100,11 +113,13 @@ namespace Sokoban {
       const char* heavyBoxPath[6] = {"assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png", "assets/stone.png"};
       GLuint textureHeavyBoxIDs[6];
 
-      const char* wallPath[6] = {"assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png"};
+      const char* wallPath[6] = {"assets/wall_top.jpg", "assets/wall_top.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg"};
       GLuint textureWallIDs[6];
 
-      const char* floorPath[6] = {"assets/wall.png", "assets/ftop.png", "assets/wall.png", "assets/wall.png", "assets/wall.png", "assets/wall.png"};
+      const char* floorPath[6] = {"assets/wall_top.jpg", "assets/floor.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg", "assets/wall.jpg"};
       GLuint textureFloorIDs[6];
+
+      GLfloat color[4] = {1.0, 1.0, 1.0, 1.0};
   };
 }
 
