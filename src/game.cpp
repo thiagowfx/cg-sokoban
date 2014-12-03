@@ -183,15 +183,15 @@ namespace Sokoban {
     // Drawing dynamic objects
     for (auto obj : board->getDynamic()) {
       auto t = obj.getType();
-      unsigned column = obj.position.x;
-      unsigned row = obj.position.y;
-      SokoObject::Type u = board->getStatic(column, row).getType();
+      SokoObject::Type u = board->getStatic(obj.position.x, obj.position.y).getType();
       if (t == SokoObject::CHARACTER) {
         drawCube(obj.positionY, obj.positionX, 0.5, size, textureCharacterIDs);
       }
       else if (t== SokoObject::LIGHT_BOX) {
         if(u == SokoObject::TARGET){
-          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+          color[1] = 0; // color is red
+          color[2] = 0;
+          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);          
         }
         drawCube(obj.positionY, obj.positionX, 0.5, size, textureLightBoxIDs);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -199,14 +199,18 @@ namespace Sokoban {
       else if (t == SokoObject::HEAVY_BOX) {
         if(u == SokoObject::TARGET){
           glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+          color[1] = 0; // color is red
+          color[2] = 0;
         }
         drawCube(obj.positionY, obj.positionX, 0.5, size, textureHeavyBoxIDs);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
     }
+    color[1] = 1; // color is white again
+    color[2] = 1;
+
     board->update(0.1);
-    // Render Hud
-    // Statusbar.
+    // Statusbar
     stringstream ss;
     ss.clear();
     ss << "Stage: " << getCurrentLevel();

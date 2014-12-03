@@ -375,7 +375,8 @@ namespace Sokoban {
   void Gui::checkLoadNextLevel(const SDL_Event& e) {
     if (context == CONTEXT_GAME && isMovementKey(e.key.keysym.sym) && game->isLevelFinished()) {
       if (game->getCurrentLevel() == (GAME_MENU_LABELS.size() - 1)) {
-        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", game->getCurrentLevel());
+        SDL_Log("Finished the last level (%d). Switching to CONTEXT_GAME_FINISHED.", 
+                game->getCurrentLevel());
         context = CONTEXT_GAME_FINISHED;
       }
       else {
