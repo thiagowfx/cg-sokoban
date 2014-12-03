@@ -31,26 +31,17 @@ namespace Sokoban {
       /// The x position of this object on 2d free space
       double positionY;
 
-      /// The position of this object on the board
-      SokoPosition position;
-
-      /// The last position of this object on the board
-      SokoPosition lastPosition;
-
-      int getIndex() { return index; };
+      /// The index of this object in the Dynamic board
+      int index;
 
       /// Moves the object with step. Step can be from 0.0 to 1.0
       void move(double step) {
-        progress +=step;
-        
+        progress +=step;        
         if(progress < 1.0) {
           positionX = (1.0-progress) * lastPosition.x + (progress * position.x);
           positionY = (1.0-progress) * lastPosition.y + (progress * position.y);
         }
       };
-
-      /// The index of this object in the Dynamic board
-      int index;
 
       /// Updates the position of the object
       void updatePosition(SokoPosition newPosition) {
@@ -61,6 +52,7 @@ namespace Sokoban {
         progress = 0.0;
       }
 
+      // Resets the position of this object to new position with no animation
       void resetPosition(SokoPosition newPosition) {
         positionX = newPosition.x;
         positionY = newPosition.y;
@@ -68,8 +60,23 @@ namespace Sokoban {
         progress = 1.0;
       }
 
+      /// Returns the position of this object
+      SokoPosition getPosition() {
+        if(progress >= 1.0)
+          return position;
+        else
+          return lastPosition;
+      }
+
     private:
+      /// The progress of the animation
       double progress;
+
+      /// The position of this object on the board
+      SokoPosition position;
+
+      /// The last position of this object on the board
+      SokoPosition lastPosition;
   };
 }
 

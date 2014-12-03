@@ -60,7 +60,7 @@ SokoBoard::SokoBoard(std::string filename) :
 
 int SokoBoard::move(Direction direction) {
   int boxMovedIndex = -1, characterMoved = false;
-  SokoPosition nextPosition = dynamicBoard[characterIndex].position + direction;
+  SokoPosition nextPosition = dynamicBoard[characterIndex].getPosition() + direction;
 
   // Checking out-of-bounds on y.
   if(nextPosition.y < 0 || nextPosition.y >= staticBoard.size())
@@ -120,12 +120,12 @@ int SokoBoard::undo() {
     undoTree.pop();
 
     // Changing character's position
-    SokoPosition previousPosition = dynamicBoard[characterIndex].position - last.direction;
+    SokoPosition previousPosition = dynamicBoard[characterIndex].getPosition() - last.direction;
     dynamicBoard[characterIndex].resetPosition(previousPosition);
     
     // Cheking if a box was moved and undo this movement
     if (last.boxMoved >= 0) {
-      SokoPosition boxPosition = dynamicBoard[last.boxMoved].position - last.direction;
+      SokoPosition boxPosition = dynamicBoard[last.boxMoved].getPosition() - last.direction;
       dynamicBoard[last.boxMoved].resetPosition(boxPosition);
     }
     return last.boxMoved;
@@ -161,10 +161,6 @@ std::string SokoBoard::toString() {
   << "/" << getNumberOfHeavyBoxes() << std::endl;
   ss << std::endl;
 
-  for (auto obj : dynamicBoard) {
-    ss << "Dynamic " << obj.getType() << " in position "<< obj.positionX << " ,"<< obj.positionY << std::endl;
-    ss << "Dynamic " << obj.getType() << " lastposition "<< obj.lastPosition.x << " ,"<< obj.lastPosition.y << std::endl;
-  }
   ss << std::endl; 
   return ss.str();
 }
@@ -179,10 +175,10 @@ void SokoBoard::updateUnresolvedBoxes() {
   unresolvedHeavyBoxes = heavyBoxes;
 
   for(SokoDynamicObject dyn : dynamicBoard) {
-    if(staticBoard[dyn.position.y][dyn.position.x].getType() == SokoObject::TARGET) {
+    if(staticBoard[dyn.getPosition().y][dyn.getPosition().x].getType() == SokoObject::TARGET) {
       if(dyn.getType() == SokoObject::LIGHT_BOX)
         unresolvedLightBoxes--;
-      if(dyn.getType() == SokoObject::HEAVY_BOX)    
+      if(dyn.getType() == SokoObject::HEAVY_BOX)
         unresolvedHeavyBoxes--;
     }
   }
@@ -231,7 +227,7 @@ std::vector< SokoDynamicObject > SokoBoard::getDynamic() {
 SokoDynamicObject SokoBoard::getDynamic(int x, int y) {
   SokoDynamicObject empty(SokoObject::EMPTY, SokoPosition(x, y));
   for(auto obj : dynamicBoard) {
-    if(obj.position.x == x && obj.position.y == y)
+    if(obj.getPosition().x == x && obj.getPosition().y == y)
       return obj;
   }
   return empty;
@@ -260,5 +256,6 @@ void SokoBoard::setDynamicIndexes() {
 void SokoBoard::update(double t) {
   for(int i=0; i < dynamicBoard.size(); i++)
     dynamicBoard[i].move(t);
+  updateUnresolvedBoxes();
 }
 }

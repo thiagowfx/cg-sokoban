@@ -183,7 +183,7 @@ namespace Sokoban {
     // Drawing dynamic objects
     for (auto obj : board->getDynamic()) {
       auto t = obj.getType();
-      SokoObject::Type u = board->getStatic(obj.position.x, obj.position.y).getType();
+      SokoObject::Type u = board->getStatic(obj.getPosition().x, obj.getPosition().y).getType();
       if (t == SokoObject::CHARACTER) {
         drawCube(obj.positionY, obj.positionX, 0.5, size, textureCharacterIDs);
       }
@@ -191,16 +191,16 @@ namespace Sokoban {
         if(u == SokoObject::TARGET){
           color[1] = 0; // color is red
           color[2] = 0;
-          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);          
+          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         }
         drawCube(obj.positionY, obj.positionX, 0.5, size, textureLightBoxIDs);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
       else if (t == SokoObject::HEAVY_BOX) {
         if(u == SokoObject::TARGET){
-          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
           color[1] = 0; // color is red
           color[2] = 0;
+          glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         }
         drawCube(obj.positionY, obj.positionX, 0.5, size, textureHeavyBoxIDs);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -209,7 +209,7 @@ namespace Sokoban {
     color[1] = 1; // color is white again
     color[2] = 1;
 
-    board->update(0.1);
+    board->update(0.05);
     // Statusbar
     stringstream ss;
     ss.clear();
