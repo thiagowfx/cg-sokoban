@@ -62,11 +62,11 @@ namespace Sokoban {
 
       /// Returns the position of this object
       SokoPosition getPosition() {
-        if(progress >= 1.0)
-          return position;
-        else
-          return lastPosition;
+        return position;
       }
+
+      /// Returns the progress of this ojects animation
+      double getProgress() { return progress; }
 
     private:
       /// The progress of the animation

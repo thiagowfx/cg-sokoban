@@ -217,6 +217,9 @@ unsigned SokoBoard::getNumberOfUnresolvedHeavyBoxes() const {
 }
 
 bool SokoBoard::isFinished() const {
+  for (auto obj : dynamicBoard)
+    if( obj.getProgress() <= 1.0)
+      return false;
   return getNumberOfUnresolvedBoxes() == 0;
 }
 
