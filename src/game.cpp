@@ -142,7 +142,7 @@ namespace Sokoban {
       glLoadIdentity();
 
       /* Camera initial position. */
-      gluLookAt(4.0, 4.0, 2.0, // eye
+      gluLookAt(4.0, 4.0, 4.0, // eye
           0.0, 0.0, 0.0,             // lookAt
           0.0, -0.1, 1);         // up
 
@@ -185,7 +185,7 @@ namespace Sokoban {
       auto t = obj.getType();
       SokoObject::Type u = board->getStatic(obj.getPosition().x, obj.getPosition().y).getType();
       if (t == SokoObject::CHARACTER) {
-        drawCube(obj.positionY, obj.positionX, 0.5, size, textureCharacterIDs);
+        drawCube(scale*obj.positionY, scale*obj.positionX, scale*0.5, size, textureCharacterIDs);
       }
       else if (t== SokoObject::LIGHT_BOX) {
         if(u == SokoObject::TARGET){
@@ -193,7 +193,7 @@ namespace Sokoban {
           color[2] = 0;
           glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         }
-        drawCube(obj.positionY, obj.positionX, 0.5, size, textureLightBoxIDs);
+        drawCube(scale*obj.positionY, scale*obj.positionX, scale*0.5, size, textureLightBoxIDs);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
       else if (t == SokoObject::HEAVY_BOX) {
@@ -202,7 +202,7 @@ namespace Sokoban {
           color[2] = 0;
           glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         }
-        drawCube(obj.positionY, obj.positionX, 0.5, size, textureHeavyBoxIDs);
+        drawCube(scale*obj.positionY, scale*obj.positionX, scale*0.5, size, textureHeavyBoxIDs);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
       }
     }
